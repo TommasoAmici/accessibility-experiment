@@ -3,6 +3,10 @@
 \usepackage[american]{babel}
 \usepackage[babel,threshold=2]{csquotes}
 \usepackage{setspace}
+\usepackage[style=apa, backend=biber]{biblatex}
+\DeclareLanguageMapping{american}{american-apa}
+\addbibresource{references.bib}
+
 \title{\#TODO title}
 \author{Tommaso Amici}
 
@@ -26,5 +30,7 @@
 \section{Conclusion and discussion}
 
 
+\section{References}
+\printbibliography[heading=none]
 
 \end{document}
