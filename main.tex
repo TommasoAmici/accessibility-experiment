@@ -1,12 +1,14 @@
-\documentclass[12pt]{article}
+\documentclass[12pt, a4paper, draft]{article}
 
 \usepackage{graphicx}
+\usepackage{ifdraft}
 \usepackage[obeyDraft, textsize=small]{todonotes}
 
 \usepackage{setspace}
 
 % STYLE
 \usepackage[pdfborder={0 0 0}]{hyperref}
+\usepackage[\ifdraft {left=1.5cm, textwidth=345pt, marginparwidth=5cm} {}]{geometry}
 
 % BIBLIOGRAPHY
 \usepackage{apacite} % after hyperref
