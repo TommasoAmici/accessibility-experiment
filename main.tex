@@ -1,5 +1,8 @@
 \documentclass[12pt]{article}
 
+\usepackage{graphicx}
+\usepackage[obeyDraft, textsize=small]{todonotes}
+
 \usepackage{setspace}
 
 % STYLE
@@ -9,13 +12,14 @@
 \usepackage{apacite} % after hyperref
 
 
-\title{\#TODO title}
+\title{Title}
 \author{Tommaso Amici}
 
 \begin{document}
+\listoftodos
 \doublespacing
 \pagenumbering{gobble}
-\maketitle
+\input{titlePage.tex}
 \newpage
 
 \pagenumbering{roman}
