@@ -1,9 +1,11 @@
 \documentclass[12pt]{article}
 
 \usepackage{setspace}
-\usepackage[style=apa, backend=biber]{biblatex}
-\DeclareLanguageMapping{american}{american-apa}
-\addbibresource{references.bib}
+
+
+% BIBLIOGRAPHY
+\usepackage{apacite} % after hyperref
+
 
 \title{\#TODO title}
 \author{Tommaso Amici}
@@ -28,7 +30,8 @@
 \section{Conclusion and discussion}
 
 
-\section{References}
-\printbibliography[heading=none]
+\newpage
+\bibliographystyle{apacite}
+\bibliography{references}
 
 \end{document}
