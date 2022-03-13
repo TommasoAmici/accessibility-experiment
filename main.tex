@@ -1,4 +1,4 @@
-\documentclass[12pt, a4paper, draft]{article}
+\documentclass[12pt, a4paper]{article}
 
 \usepackage{graphicx}
 \usepackage{ifdraft}
@@ -9,12 +9,15 @@
 % STYLE
 \usepackage[pdfborder={0 0 0}]{hyperref}
 \usepackage[\ifdraft {left=1.5cm, textwidth=345pt, marginparwidth=5cm} {}]{geometry}
+\usepackage{numprint}
 
 % BIBLIOGRAPHY
 \usepackage{apacite} % after hyperref
 
+\usepackage{epigraph}
+\setlength\epigraphwidth{.8\textwidth}
 
-\title{Title}
+\title{The role of web accessibility in an online business's performance}
 \author{Tommaso Amici}
 
 \begin{document}
@@ -27,25 +30,20 @@
 
 \pagenumbering{roman}
 
-\input{sections/abstract.tex}
-\newpage
+% \input{sections/abstract.tex}
+% \newpage
 
-\tableofcontents
-\listoffigures
-\listoftables
-\newpage
+% \tableofcontents
+% \listoffigures
+% \listoftables
+% \newpage
 
 \pagenumbering{arabic}
 
-\section{Introduction}
-
-\section{Theory chapter}
-
-\section{Method chapter}
-
-\section{Analysis and results}
-
-\section{Conclusion and discussion}
+\input{sections/introduction.tex}
+\input{sections/literature_review.tex}
+\input{sections/method.tex}
+\input{sections/work_plan.tex}
 
 \newpage
 \bibliographystyle{apacite}
