@@ -1,0 +1,30 @@
+export const alts: { [k: number]: string } = {
+  0: "Close-up of the left side of the shoe",
+  1: "Close-up of the right side of the shoe",
+  2: "A shot of the shoes from above",
+  3: "Both shoes at a 45 degrees angle",
+  4: "A shot of the shoes from behind",
+  5: "A close-up of the tip of the shoe",
+  6: "A close-up of the heel of the shoe",
+};
+
+export const sizes: ShoeSize[] = [
+  "37",
+  "37.5",
+  "38",
+  "38.5",
+  "39",
+  "39.5",
+  "40",
+  "40.5",
+  "41",
+  "41.5",
+  "42",
+  "42.5",
+  "43",
+  "43.5",
+  "44",
+  "44.5",
+  "45",
+  "45.5",
+];
