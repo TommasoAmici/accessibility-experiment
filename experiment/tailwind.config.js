@@ -6,7 +6,15 @@ module.exports = {
     "./layouts/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      typography: {
+        DEFAULT: {
+          css: {
+            color: "#000",
+          },
+        },
+      },
+    },
   },
   plugins: [require("@tailwindcss/forms"), require("@tailwindcss/typography")],
 };
