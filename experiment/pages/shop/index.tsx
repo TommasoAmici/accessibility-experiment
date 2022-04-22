@@ -1,10 +1,9 @@
 import { GetServerSideProps } from "next";
-import Head from "next/head";
+import type { ReactElement } from "react";
 import { useState } from "react";
-import { Header } from "../../components/Header";
 import { ProductFilters } from "../../components/ProductFilters";
 import { ProductListing } from "../../components/ProductListing";
-import { SkipNav } from "../../components/SkipNav";
+import { ShopLayout } from "../../layouts/ShopLayout";
 import { allProducts } from "../../lib/db";
 import { randomAssignment } from "../../lib/randomAssignment";
 
@@ -63,35 +62,27 @@ const Home = (props: { accessible: boolean }) => {
   });
   const products = filterProducts(allProducts, colorFilters, sportFilters, query);
   return (
-    <>
-      <Head>
-        <title>{accessible ? "accessible" : "inaccessible"}</title>
-      </Head>
-      {accessible && <SkipNav />}
-      <Header accessible={accessible} breadcrumbs={[]} />
-      <div className="mx-auto grid max-w-screen-2xl gap-12 p-8 lg:grid-cols-7">
-        <ProductFilters
-          accessible={accessible}
-          colorFilters={colorFilters}
-          setColorFilters={setColorFilters}
-          sportFilters={sportFilters}
-          setSportFilters={setSportFilters}
-          query={query}
-          setQuery={setQuery}
-          className="sticky top-8 h-fit"
-        />
-        {accessible ? (
-          <main id="main" className="col-span-6">
-            <ProductListing accessible={accessible} products={products} />
-          </main>
-        ) : (
-          <div className="col-span-6">
-            <ProductListing accessible={accessible} products={products} />
-          </div>
-        )}
-      </div>
-      <footer className=""></footer>
-    </>
+    <div className="grid gap-12 p-8 mx-auto max-w-screen-2xl lg:grid-cols-7">
+      <ProductFilters
+        accessible={accessible}
+        colorFilters={colorFilters}
+        setColorFilters={setColorFilters}
+        sportFilters={sportFilters}
+        setSportFilters={setSportFilters}
+        query={query}
+        setQuery={setQuery}
+        className="sticky top-8 h-fit"
+      />
+      {accessible ? (
+        <main id="main" className="col-span-6">
+          <ProductListing accessible={accessible} products={products} />
+        </main>
+      ) : (
+        <div className="col-span-6">
+          <ProductListing accessible={accessible} products={products} />
+        </div>
+      )}
+    </div>
   );
 };
 
@@ -105,3 +96,11 @@ export const getServerSideProps: GetServerSideProps = async context => {
 };
 
 export default Home;
+
+Home.getLayout = function getLayout(page: ReactElement) {
+  return (
+    <ShopLayout accessible={page.props.accessible} breadcrumbs={[]}>
+      {page}
+    </ShopLayout>
+  );
+};

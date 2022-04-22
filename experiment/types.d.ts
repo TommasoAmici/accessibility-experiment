@@ -73,3 +73,9 @@ type ProductDatabase = {
 };
 
 type ColorFilters = { [key in Color]: boolean };
+
+type Breadcrumbs = {
+  path: string;
+  title: string;
+}[];
+
