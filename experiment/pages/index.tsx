@@ -10,7 +10,7 @@ const HomePage = () => {
   usePressEnter(nextURL, router);
 
   return (
-    <section className="mx-auto prose prose-lg">
+    <section className="prose prose-lg mx-auto">
       <p>
         Hello there, thanks for taking the time to participate. I&apos;m Tommaso Amici, a web
         developer and a master student at the University of Amsterdam.
@@ -30,7 +30,7 @@ const HomePage = () => {
         Lastly, to thank you for your time, you can optionally enter a lottery and I will randomly
         pick a participant to win 25€.
       </p>
-      <div className="relative flex flex-col w-full">
+      <div className="relative flex w-full flex-col">
         <Link href={nextURL} passHref>
           <ButtonLink className="mx-auto mt-4">Start</ButtonLink>
         </Link>

@@ -19,5 +19,5 @@ body,
 }
 
 #kander path {
-  @apply transition-opacity opacity-70 hover:opacity-100;
+  @apply opacity-70 transition-opacity hover:opacity-100;
 }

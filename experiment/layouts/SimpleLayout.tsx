@@ -9,9 +9,9 @@ export const SimpleLayout = ({ children }: { children: ReactNode }) => {
         <title>Web accessibility experiment - Tommaso Amici</title>
       </Head>
 
-      <main className="flex-1 w-full mx-auto mt-8">{children}</main>
+      <main className="mx-auto mt-8 w-full flex-1">{children}</main>
 
-      <div className="relative w-full h-64 mb-4 overflow-hidden">
+      <div className="relative mb-4 h-64 w-full overflow-hidden">
         <svg
           id="kander"
           className="absolute"
@@ -162,10 +162,10 @@ export const SimpleLayout = ({ children }: { children: ReactNode }) => {
         </svg>
       </div>
 
-      <footer className="pb-4 mx-auto text-sm">
+      <footer className="mx-auto pb-4 text-sm">
         <a
           href="https://tommasoamici.com"
-          className="underline outline-none text-neutral-700 focus:ring-4 focus:ring-black focus:ring-offset-4"
+          className="text-neutral-700 underline outline-none focus:ring-4 focus:ring-black focus:ring-offset-4"
         >
           &#169; Tommaso Amici
         </a>

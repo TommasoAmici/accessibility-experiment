@@ -25,14 +25,14 @@ const ShoePage = ({
   const { addItem } = useContext(CartContext);
 
   return (
-    <main id="main" className="pb-8 mx-auto max-w-screen-2xl lg:pb-0">
+    <main id="main" className="mx-auto max-w-screen-2xl pb-8 lg:pb-0">
       <div className="grid gap-8 lg:grid-cols-2">
         <ProductGallery
           accessible={accessible}
           images={product.collection.images[color] ?? []}
           alts={product.collection.alts}
         />
-        <div className="sticky grid grid-flow-row gap-8 px-8 mt-8 top-8 h-fit lg:pl-4">
+        <div className="sticky top-8 mt-8 grid h-fit grid-flow-row gap-8 px-8 lg:pl-4">
           <ShoeDescription product={product} accessible={accessible} />
           <SelectColor
             accessible={accessible}

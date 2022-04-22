@@ -62,7 +62,7 @@ const Home = (props: { accessible: boolean }) => {
   });
   const products = filterProducts(allProducts, colorFilters, sportFilters, query);
   return (
-    <div className="grid gap-12 p-8 mx-auto max-w-screen-2xl lg:grid-cols-7">
+    <div className="mx-auto grid max-w-screen-2xl gap-12 p-8 lg:grid-cols-7">
       <ProductFilters
         accessible={accessible}
         colorFilters={colorFilters}
