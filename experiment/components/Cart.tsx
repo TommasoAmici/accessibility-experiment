@@ -3,6 +3,7 @@ import { ShoppingCartIcon } from "@heroicons/react/outline";
 import classNames from "classnames";
 import { Fragment, useContext } from "react";
 import CartContext from "../contexts/state";
+import { cartRequirements } from "../lib/tasks";
 import ui from "../lib/ui";
 import { ShoeInCart } from "./ProductsInCart";
 
@@ -13,6 +14,20 @@ interface ComponentProps {
 const Accessible = ({ className }: ComponentProps) => {
   const { items, removeItem } = useContext(CartContext);
   const isEmpty = items.length === 0;
+
+  const validateItems = () => {
+    if (items.length !== Object.keys(cartRequirements).length) {
+      return false;
+    }
+    for (const item of items) {
+      const req = cartRequirements[item.productSlug];
+      if (req === undefined || req.size !== item.size || req.color !== item.color) {
+        return false;
+      }
+    }
+    return true;
+  };
+
   return (
     <Popover className="relative">
       {({ open }) => (
@@ -62,6 +77,7 @@ const Accessible = ({ className }: ComponentProps) => {
                   ui.focusRingFromColor["black"],
                   "mt-4 w-full py-2 text-white focus:outline-none focus:ring-4 focus:ring-opacity-80 focus:ring-offset-2",
                 )}
+                type="button"
               >
                 Checkout
               </button>
