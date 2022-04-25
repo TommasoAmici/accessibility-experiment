@@ -25,9 +25,9 @@ const Accessible = ({
 }: ComponentProps) => {
   return (
     <aside className={classNames("space-y-6", className)}>
-      <h2 className="mb-4 text-4xl font-bold">Filters</h2>
+      <h2 className="mb-4 text-3xl font-bold">Filters</h2>
       <label>
-        <h3 className="mb-2 text-3xl font-bold">Search</h3>
+        <h3 className="mb-2 text-2xl font-bold">Search</h3>
         <div className="relative">
           <SearchIcon className="absolute top-2 left-1.5 h-6 w-6" role="presentation" />
           <input
@@ -41,7 +41,7 @@ const Accessible = ({
       </label>
       <fieldset>
         <legend>
-          <h3 className="text-3xl font-bold">
+          <h3 className="text-2xl font-bold">
             <span className="sr-only">Filter by </span>Sport
           </h3>
         </legend>
@@ -62,7 +62,7 @@ const Accessible = ({
       </fieldset>
       <fieldset>
         <legend>
-          <h3 className="text-3xl font-bold">
+          <h3 className="text-2xl font-bold">
             <span className="sr-only">Filter by </span>Color
           </h3>
         </legend>
