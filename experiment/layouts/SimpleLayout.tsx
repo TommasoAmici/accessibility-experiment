@@ -163,9 +163,12 @@ export const SimpleLayout = ({ children }: { children: ReactNode }) => {
       </div>
 
       <footer className="mx-auto pb-4 text-sm">
+        {/* eslint-disable-next-line react/jsx-no-target-blank */}
         <a
           href="https://tommasoamici.com"
           className="text-neutral-700 underline outline-none focus:ring-4 focus:ring-black focus:ring-offset-4"
+          target="_blank"
+          rel="noopener"
         >
           &#169; Tommaso Amici
         </a>
