@@ -2,7 +2,9 @@ import Head from "next/head";
 import { ReactNode } from "react";
 import { Header } from "../components/Header";
 import { HelpButton } from "../components/HelpButton";
+import { NotificationArea } from "../components/NotificationArea";
 import { SkipNav } from "../components/SkipNav";
+import { NotificationProvider } from "../contexts/notifications";
 import { CartProvider } from "../contexts/state";
 
 export const ShopLayout = ({
@@ -15,7 +17,7 @@ export const ShopLayout = ({
   breadcrumbs: Breadcrumbs;
 }) => {
   return (
-    <>
+    <NotificationProvider>
       <CartProvider>
         <Head>
           <title>{accessible ? "accessible" : "inaccessible"}</title>
@@ -25,7 +27,8 @@ export const ShopLayout = ({
         {children}
         <footer className=""></footer>
       </CartProvider>
+      <NotificationArea accessible={accessible} />
       <HelpButton />
-    </>
+    </NotificationProvider>
   );
 };
