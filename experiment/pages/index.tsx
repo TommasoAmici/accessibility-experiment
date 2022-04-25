@@ -5,12 +5,12 @@ import { usePressEnter } from "../hooks/usePressEnter";
 
 const HomePage = () => {
   const router = useRouter();
-  const nextURL = "/shop";
+  const nextURL = "/tasks";
 
   usePressEnter(nextURL, router);
 
   return (
-    <section className="prose prose-lg mx-auto">
+    <section className="prose prose-lg mx-auto px-8">
       <p>
         Hello there, thanks for taking the time to participate. I&apos;m Tommaso Amici, a web
         developer and a master student at the University of Amsterdam.
