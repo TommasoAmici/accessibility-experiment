@@ -1,7 +1,9 @@
 import { Popover, Transition } from "@headlessui/react";
 import { ShoppingCartIcon } from "@heroicons/react/outline";
 import classNames from "classnames";
+import { useRouter } from "next/router";
 import { Fragment, useContext } from "react";
+import NotificationContext from "../contexts/notifications";
 import CartContext from "../contexts/state";
 import { cartRequirements } from "../lib/tasks";
 import ui from "../lib/ui";
@@ -12,10 +14,12 @@ interface ComponentProps {
 }
 
 const Accessible = ({ className }: ComponentProps) => {
+  const router = useRouter();
   const { items, removeItem } = useContext(CartContext);
+  const { addNotification } = useContext(NotificationContext);
   const isEmpty = items.length === 0;
 
-  const validateItems = () => {
+  const checkTaskCompletion = () => {
     if (items.length !== Object.keys(cartRequirements).length) {
       return false;
     }
@@ -26,6 +30,19 @@ const Accessible = ({ className }: ComponentProps) => {
       }
     }
     return true;
+  };
+
+  const validateItems = () => {
+    const taskCompleted = checkTaskCompletion();
+    if (taskCompleted) {
+      addNotification("You successfully completed the task!", "success");
+      router.push("/survey");
+    } else {
+      addNotification(
+        "The items in your cart are incorrect. If you forgot your tasks, check the help button in the bottom right of the screen.",
+        "warning",
+      );
+    }
   };
 
   return (
@@ -78,6 +95,7 @@ const Accessible = ({ className }: ComponentProps) => {
                   "mt-4 w-full py-2 text-white focus:outline-none focus:ring-4 focus:ring-opacity-80 focus:ring-offset-2",
                 )}
                 type="button"
+                onClick={validateItems}
               >
                 Checkout
               </button>
