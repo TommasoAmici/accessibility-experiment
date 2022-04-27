@@ -23,7 +23,7 @@ const Accessible = ({ item, removeFromCart }: ComponentProps) => {
         </div>
         <button
           onClick={removeFromCart}
-          className="mr-2 outline-none focus:ring-2 focus:ring-black"
+          className="mr-2 outline-none focus:ring-[3px] focus:ring-black focus:ring-offset-2"
         >
           <TrashIcon className="h-5 w-5 text-neutral-600" />
         </button>
@@ -36,7 +36,7 @@ const Inaccessible = (props: ComponentProps) => {
   return <div></div>;
 };
 
-export const ShoeInCart = ({
+export const CartItem = ({
   accessible,
   ...props
 }: {
