@@ -33,7 +33,8 @@ export const HelpButton = () => {
           onClick={openDialog}
           className="rounded-full bg-white outline-none focus:ring-4 focus:ring-black"
         >
-          <QuestionMarkCircleIcon className="h-8 w-8" />
+          <span className="sr-only">Help</span>
+          <QuestionMarkCircleIcon className="h-8 w-8" role="presentation" />
         </button>
       </div>
 

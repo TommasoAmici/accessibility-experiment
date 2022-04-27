@@ -54,6 +54,7 @@ const Accessible = ({ className }: ComponentProps) => {
         )}
         onClick={() => setShowCart(true)}
       >
+        <span className="sr-only">Shopping cart,</span>
         {!isEmpty && (
           <span className="flex h-6 w-6 items-center justify-center rounded-full bg-black text-sm text-white">
             {items.length}

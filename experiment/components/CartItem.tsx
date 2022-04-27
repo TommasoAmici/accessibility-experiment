@@ -18,14 +18,16 @@ const Accessible = ({ item, removeFromCart }: ComponentProps) => {
         <div>
           <p className="text-sm font-semibold capitalize">{product.name}</p>
           <p className="text-sm capitalize text-gray-700">
-            {item.color}, {item.size}
+            <span className="sr-only">Color: </span>
+            {item.color}, <span className="sr-only">size: </span> {item.size}
           </p>
         </div>
         <button
           onClick={removeFromCart}
           className="mr-2 outline-none focus:ring-[3px] focus:ring-black focus:ring-offset-2"
         >
-          <TrashIcon className="h-5 w-5 text-neutral-600" />
+          <span className="sr-only">Remove from cart</span>
+          <TrashIcon className="h-5 w-5 text-neutral-600" role="presentation" />
         </button>
       </div>
     </div>
