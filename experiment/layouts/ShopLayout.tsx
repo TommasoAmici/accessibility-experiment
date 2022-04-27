@@ -4,8 +4,8 @@ import { Header } from "../components/Header";
 import { HelpButton } from "../components/HelpButton";
 import { NotificationArea } from "../components/NotificationArea";
 import { SkipNav } from "../components/SkipNav";
+import { CartProvider } from "../contexts/cart";
 import { NotificationProvider } from "../contexts/notifications";
-import { CartProvider } from "../contexts/state";
 
 export const ShopLayout = ({
   children,

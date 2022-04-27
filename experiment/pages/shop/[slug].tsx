@@ -6,7 +6,7 @@ import { ProductGallery } from "../../components/ProductGallery";
 import { SelectColor } from "../../components/SelectColor";
 import { SelectSize } from "../../components/SelectSize";
 import { ShoeDescription } from "../../components/ShoeDescription";
-import CartContext from "../../contexts/state";
+import CartContext from "../../contexts/cart";
 import { ShopLayout } from "../../layouts/ShopLayout";
 import { db } from "../../lib/db";
 import { randomAssignment } from "../../lib/randomAssignment";
@@ -22,7 +22,7 @@ const ShoePage = ({
 }) => {
   const [color, setColor] = useState<Color>(product.colors[0]);
   const [size, setSize] = useState<Size>(product.sizes[0]);
-  const { addItem } = useContext(CartContext);
+  const { addItem, setItemAdded } = useContext(CartContext);
 
   return (
     <main id="main" className="mx-auto max-w-screen-2xl pb-8 lg:pb-0">
@@ -50,7 +50,10 @@ const ShoePage = ({
           <AddToCart
             accessible={accessible}
             color={color}
-            onClick={() => addItem(color, size, slug)}
+            onClick={() => {
+              addItem(color, size, slug);
+              setItemAdded(true);
+            }}
           />
         </div>
       </div>
