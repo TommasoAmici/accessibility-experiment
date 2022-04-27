@@ -79,3 +79,45 @@ type Breadcrumbs = {
   title: string;
 }[];
 
+type SurveySubmitData = { [key: string]: any };
+
+type FrequencyResponse =
+  | "few-times-a-week"
+  | "once-a-week"
+  | "few-times-per-month"
+  | "once-a-month"
+  | "never";
+
+type BoolResponse = "true" | "false";
+
+interface Survey {
+  age: {
+    value: number | null;
+    touched: boolean;
+  };
+  "how-often-do-you-shop-online": {
+    value: FrequencyResponse | null;
+    touched: boolean;
+  };
+  "accessibility-options": {
+    value: BoolResponse | null;
+    touched: boolean;
+  };
+  disability: {
+    value: BoolResponse | null;
+    touched: boolean;
+  };
+  "assistive-technology": {
+    value: BoolResponse | null;
+    touched: boolean;
+  };
+  [key: string]: {
+    value: number | string | FrequencyResponse | null;
+    touched: boolean;
+  };
+}
+
+type SurveyItem = { slug: string; pageComponent: "input" | "radio" } & (
+  | RadioInputPageProps
+  | InputPageProps
+);
