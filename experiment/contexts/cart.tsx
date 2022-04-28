@@ -18,7 +18,13 @@ const CartContext = createContext<{
   setItemAdded: () => {},
 });
 
-export const CartProvider = ({ children }: { children: ReactNode }) => {
+export const CartProvider = ({
+  children,
+  accessible,
+}: {
+  children: ReactNode;
+  accessible: boolean;
+}) => {
   const [items, setItems] = useState<Product[]>([]);
   const [showCart, setShowCart] = useState(false);
   const [itemAdded, setItemAdded] = useState(false);
@@ -33,11 +39,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       setShowCart(true);
       const tiemoutID = setTimeout(() => {
         setItemAdded(false);
-        setShowCart(false);
-      }, 3000);
+        if (!accessible) {
+          setShowCart(false);
+        }
+      }, 6000);
       return () => clearTimeout(tiemoutID);
     }
-  }, [itemAdded, setItemAdded, setShowCart]);
+  }, [accessible, itemAdded, setItemAdded, setShowCart]);
 
   return (
     <CartContext.Provider

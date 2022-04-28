@@ -18,7 +18,7 @@ export const ShopLayout = ({
 }) => {
   return (
     <NotificationProvider>
-      <CartProvider>
+      <CartProvider accessible={accessible}>
         <Head>
           <title>{accessible ? "accessible" : "inaccessible"}</title>
         </Head>
