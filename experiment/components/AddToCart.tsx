@@ -5,9 +5,10 @@ import ui from "../lib/ui";
 interface ComponentProps {
   color: Color;
   onClick: MouseEventHandler<HTMLButtonElement>;
+  buttonTitle?: string;
 }
 
-const Accessible = ({ color, onClick }: ComponentProps) => {
+const Accessible = ({ color, onClick, buttonTitle }: ComponentProps) => {
   return (
     <button
       onClick={onClick}
@@ -17,7 +18,7 @@ const Accessible = ({ color, onClick }: ComponentProps) => {
         "py-2 text-white focus:outline-none focus:ring-4 focus:ring-opacity-80 focus:ring-offset-2",
       )}
     >
-      Add to cart
+      Add to cart <span className="sr-only">{buttonTitle}</span>
     </button>
   );
 };

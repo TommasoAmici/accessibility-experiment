@@ -54,6 +54,7 @@ const ShoePage = ({
               addItem(color, size, slug);
               setItemAdded(true);
             }}
+            buttonTitle={`${product.name}, color: ${color}, size: ${size}`}
           />
         </div>
       </div>
