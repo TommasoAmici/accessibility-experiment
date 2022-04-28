@@ -17,7 +17,7 @@ export const ShopLayout = ({
   breadcrumbs: Breadcrumbs;
 }) => {
   return (
-    <NotificationProvider>
+    <NotificationProvider accessible={accessible}>
       <CartProvider accessible={accessible}>
         <Head>
           <title>{accessible ? "accessible" : "inaccessible"}</title>

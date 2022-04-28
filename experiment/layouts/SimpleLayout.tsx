@@ -6,7 +6,7 @@ import { SurveyProvider } from "../contexts/survey";
 
 export const SimpleLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <NotificationProvider>
+    <NotificationProvider accessible={true}>
       <SurveyProvider>
         <Head>
           <title>Web accessibility experiment - Tommaso Amici</title>
