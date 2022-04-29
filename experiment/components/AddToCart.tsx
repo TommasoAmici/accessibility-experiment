@@ -28,8 +28,7 @@ const Inaccessible = ({ color, onClick }: ComponentProps) => {
     <div
       className={classNames(
         ui.inaccessible.bgFromColor[color],
-        ui.inaccessible.focusRingFromColor[color],
-        "bg-black py-2 text-center font-light text-white focus:outline-none",
+        "bg-black py-2 text-center font-light text-white outline-none",
       )}
       onClick={onClick}
     >
