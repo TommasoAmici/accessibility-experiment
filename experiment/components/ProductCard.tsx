@@ -34,8 +34,29 @@ const Accessible = ({ product }: ComponentProps) => {
   );
 };
 
-const Inaccessible = ({}: ComponentProps) => {
-  return <div></div>;
+const Inaccessible = ({ product }: ComponentProps) => {
+  const [mainColor] = product.colors;
+  const mainImage = product.collection.images[mainColor][0];
+
+  return (
+    <div className="relative isolate w-full text-neutral-400">
+      <Link href={`/shop/${product.slug}`}>
+        <a>
+          <Image src={mainImage} width={1728 / 3} height={2160 / 4} objectFit="cover" />
+          <div className="mt-1 text-xl font-bold underline underline-offset-2">{product.name}</div>
+        </a>
+      </Link>
+      <div>{product.description}</div>
+      <div className="mt-2 flex space-x-1">
+        {product.colors.map(color => (
+          <div
+            key={color}
+            className={classNames("h-1 w-6", ui.accessible.checkboxFromColor[color])}
+          />
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export const ProductCard = ({ accessible, ...props }: { accessible: boolean } & ComponentProps) => {

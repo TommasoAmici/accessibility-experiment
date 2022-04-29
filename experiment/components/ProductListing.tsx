@@ -16,8 +16,14 @@ const Accessible = ({ products }: ComponentProps) => {
   );
 };
 
-const Inaccessible = ({}: ComponentProps) => {
-  return <div></div>;
+const Inaccessible = ({ products }: ComponentProps) => {
+  return (
+    <div className="grid grid-cols-1 gap-4 gap-y-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
+      {products.map(product => (
+        <ProductCard accessible={false} product={product} key={product.name} />
+      ))}
+    </div>
+  );
 };
 
 export const ProductListing = ({

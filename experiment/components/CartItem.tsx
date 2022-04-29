@@ -5,14 +5,14 @@ import { db } from "../lib/db";
 
 interface ComponentProps {
   item: Product;
-  removeFromCart: MouseEventHandler<HTMLButtonElement>;
+  removeFromCart: MouseEventHandler<HTMLButtonElement | HTMLDivElement>;
 }
 
 const Accessible = ({ item, removeFromCart }: ComponentProps) => {
   const product = db.products[item.productSlug];
   const imageSrc = product.collection.images[item.color][0];
   return (
-    <div className="flex items-center">
+    <article className="flex items-center">
       <Image src={imageSrc} alt={""} width={128} height={128} objectFit="cover" />
       <div className="ml-4 flex w-full items-center justify-between">
         <div>
@@ -30,12 +30,29 @@ const Accessible = ({ item, removeFromCart }: ComponentProps) => {
           <TrashIcon className="h-5 w-5 text-neutral-600" role="presentation" />
         </button>
       </div>
-    </div>
+    </article>
   );
 };
 
-const Inaccessible = (props: ComponentProps) => {
-  return <div></div>;
+const Inaccessible = ({ item, removeFromCart }: ComponentProps) => {
+  const product = db.products[item.productSlug];
+  const imageSrc = product.collection.images[item.color][0];
+  return (
+    <div className="flex items-center">
+      <Image src={imageSrc} width={128} height={128} objectFit="cover" />
+      <div className="ml-4 flex w-full items-center justify-between">
+        <div>
+          <p className="text-sm font-semibold capitalize text-neutral-400">{product.name}</p>
+          <p className="text-sm capitalize text-gray-400">
+            {item.color}, {item.size}
+          </p>
+        </div>
+        <div onClick={removeFromCart} className="mr-2 outline-none">
+          <TrashIcon className="h-5 w-5 text-neutral-400" />
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export const CartItem = ({

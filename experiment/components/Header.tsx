@@ -17,7 +17,10 @@ const Accessible = ({ breadcrumbs }: ComponentProps) => {
         </Link>
         {breadcrumbs.map(b => (
           <span key={b.path} className="flex items-baseline space-x-2 ">
-            <ChevronRightIcon className="h-5 w-5 translate-y-1 text-stone-500" />
+            <ChevronRightIcon
+              className="h-5 w-5 translate-y-1 text-stone-500"
+              role="presentation"
+            />
             <Link href={b.path}>
               <a className="outline-none focus:ring-4 focus:ring-black focus:ring-offset-2">
                 <span className="capitalize">{b.title}</span>
@@ -31,8 +34,29 @@ const Accessible = ({ breadcrumbs }: ComponentProps) => {
   );
 };
 
-const Inaccessible = ({}: ComponentProps) => {
-  return <div></div>;
+const Inaccessible = ({ breadcrumbs }: ComponentProps) => {
+  return (
+    <>
+      <div className="flex items-center justify-between border-b-4 border-stone-100 px-8 py-4">
+        <div className="flex items-baseline space-x-2">
+          <Link href="/shop">
+            <a className="text-xl font-bold text-neutral-400 outline-none">Sheer Shoes</a>
+          </Link>
+          {breadcrumbs.map(b => (
+            <div key={b.path} className="flex items-baseline space-x-2">
+              <ChevronRightIcon className="h-5 w-5 translate-y-1 text-stone-500" />
+              <Link href={b.path}>
+                <a className="outline-none">
+                  <span className="capitalize text-neutral-400">{b.title}</span>
+                </a>
+              </Link>
+            </div>
+          ))}
+        </div>
+        <Cart accessible={false} />
+      </div>
+    </>
+  );
 };
 
 export const Header = ({ accessible, ...props }: { accessible: boolean } & ComponentProps) => {
