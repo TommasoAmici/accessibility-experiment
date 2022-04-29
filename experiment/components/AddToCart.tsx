@@ -4,7 +4,7 @@ import ui from "../lib/ui";
 
 interface ComponentProps {
   color: Color;
-  onClick: MouseEventHandler<HTMLButtonElement>;
+  onClick: MouseEventHandler<HTMLButtonElement | HTMLDivElement>;
   buttonTitle?: string;
 }
 
@@ -23,8 +23,19 @@ const Accessible = ({ color, onClick, buttonTitle }: ComponentProps) => {
   );
 };
 
-const Inaccessible = (props: ComponentProps) => {
-  return <div className="bg-black py-2 text-center text-white focus:outline-none">Add to cart</div>;
+const Inaccessible = ({ color, onClick }: ComponentProps) => {
+  return (
+    <div
+      className={classNames(
+        ui.inaccessible.bgFromColor[color],
+        ui.inaccessible.focusRingFromColor[color],
+        "bg-black py-2 text-center font-light text-white focus:outline-none",
+      )}
+      onClick={onClick}
+    >
+      Add to cart
+    </div>
+  );
 };
 
 export const AddToCart = ({ accessible, ...props }: { accessible: boolean } & ComponentProps) => {
