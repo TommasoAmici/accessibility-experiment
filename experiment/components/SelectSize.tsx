@@ -16,11 +16,7 @@ const Accessible = ({ productDB, color, size, setSize }: SelectSizeProps) => {
       <RadioGroup.Label className="text-lg font-semibold">Select size</RadioGroup.Label>
       <div className="mt-4 grid grid-cols-4 gap-4 md:grid-cols-6">
         {productDB.sizes.map(s => (
-          <RadioGroup.Option
-            key={s}
-            value={s}
-            className={({ active, checked }) => classNames("cursor-pointer focus:outline-none")}
-          >
+          <RadioGroup.Option key={s} value={s} className="cursor-pointer focus:outline-none">
             {({ active, checked }) => (
               <RadioGroup.Label
                 as="div"
@@ -42,8 +38,28 @@ const Accessible = ({ productDB, color, size, setSize }: SelectSizeProps) => {
   );
 };
 
-const Inaccessible = ({}: SelectSizeProps) => {
-  return <div></div>;
+const Inaccessible = ({ productDB, color, size, setSize }: SelectSizeProps) => {
+  return (
+    <div>
+      <div className="text-lg font-light text-neutral-400">Select size</div>
+      <div className="mt-4 grid grid-cols-4 gap-4 md:grid-cols-6">
+        {productDB.sizes.map(s => (
+          <div
+            key={s}
+            onClick={() => setSize(s)}
+            className={classNames(
+              "w-full border-4 border-white bg-neutral-100 py-2 text-center font-semibold text-neutral-500 outline-none transition-colors duration-75 hover:bg-neutral-200",
+              s === size
+                ? classNames(ui.inaccessible.borderFromColor[color], "text-neutral-600 opacity-100")
+                : "opacity-80",
+            )}
+          >
+            {s}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export const SelectSize = ({ accessible, ...props }: { accessible: boolean } & SelectSizeProps) => {
