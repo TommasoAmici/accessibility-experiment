@@ -25,7 +25,7 @@ const ShoePage = ({
   const { addItem, setItemAdded } = useContext(CartContext);
 
   return (
-    <main id="main" className="mx-auto max-w-screen-2xl pb-8 lg:pb-0">
+    <main id="main" className="mx-auto max-w-screen-2xl pb-20 lg:pb-0">
       <div className="grid gap-8 lg:grid-cols-2">
         <ProductGallery
           accessible={accessible}

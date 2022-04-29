@@ -2,7 +2,9 @@ import { GetServerSideProps } from "next";
 import type { ReactElement } from "react";
 import { useState } from "react";
 import { ProductFilters } from "../../components/ProductFilters";
+import { ProductFiltersDialog } from "../../components/ProductFiltersDialog";
 import { ProductListing } from "../../components/ProductListing";
+import { Search } from "../../components/Search";
 import { ShopLayout } from "../../layouts/ShopLayout";
 import { allProducts } from "../../lib/db";
 import { randomAssignment } from "../../lib/randomAssignment";
@@ -42,6 +44,7 @@ const filterProducts = (
 const Home = (props: { accessible: boolean }) => {
   const { accessible } = props;
   const [query, setQuery] = useState("");
+  const [openFilters, setOpenFilters] = useState(false);
   const [colorFilters, setColorFilters] = useState<ColorFilters>({
     beige: false,
     orange: false,
@@ -62,25 +65,57 @@ const Home = (props: { accessible: boolean }) => {
   });
   const products = filterProducts(allProducts, colorFilters, sportFilters, query);
   return (
-    <div className="mx-auto grid max-w-screen-2xl gap-12 p-8 lg:grid-cols-7">
-      <ProductFilters
-        accessible={accessible}
-        colorFilters={colorFilters}
-        setColorFilters={setColorFilters}
-        sportFilters={sportFilters}
-        setSportFilters={setSportFilters}
-        query={query}
-        setQuery={setQuery}
-        className="sticky top-8 h-fit"
-      />
+    <div className="mx-auto max-w-screen-2xl gap-12 p-8 lg:grid lg:grid-cols-7">
       {accessible ? (
-        <main id="main" className="col-span-6">
-          <ProductListing accessible={accessible} products={products} />
-        </main>
+        <>
+          <aside className={"top-8 flex h-fit w-full lg:sticky lg:block"}>
+            <div className="flex w-full justify-between space-x-8">
+              <Search
+                query={query}
+                setQuery={setQuery}
+                accessible={accessible}
+                className={["lg:hidden"]}
+              />
+              <ProductFiltersDialog
+                accessible={accessible}
+                colorFilters={colorFilters}
+                setColorFilters={setColorFilters}
+                sportFilters={sportFilters}
+                setSportFilters={setSportFilters}
+              />
+            </div>
+            <ProductFilters
+              accessible={accessible}
+              colorFilters={colorFilters}
+              setColorFilters={setColorFilters}
+              sportFilters={sportFilters}
+              setSportFilters={setSportFilters}
+              query={query}
+              setQuery={setQuery}
+              className={[openFilters ? "block" : "hidden", "lg:block"]}
+            />
+          </aside>
+          <main id="main" className="col-span-6">
+            <ProductListing accessible={accessible} products={products} />
+          </main>
+        </>
       ) : (
-        <div className="col-span-6">
-          <ProductListing accessible={accessible} products={products} />
-        </div>
+        <>
+          <div className={"top-8 h-fit space-y-6 lg:sticky"}>
+            <ProductFilters
+              accessible={accessible}
+              colorFilters={colorFilters}
+              setColorFilters={setColorFilters}
+              sportFilters={sportFilters}
+              setSportFilters={setSportFilters}
+              query={query}
+              setQuery={setQuery}
+            />
+          </div>
+          <div className="col-span-6">
+            <ProductListing accessible={false} products={products} />
+          </div>
+        </>
       )}
     </div>
   );

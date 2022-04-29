@@ -8,6 +8,7 @@ const CartContext = createContext<{
   setShowCart: Dispatch<SetStateAction<boolean>>;
   itemAdded: boolean;
   setItemAdded: Dispatch<SetStateAction<boolean>>;
+  isEmpty: boolean;
 }>({
   items: [],
   addItem: () => {},
@@ -16,6 +17,7 @@ const CartContext = createContext<{
   setShowCart: () => {},
   itemAdded: false,
   setItemAdded: () => {},
+  isEmpty: true,
 });
 
 export const CartProvider = ({
@@ -28,6 +30,7 @@ export const CartProvider = ({
   const [items, setItems] = useState<Product[]>([]);
   const [showCart, setShowCart] = useState(false);
   const [itemAdded, setItemAdded] = useState(false);
+  const isEmpty = items.length === 0;
 
   const addItem = (color: Color, size: Size, slug: string) =>
     setItems([...items, { id: Date.now(), color, size, productSlug: slug }]);
@@ -49,7 +52,16 @@ export const CartProvider = ({
 
   return (
     <CartContext.Provider
-      value={{ items, addItem, removeItem, showCart, setShowCart, itemAdded, setItemAdded }}
+      value={{
+        items,
+        addItem,
+        removeItem,
+        showCart,
+        setShowCart,
+        itemAdded,
+        setItemAdded,
+        isEmpty,
+      }}
     >
       {children}
     </CartContext.Provider>
