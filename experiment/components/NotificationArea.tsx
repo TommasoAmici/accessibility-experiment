@@ -2,16 +2,9 @@ import { Transition } from "@headlessui/react";
 import classNames from "classnames";
 import { Fragment, useContext, useEffect, useState } from "react";
 import NotificationContext, { NotificationItem, timeToRead } from "../contexts/notifications";
-import { borderFromColor } from "../lib/ui";
+import ui from "../lib/ui";
 
 interface ComponentProps {}
-
-const colorFromLevel = {
-  info: borderFromColor.blue,
-  success: borderFromColor.green,
-  warning: borderFromColor.orange,
-  error: borderFromColor.red,
-};
 
 const NotificationCountdownBar = ({
   accessible,
@@ -33,7 +26,10 @@ const NotificationCountdownBar = ({
   return (
     <span
       style={{ width: `${width * 100}%` }}
-      className={classNames(colorFromLevel[notification.level], "absolute bottom-0 h-1 border-2")}
+      className={classNames(
+        ui[accessible ? "accessible" : "inaccessible"].colorFromLevel[notification.level],
+        "absolute bottom-0 h-1 border-2",
+      )}
       role={accessible ? "presentation" : undefined}
     ></span>
   );
@@ -57,7 +53,10 @@ const Accessible = ({}: ComponentProps) => {
           leaveTo="opacity-0 translate-x-[1000px]"
         >
           <li
-            className={classNames(colorFromLevel[n.level], "relative w-96 border-4 bg-white")}
+            className={classNames(
+              ui.accessible.colorFromLevel[n.level],
+              "relative w-96 border-4 bg-white",
+            )}
             aria-live="polite"
           >
             <p className="px-2 pt-1 pb-2">{n.message}</p>
@@ -86,7 +85,12 @@ const Inaccessible = ({}: ComponentProps) => {
           leaveFrom="opacity-100 translate-x-0"
           leaveTo="opacity-0 translate-x-[1000px]"
         >
-          <div className={classNames(colorFromLevel[n.level], "relative w-96 border-4 bg-white")}>
+          <div
+            className={classNames(
+              ui.inaccessible.colorFromLevel[n.level],
+              "relative w-96 border-4 bg-white",
+            )}
+          >
             <p className="px-2 pt-1 pb-2">{n.message}</p>
             <NotificationCountdownBar accessible={false} notification={n} />
           </div>

@@ -29,7 +29,9 @@ const Accessible = ({ productDB, color, setColor }: ComponentProps) => {
                   className={classNames(
                     "aspect-square border-[6px] border-white transition-opacity duration-75 hover:opacity-100 motion-reduce:transition-none",
                     active && "ring-4 ring-black",
-                    checked ? classNames(ui.borderFromColor[color], "opacity-100") : "opacity-80",
+                    checked
+                      ? classNames(ui.accessible.borderFromColor[color], "opacity-100")
+                      : "opacity-80",
                   )}
                 >
                   <Image

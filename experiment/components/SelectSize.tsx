@@ -27,7 +27,9 @@ const Accessible = ({ productDB, color, size, setSize }: SelectSizeProps) => {
                 className={classNames(
                   "w-full cursor-pointer border-4 border-white bg-neutral-100 py-2 text-center font-semibold transition-colors duration-75 hover:bg-neutral-300 motion-reduce:transition-none",
                   active && "ring-4 ring-black",
-                  checked ? classNames(ui.borderFromColor[color], "opacity-100") : "opacity-80",
+                  checked
+                    ? classNames(ui.accessible.borderFromColor[color], "opacity-100")
+                    : "opacity-80",
                 )}
               >
                 {s}

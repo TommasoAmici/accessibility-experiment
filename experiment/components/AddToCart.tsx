@@ -13,8 +13,8 @@ const Accessible = ({ color, onClick, buttonTitle }: ComponentProps) => {
     <button
       onClick={onClick}
       className={classNames(
-        ui.bgFromColor[color],
-        ui.focusRingFromColor[color],
+        ui.accessible.bgFromColor[color],
+        ui.accessible.focusRingFromColor[color],
         "py-2 text-white focus:outline-none focus:ring-4 focus:ring-opacity-80 focus:ring-offset-2",
       )}
     >

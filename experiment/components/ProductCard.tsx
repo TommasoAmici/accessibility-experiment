@@ -25,7 +25,7 @@ const Accessible = ({ product }: ComponentProps) => {
       <p className="sr-only">Available colors</p>
       <ul className="mt-2 flex space-x-1">
         {product.colors.map(color => (
-          <li key={color} className={classNames("h-1 w-6", ui.checkboxFromColor[color])}>
+          <li key={color} className={classNames("h-1 w-6", ui.accessible.checkboxFromColor[color])}>
             <span className="sr-only">{color}</span>
           </li>
         ))}

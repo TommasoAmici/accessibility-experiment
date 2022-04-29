@@ -1,4 +1,4 @@
-export const bgFromColor: ProductUI = {
+const bgFromColor: ProductUI = {
   green: "bg-green-800 hover:bg-green-600 focus:bg-green-800",
   purple: "bg-fuchsia-900 hover:bg-fuchsia-700 focus:bg-fuchsia-900",
   white: "bg-blue-800 hover:bg-blue-600 focus:bg-blue-800",
@@ -6,12 +6,12 @@ export const bgFromColor: ProductUI = {
   red: "bg-red-900 hover:bg-red-700 focus:bg-red-900",
   blue: "bg-blue-800 hover:bg-blue-600 focus:bg-blue-800",
   yellow: "bg-yellow-400 text-black hover:bg-yellow-300 focus:bg-yellow-400",
-  orange: "bg-orange-500 text-black hover:bg-orange-400",
+  orange: "bg-orange-400 text-white hover:bg-orange-300",
   beige: "bg-[#e5cfb2] text-black hover:bg-[#f9e2c8]",
   gray: "bg-neutral-700 text-white hover:bg-neutral-500",
 };
 
-export const borderFromColor: ProductUI = {
+const borderFromColor: ProductUI = {
   green: "border-green-600",
   purple: "border-fuchsia-800",
   white: "border-blue-700",
@@ -24,7 +24,7 @@ export const borderFromColor: ProductUI = {
   gray: "border-neutral-600",
 };
 
-export const focusRingFromColor: ProductUI = {
+const focusRingFromColor: ProductUI = {
   green: "focus:ring-green-600",
   purple: "focus:ring-fuchsia-700",
   white: "focus:ring-black",
@@ -37,7 +37,7 @@ export const focusRingFromColor: ProductUI = {
   gray: "focus:ring-neutral-600",
 };
 
-export const checkboxFromColor: ProductUI = {
+const checkboxFromColor: ProductUI = {
   green: "bg-green-500 text-green-500 black-checkmark",
   purple: "bg-fuchsia-800 text-fuchsia-800",
   white: "bg-white text-white border border-black black-checkmark",
@@ -50,9 +50,17 @@ export const checkboxFromColor: ProductUI = {
   gray: "bg-neutral-400 text-neutral-400 black-checkmark",
 };
 
-export default {
+const colorFromLevel = {
+  info: borderFromColor.blue,
+  success: borderFromColor.green,
+  warning: borderFromColor.orange,
+  error: borderFromColor.red,
+};
+
+export const inaccessible = {
   bgFromColor,
   borderFromColor,
   focusRingFromColor,
   checkboxFromColor,
+  colorFromLevel,
 };

@@ -121,8 +121,8 @@ const Accessible = ({ className }: ComponentProps) => {
             </Dialog.Description>
             <button
               className={classNames(
-                ui.bgFromColor["black"],
-                ui.focusRingFromColor["black"],
+                ui.accessible.bgFromColor["black"],
+                ui.accessible.focusRingFromColor["black"],
                 "mt-4 w-full py-2 text-white focus:outline-none focus:ring-4 focus:ring-opacity-80 focus:ring-offset-2",
               )}
               type="button"
