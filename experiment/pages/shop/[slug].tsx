@@ -64,6 +64,18 @@ const ShoePage = ({
 
 // This gets called on every request
 export const getServerSideProps: GetServerSideProps = async context => {
+  let accessible = randomAssignment(context.req.socket.remoteAddress);
+
+  const inaccessibleOverride = context.query["accessible"] === "0";
+  if (inaccessibleOverride) {
+    accessible = false;
+  }
+
+  const accessibleOverride = context.query["accessible"] === "1";
+  if (accessibleOverride) {
+    accessible = true;
+  }
+
   const slug = context.params?.slug;
   if (slug === undefined || typeof slug !== "string") {
     return {
@@ -73,7 +85,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
 
   return {
     props: {
-      accessible: true || randomAssignment(context.req.socket.remoteAddress),
+      accessible,
       product: db.products[slug],
       slug,
     },

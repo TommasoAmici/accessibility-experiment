@@ -139,10 +139,21 @@ const Home = (props: { accessible: boolean }) => {
 
 // This gets called on every request
 export const getServerSideProps: GetServerSideProps = async context => {
+  let accessible = randomAssignment(context.req.socket.remoteAddress);
+
+  const inaccessibleOverride = context.query["accessible"] === "0";
+  if (inaccessibleOverride) {
+    accessible = false;
+  }
+
   const accessibleOverride = context.query["accessible"] === "1";
+  if (accessibleOverride) {
+    accessible = true;
+  }
+
   return {
     props: {
-      accessible: accessibleOverride || false || randomAssignment(context.req.socket.remoteAddress),
+      accessible,
     },
   };
 };
