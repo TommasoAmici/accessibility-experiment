@@ -41,8 +41,36 @@ const Accessible = ({
   );
 };
 
-const Inaccessible = ({}: ComponentProps) => {
-  return <div></div>;
+const Inaccessible = ({
+  colorFilters,
+  setColorFilters,
+  sportFilters,
+  setSportFilters,
+  query,
+  setQuery,
+  className,
+}: ComponentProps) => {
+  return (
+    <div className={classNames("space-y-6", className)}>
+      <p className="mb-4 text-3xl font-bold text-neutral-400">Filters</p>
+      <Search
+        query={query}
+        setQuery={setQuery}
+        accessible={false}
+        className={["hidden lg:block"]}
+      />
+      <ProductFilterSport
+        sportFilters={sportFilters}
+        setSportFilters={setSportFilters}
+        accessible={false}
+      />
+      <ProductFilterColor
+        colorFilters={colorFilters}
+        setColorFilters={setColorFilters}
+        accessible={false}
+      />
+    </div>
+  );
 };
 
 export const ProductFilters = ({
