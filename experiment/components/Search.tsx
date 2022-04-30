@@ -10,7 +10,7 @@ interface ComponentProps {
 
 const Accessible = ({ query, setQuery, className }: ComponentProps) => {
   return (
-    <label className={classNames(className)}>
+    <label className={classNames(className)} onKeyDown={e => e.stopPropagation()}>
       <h3 className="mb-2 hidden text-2xl font-bold lg:block">Search</h3>
       <div className="relative">
         <SearchIcon className="absolute top-2 left-1.5 h-6 w-6" role="presentation" />
@@ -26,8 +26,24 @@ const Accessible = ({ query, setQuery, className }: ComponentProps) => {
   );
 };
 
-const Inaccessible = ({}: ComponentProps) => {
-  return <div></div>;
+const Inaccessible = ({ query, setQuery, className }: ComponentProps) => {
+  return (
+    <div className={classNames("text-neutral-400", className)} onKeyDown={e => e.stopPropagation()}>
+      <p className="mb-2 hidden text-2xl font-bold lg:block">Search</p>
+      <div className="relative">
+        <SearchIcon className="absolute top-2 left-1.5 h-6 w-6" />
+        <input
+          type="text"
+          value={query}
+          onInput={e => {
+            setQuery(e.currentTarget.value);
+          }}
+          placeholder="Search..."
+          className="w-full border-neutral-400 pl-9 placeholder:text-neutral-300 focus:border-neutral-400 focus:outline-none focus:ring-0"
+        />
+      </div>
+    </div>
+  );
 };
 
 export const Search = ({ accessible, ...props }: { accessible: boolean } & ComponentProps) => {
