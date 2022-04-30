@@ -41,9 +41,9 @@ const Inaccessible = ({ product }: ComponentProps) => {
   return (
     <div className="relative isolate w-full text-neutral-400">
       <Link href={`/shop/${product.slug}`}>
-        <a>
+        <a className="cursor-default outline-none">
           <Image src={mainImage} width={1728 / 3} height={2160 / 4} objectFit="cover" />
-          <div className="mt-1 text-xl font-bold underline underline-offset-2">{product.name}</div>
+          <div className="mt-1 text-xl font-bold">{product.name}</div>
         </a>
       </Link>
       <div>{product.description}</div>
