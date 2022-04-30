@@ -1,3 +1,4 @@
+import { CheckIcon } from "@heroicons/react/outline";
 import classNames from "classnames";
 import { Dispatch, SetStateAction } from "react";
 import { allColors } from "../lib/db";
@@ -41,8 +42,35 @@ const Accessible = ({ colorFilters, setColorFilters }: ComponentProps) => {
   );
 };
 
-const Inaccessible = ({}: ComponentProps) => {
-  return <div></div>;
+const Inaccessible = ({ colorFilters, setColorFilters }: ComponentProps) => {
+  return (
+    <div>
+      <p className="text-2xl font-bold text-neutral-400">Color</p>
+      <div className="mt-2 grid grid-cols-6 justify-items-start gap-4 gap-y-8 lg:grid-cols-3">
+        {allColors.map(color => (
+          <div
+            key={color}
+            className="relative mt-0.5 flex flex-col items-center text-xs capitalize"
+          >
+            <div
+              className={classNames(
+                "grid h-8 w-8 place-content-center",
+                ui.inaccessible.checkboxFromColor[color],
+              )}
+              onClick={() => setColorFilters({ ...colorFilters, [color]: !colorFilters[color] })}
+            >
+              {colorFilters[color] && (
+                <CheckIcon
+                  className={classNames("h-7 w-7", color === "white" ? "text-black" : "text-white")}
+                />
+              )}
+            </div>
+            <span className="absolute mt-[2.125rem] text-neutral-400">{color}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export const ProductFilterColor = ({
