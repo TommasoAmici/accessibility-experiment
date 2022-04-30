@@ -1,6 +1,8 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { AdjustmentsIcon, XIcon } from "@heroicons/react/outline";
+import classNames from "classnames";
 import { Dispatch, Fragment, SetStateAction, useState } from "react";
+import ui from "../lib/ui";
 import { Button } from "./Button";
 import { ProductFilterColor } from "./ProductFilterColor";
 import { ProductFilterSport } from "./ProductFilterSport";
@@ -85,7 +87,7 @@ export const Accessible = ({
                 />
 
                 <div className="mt-12 flex">
-                  <Button type="button" className="mx-auto" onClick={closeDialog}>
+                  <Button type="button" className="mx-auto w-full" onClick={closeDialog}>
                     Apply <span className="sr-only">filters. Close dialog</span>
                   </Button>
                 </div>
@@ -98,8 +100,72 @@ export const Accessible = ({
   );
 };
 
-const Inaccessible = ({}: ComponentProps) => {
-  return <div></div>;
+const Inaccessible = ({
+  colorFilters,
+  setColorFilters,
+  sportFilters,
+  setSportFilters,
+}: ComponentProps) => {
+  const [show, setShow] = useState(false);
+
+  const openDialog = () => setShow(true);
+  const closeDialog = () => setShow(false);
+
+  return (
+    <>
+      <div
+        className="ml-auto mb-8 flex items-center border border-neutral-400 px-3 py-2 text-neutral-400 outline-none lg:hidden"
+        onClick={openDialog}
+      >
+        <AdjustmentsIcon className="mr-2 h-4 w-4" /> <span>Filters</span>
+      </div>
+
+      <Transition
+        appear
+        show={show}
+        as={Fragment}
+        enter="ease-out duration-200"
+        enterFrom="opacity-0 translate-y-1"
+        enterTo="opacity-100 translate-y-0"
+        leave="ease-in duration-150"
+        leaveFrom="opacity-100 translate-y-0"
+        leaveTo="opacity-0 translate-y-1"
+      >
+        <div className="fixed inset-0 z-30 !m-0 !p-0">
+          <div className="fixed inset-0 z-10 bg-black/30" onClick={closeDialog} />
+          <div className="prose fixed left-1/2 top-1/2 z-20 w-full max-w-lg -translate-y-1/2 -translate-x-1/2 bg-white p-6 transition-all">
+            <div className="absolute right-[1.375rem] top-4 outline-none" onClick={closeDialog}>
+              <XIcon className="h-6 w-6 text-neutral-400" />
+            </div>
+            <p className="mt-0 -mb-4 text-3xl font-bold text-neutral-400">Filters</p>
+
+            <ProductFilterSport
+              sportFilters={sportFilters}
+              setSportFilters={setSportFilters}
+              accessible={false}
+            />
+            <ProductFilterColor
+              colorFilters={colorFilters}
+              setColorFilters={setColorFilters}
+              accessible={false}
+            />
+
+            <div className="mt-12 flex">
+              <div
+                className={classNames(
+                  "mx-auto grid w-full place-content-center px-3 py-1.5 text-white",
+                  ui.inaccessible.bgFromColor.black,
+                )}
+                onClick={closeDialog}
+              >
+                Apply
+              </div>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </>
+  );
 };
 
 export const ProductFiltersDialog = ({
