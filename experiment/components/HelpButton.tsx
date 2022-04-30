@@ -34,7 +34,7 @@ export const HelpButton = () => {
           className="rounded-full bg-white outline-none focus:ring-4 focus:ring-black"
         >
           <span className="sr-only">Help</span>
-          <QuestionMarkCircleIcon className="h-8 w-8" role="presentation" />
+          <QuestionMarkCircleIcon className="h-10 w-10" role="presentation" />
         </button>
       </div>
 
