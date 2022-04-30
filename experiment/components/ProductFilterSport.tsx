@@ -1,3 +1,5 @@
+import { CheckIcon } from "@heroicons/react/outline";
+import classNames from "classnames";
 import { Dispatch, SetStateAction } from "react";
 import { allSports } from "../lib/db";
 
@@ -32,8 +34,31 @@ const Accessible = ({ sportFilters, setSportFilters }: ComponentProps) => {
   );
 };
 
-const Inaccessible = ({}: ComponentProps) => {
-  return <div></div>;
+const Inaccessible = ({ sportFilters, setSportFilters }: ComponentProps) => {
+  return (
+    <div>
+      <p className="text-2xl font-bold text-neutral-400">Sport</p>
+      <div className="mt-2">
+        {allSports.map(sport => (
+          <div
+            key={sport}
+            className="mt-2 flex items-center capitalize"
+            onClick={() => setSportFilters({ ...sportFilters, [sport]: !sportFilters[sport] })}
+          >
+            <div
+              className={classNames(
+                "mr-2 grid h-6 w-6 place-content-center border",
+                sportFilters[sport] ? "border-black bg-black" : "border-neutral-400",
+              )}
+            >
+              {sportFilters[sport] && <CheckIcon className="h-5 w-5 text-neutral-400" />}
+            </div>
+            <span className="text-neutral-400">{sport}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export const ProductFilterSport = ({
