@@ -65,10 +65,10 @@ const Home = (props: { accessible: boolean }) => {
   });
   const products = filterProducts(allProducts, colorFilters, sportFilters, query);
   return (
-    <div className="mx-auto max-w-screen-2xl gap-12 p-8 lg:grid lg:grid-cols-7">
+    <div className="max-w-screen-2xl gap-12 p-8 lg:grid lg:grid-cols-7">
       {accessible ? (
         <>
-          <aside className={"top-8 flex h-fit w-full lg:sticky lg:block"}>
+          <aside className={"top-8 flex h-fit w-full lg:sticky lg:col-span-1 lg:block"}>
             <div className="flex w-full justify-between space-x-8">
               <Search
                 query={query}
@@ -95,13 +95,28 @@ const Home = (props: { accessible: boolean }) => {
               className={[openFilters ? "block" : "hidden", "lg:block"]}
             />
           </aside>
-          <main id="main" className="col-span-6">
+          <main id="main" className="lg:col-span-6">
             <ProductListing accessible={accessible} products={products} />
           </main>
         </>
       ) : (
         <>
-          <div className={"top-8 h-fit space-y-6 lg:sticky"}>
+          <div className={"top-8 flex h-fit w-full lg:sticky lg:col-span-1 lg:block"}>
+            <div className="flex w-full justify-between space-x-8">
+              <Search
+                query={query}
+                setQuery={setQuery}
+                accessible={accessible}
+                className={["lg:hidden"]}
+              />
+              <ProductFiltersDialog
+                accessible={accessible}
+                colorFilters={colorFilters}
+                setColorFilters={setColorFilters}
+                sportFilters={sportFilters}
+                setSportFilters={setSportFilters}
+              />
+            </div>
             <ProductFilters
               accessible={accessible}
               colorFilters={colorFilters}
@@ -110,9 +125,10 @@ const Home = (props: { accessible: boolean }) => {
               setSportFilters={setSportFilters}
               query={query}
               setQuery={setQuery}
+              className={[openFilters ? "block" : "hidden", "lg:block"]}
             />
           </div>
-          <div className="col-span-6">
+          <div className="lg:col-span-6">
             <ProductListing accessible={false} products={products} />
           </div>
         </>
@@ -123,9 +139,10 @@ const Home = (props: { accessible: boolean }) => {
 
 // This gets called on every request
 export const getServerSideProps: GetServerSideProps = async context => {
+  const accessibleOverride = context.query["accessible"] === "1";
   return {
     props: {
-      accessible: true || randomAssignment(context.req.socket.remoteAddress),
+      accessible: accessibleOverride || false || randomAssignment(context.req.socket.remoteAddress),
     },
   };
 };
