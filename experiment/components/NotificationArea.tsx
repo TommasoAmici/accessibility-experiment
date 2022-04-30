@@ -91,7 +91,7 @@ const Inaccessible = ({}: ComponentProps) => {
               "relative w-96 border-4 bg-white",
             )}
           >
-            <p className="px-2 pt-1 pb-2">{n.message}</p>
+            <p className="px-2 pt-1 pb-2 text-neutral-400">{n.message}</p>
             <NotificationCountdownBar accessible={false} notification={n} />
           </div>
         </Transition>
