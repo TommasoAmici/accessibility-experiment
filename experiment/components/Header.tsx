@@ -16,7 +16,7 @@ const Accessible = ({ breadcrumbs }: ComponentProps) => {
           </a>
         </Link>
         {breadcrumbs.map(b => (
-          <span key={b.path} className="flex items-baseline space-x-2">
+          <span key={b.path} className="flex items-baseline space-x-2 last:hidden last:lg:flex">
             <ChevronRightIcon
               className="h-5 w-5 translate-y-1 text-stone-500"
               role="presentation"
