@@ -1,5 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { QuestionMarkCircleIcon } from "@heroicons/react/outline";
+import { QuestionMarkCircleIcon, XIcon } from "@heroicons/react/outline";
 import { Fragment, useEffect, useState } from "react";
 import { Button } from "./Button";
 import { TasksList } from "./TasksList";
@@ -66,14 +66,24 @@ export const HelpButton = () => {
               leaveTo="opacity-0 scale-95"
               as={Fragment}
             >
-              <div className="prose my-8 inline-block w-full max-w-lg transform overflow-hidden bg-white p-6 text-left align-middle transition-all">
-                <Dialog.Title as="h2">Your tasks</Dialog.Title>
+              <div className="prose relative my-8 inline-block w-full max-w-lg transform overflow-hidden bg-white p-6 text-left align-middle transition-all">
+                <button
+                  className="absolute right-[1.375rem] top-6 outline-none focus:ring-[3px] focus:ring-black focus:ring-offset-4"
+                  type="button"
+                  onClick={() => closeDialog()}
+                >
+                  <span className="sr-only">Close help dialog</span>
+                  <XIcon className="h-6 w-6" role="presentation" />
+                </button>
+                <Dialog.Title as="h2" className="mt-0">
+                  Your tasks
+                </Dialog.Title>
 
                 <TasksList />
 
                 <div className="mt-8 flex">
-                  <Button type="button" className="mx-auto" onClick={closeDialog}>
-                    Got it, thanks!
+                  <Button type="button" className="mx-auto w-full" onClick={closeDialog}>
+                    Got it, thanks! <span className="sr-only">Close dialog</span>
                   </Button>
                 </div>
               </div>
