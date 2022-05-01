@@ -1,7 +1,7 @@
 import { Transition } from "@headlessui/react";
 import classNames from "classnames";
 import { Fragment, useContext, useEffect, useState } from "react";
-import NotificationContext, { NotificationItem, timeToRead } from "../contexts/notifications";
+import StateContext, { NotificationItem, timeToRead } from "../contexts/state";
 import ui from "../lib/ui";
 
 interface ComponentProps {}
@@ -36,7 +36,7 @@ const NotificationCountdownBar = ({
 };
 
 const Accessible = ({}: ComponentProps) => {
-  const { notifications } = useContext(NotificationContext);
+  const { notifications } = useContext(StateContext);
   return (
     <ul className="space-y-2">
       {notifications.map(n => (
@@ -69,7 +69,7 @@ const Accessible = ({}: ComponentProps) => {
 };
 
 const Inaccessible = ({}: ComponentProps) => {
-  const { notifications } = useContext(NotificationContext);
+  const { notifications } = useContext(StateContext);
   return (
     <div className="space-y-2">
       {notifications.map(n => (

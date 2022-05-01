@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useEffect, useState } from "react";
+import { createContext, Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
 
 export type NotificationLevel = "info" | "success" | "warning" | "error";
 
@@ -15,15 +15,23 @@ export const timeToRead = (message: string, accessible: boolean): number => {
   return message.length * 60;
 };
 
-const NotificationContext = createContext<{
+const StateContext = createContext<{
   notifications: NotificationItem[];
   addNotification: (message: string, level: NotificationLevel) => void;
+  experimentStartedAt: number;
+  setExperimentStartedAt: Dispatch<SetStateAction<number>>;
+  experimentFinishedAt: number;
+  setExperimentFinishedAt: Dispatch<SetStateAction<number>>;
 }>({
   notifications: [],
   addNotification: () => {},
+  experimentStartedAt: 0,
+  setExperimentStartedAt: () => {},
+  experimentFinishedAt: 0,
+  setExperimentFinishedAt: () => {},
 });
 
-export const NotificationProvider = ({
+export const StateProvider = ({
   children,
   accessible,
 }: {
@@ -31,6 +39,8 @@ export const NotificationProvider = ({
   accessible: boolean;
 }) => {
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+  const [experimentStartedAt, setExperimentStartedAt] = useState<number>(0);
+  const [experimentFinishedAt, setExperimentFinishedAt] = useState<number>(0);
 
   const addNotification = (message: string, level: NotificationLevel) =>
     setNotifications([...notifications, { timestamp: Date.now(), message, level }]);
@@ -45,10 +55,19 @@ export const NotificationProvider = ({
   }, [notifications, setNotifications]);
 
   return (
-    <NotificationContext.Provider value={{ notifications, addNotification }}>
+    <StateContext.Provider
+      value={{
+        notifications,
+        addNotification,
+        experimentStartedAt,
+        setExperimentStartedAt,
+        experimentFinishedAt,
+        setExperimentFinishedAt,
+      }}
+    >
       {children}
-    </NotificationContext.Provider>
+    </StateContext.Provider>
   );
 };
 
-export default NotificationContext;
+export default StateContext;

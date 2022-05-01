@@ -1,12 +1,12 @@
 import Head from "next/head";
 import { ReactNode } from "react";
 import { NotificationArea } from "../components/NotificationArea";
-import { NotificationProvider } from "../contexts/notifications";
+import { StateProvider } from "../contexts/state";
 import { SurveyProvider } from "../contexts/survey";
 
 export const SimpleLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <NotificationProvider accessible={true}>
+    <StateProvider accessible={true}>
       <SurveyProvider>
         <Head>
           <title>Web accessibility experiment - Tommaso Amici</title>
@@ -178,6 +178,6 @@ export const SimpleLayout = ({ children }: { children: ReactNode }) => {
         </footer>
         <NotificationArea accessible={true} />
       </SurveyProvider>
-    </NotificationProvider>
+    </StateProvider>
   );
 };

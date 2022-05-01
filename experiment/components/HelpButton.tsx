@@ -1,10 +1,23 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { QuestionMarkCircleIcon, XIcon } from "@heroicons/react/outline";
-import { Fragment, useEffect, useState } from "react";
+import Link from "next/link";
+import { Fragment, useContext, useEffect, useState } from "react";
+import ButtonLink from "../components/ButtonLink";
+import StateContext from "../contexts/state";
 import { Button } from "./Button";
 import { TasksList } from "./TasksList";
 
 export const HelpButton = () => {
+  const { experimentStartedAt, setExperimentFinishedAt } = useContext(StateContext);
+  const [now, setNow] = useState(Date.now());
+
+  useEffect(() => {
+    const intervalID = setInterval(() => {
+      setNow(Date.now());
+    }, 1000);
+    return () => clearInterval(intervalID);
+  }, []);
+
   const [show, setShow] = useState(false);
 
   const openDialog = () => setShow(true);
@@ -25,10 +38,18 @@ export const HelpButton = () => {
 
   return (
     <>
-      <div
-        className="fixed bottom-4 right-4 grid place-content-center"
-        onKeyDown={e => e.stopPropagation()}
-      >
+      <div className="fixed bottom-4 right-4 flex space-x-4" onKeyDown={e => e.stopPropagation()}>
+        {experimentStartedAt !== 0 && experimentStartedAt < now - 1000 * 60 * 2 && (
+          <Link href="/survey" passHref>
+            <ButtonLink
+              onClick={() => {
+                setExperimentFinishedAt(Date.now());
+              }}
+            >
+              Are you stuck? Go to survey
+            </ButtonLink>
+          </Link>
+        )}
         <button
           onClick={openDialog}
           className="rounded-full bg-white outline-none focus:ring-4 focus:ring-black"

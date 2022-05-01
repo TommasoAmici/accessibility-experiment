@@ -1,10 +1,10 @@
 import { GetServerSideProps } from "next";
-import type { ReactElement } from "react";
-import { useState } from "react";
+import { ReactElement, useContext, useEffect, useState } from "react";
 import { ProductFilters } from "../../components/ProductFilters";
 import { ProductFiltersDialog } from "../../components/ProductFiltersDialog";
 import { ProductListing } from "../../components/ProductListing";
 import { Search } from "../../components/Search";
+import StateContext from "../../contexts/state";
 import { ShopLayout } from "../../layouts/ShopLayout";
 import { allProducts } from "../../lib/db";
 import { randomAssignment } from "../../lib/randomAssignment";
@@ -43,6 +43,7 @@ const filterProducts = (
 
 const Home = (props: { accessible: boolean }) => {
   const { accessible } = props;
+  const { experimentStartedAt, setExperimentStartedAt } = useContext(StateContext);
   const [query, setQuery] = useState("");
   const [openFilters, setOpenFilters] = useState(false);
   const [colorFilters, setColorFilters] = useState<ColorFilters>({
@@ -64,6 +65,13 @@ const Home = (props: { accessible: boolean }) => {
     football: false,
   });
   const products = filterProducts(allProducts, colorFilters, sportFilters, query);
+
+  useEffect(() => {
+    if (experimentStartedAt === 0) {
+      setExperimentStartedAt(Date.now());
+    }
+  }, []);
+
   return (
     <div className="max-w-screen-2xl gap-12 p-8 lg:grid lg:grid-cols-7">
       {accessible ? (

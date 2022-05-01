@@ -4,7 +4,7 @@ import classNames from "classnames";
 import { useRouter } from "next/router";
 import { Fragment, useContext } from "react";
 import CartContext from "../contexts/cart";
-import NotificationContext from "../contexts/notifications";
+import StateContext from "../contexts/state";
 import { cartRequirements } from "../lib/tasks";
 import ui from "../lib/ui";
 import { CartItem } from "./CartItem";
@@ -25,11 +25,12 @@ const checkTaskCompletion = (items: Product[]) => {
 const useValidateCart = () => {
   const router = useRouter();
   const { items } = useContext(CartContext);
-  const { addNotification } = useContext(NotificationContext);
+  const { addNotification, setExperimentFinishedAt } = useContext(StateContext);
 
   const validate = () => {
     const taskCompleted = checkTaskCompletion(items);
     if (taskCompleted) {
+      setExperimentFinishedAt(Date.now());
       addNotification("You successfully completed the task!", "success");
       router.push("/survey");
     } else {
