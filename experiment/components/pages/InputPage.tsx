@@ -63,7 +63,7 @@ export const InputPage = ({ field, label, nextURL, options, inputProps }: InputP
             }
             aria-invalid={errors[field] ? "true" : "false"}
             className={classNames(
-              "w-full border-black outline-none focus:border-black focus:ring-4 focus:ring-black",
+              "w-full max-w-md border-black outline-none focus:border-black focus:ring-4 focus:ring-black",
               errors?.[field] && "ring-4 ring-red-700 focus:ring-red-700",
             )}
           />
