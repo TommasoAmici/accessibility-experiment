@@ -5,7 +5,6 @@ import { HelpButton } from "../components/HelpButton";
 import { NotificationArea } from "../components/NotificationArea";
 import { SkipNav } from "../components/SkipNav";
 import { CartProvider } from "../contexts/cart";
-import { StateProvider } from "../contexts/state";
 
 export const ShopLayout = ({
   children,
@@ -17,7 +16,7 @@ export const ShopLayout = ({
   breadcrumbs: Breadcrumbs;
 }) => {
   return (
-    <StateProvider accessible={accessible}>
+    <>
       <CartProvider accessible={accessible}>
         <Head>
           <title>{accessible ? "accessible" : "inaccessible"}</title>
@@ -29,6 +28,6 @@ export const ShopLayout = ({
       </CartProvider>
       <NotificationArea accessible={accessible} />
       <HelpButton />
-    </StateProvider>
+    </>
   );
 };

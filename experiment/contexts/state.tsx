@@ -8,12 +8,7 @@ export type NotificationItem = {
   level: NotificationLevel;
 };
 
-export const timeToRead = (message: string, accessible: boolean): number => {
-  if (accessible) {
-    return message.length * 60 * 1.5;
-  }
-  return message.length * 60;
-};
+export const timeToRead = (message: string): number => message.length * 60 * 1.5;
 
 const StateContext = createContext<{
   notifications: NotificationItem[];
@@ -31,13 +26,7 @@ const StateContext = createContext<{
   setExperimentFinishedAt: () => {},
 });
 
-export const StateProvider = ({
-  children,
-  accessible,
-}: {
-  children: ReactNode;
-  accessible: boolean;
-}) => {
+export const StateProvider = ({ children }: { children: ReactNode }) => {
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [experimentStartedAt, setExperimentStartedAt] = useState<number>(0);
   const [experimentFinishedAt, setExperimentFinishedAt] = useState<number>(0);
@@ -47,9 +36,7 @@ export const StateProvider = ({
 
   useEffect(() => {
     const intervalID = setInterval(() => {
-      setNotifications(
-        notifications.filter(n => n.timestamp > Date.now() - timeToRead(n.message, accessible)),
-      );
+      setNotifications(notifications.filter(n => n.timestamp > Date.now() - timeToRead(n.message)));
     }, 1000);
     return () => clearInterval(intervalID);
   }, [notifications, setNotifications]);

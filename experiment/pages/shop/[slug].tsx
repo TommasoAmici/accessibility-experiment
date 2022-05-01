@@ -7,6 +7,7 @@ import { SelectColor } from "../../components/SelectColor";
 import { SelectSize } from "../../components/SelectSize";
 import { ShoeDescription } from "../../components/ShoeDescription";
 import CartContext from "../../contexts/cart";
+import { useExperimentFinished } from "../../hooks/useExperimentFinished";
 import { ShopLayout } from "../../layouts/ShopLayout";
 import { db } from "../../lib/db";
 import { randomAssignment } from "../../lib/randomAssignment";
@@ -20,6 +21,8 @@ const ShoePage = ({
   product: ProductDatabase;
   slug: ProductSlug;
 }) => {
+  useExperimentFinished();
+
   const [color, setColor] = useState<Color>(product.colors[0]);
   const [size, setSize] = useState<Size>(product.sizes[0]);
   const { addItem, setItemAdded } = useContext(CartContext);

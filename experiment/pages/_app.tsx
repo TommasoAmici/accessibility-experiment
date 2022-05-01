@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import posthog from "posthog-js";
 import type { ReactElement, ReactNode } from "react";
 import { useEffect } from "react";
+import { StateProvider } from "../contexts/state";
 import { SimpleLayout } from "../layouts/SimpleLayout";
 import "../styles/index.css";
 
@@ -40,7 +41,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? (page => <SimpleLayout>{page}</SimpleLayout>);
 
-  return getLayout(<Component {...pageProps} />);
+  return <StateProvider>{getLayout(<Component {...pageProps} />)}</StateProvider>;
 }
 
 export default MyApp;

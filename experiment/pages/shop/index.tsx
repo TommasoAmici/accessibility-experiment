@@ -5,6 +5,7 @@ import { ProductFiltersDialog } from "../../components/ProductFiltersDialog";
 import { ProductListing } from "../../components/ProductListing";
 import { Search } from "../../components/Search";
 import StateContext from "../../contexts/state";
+import { useExperimentFinished } from "../../hooks/useExperimentFinished";
 import { ShopLayout } from "../../layouts/ShopLayout";
 import { allProducts } from "../../lib/db";
 import { randomAssignment } from "../../lib/randomAssignment";
@@ -42,6 +43,8 @@ const filterProducts = (
 };
 
 const Home = (props: { accessible: boolean }) => {
+  useExperimentFinished();
+
   const { accessible } = props;
   const { experimentStartedAt, setExperimentStartedAt } = useContext(StateContext);
   const [query, setQuery] = useState("");
