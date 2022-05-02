@@ -93,3 +93,5 @@ node_modules
 .next/
 
 # End of https://www.toptal.com/developers/gitignore/api/nextjs
+
+*.sqlite3
