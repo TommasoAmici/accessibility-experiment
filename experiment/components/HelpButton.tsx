@@ -1,5 +1,6 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { QuestionMarkCircleIcon, XIcon } from "@heroicons/react/outline";
+import classNames from "classnames";
 import Link from "next/link";
 import { Fragment, useContext, useEffect, useState } from "react";
 import ButtonLink from "../components/ButtonLink";
@@ -7,7 +8,7 @@ import StateContext from "../contexts/state";
 import { Button } from "./Button";
 import { TasksList } from "./TasksList";
 
-export const HelpButton = () => {
+export const HelpButton = ({ isSimpleLayout }: { isSimpleLayout?: boolean }) => {
   const { taskStartedAt, setTaskFinishedAt, setTaskAbandoned, increaseAskedForHelp } =
     useContext(StateContext);
   const [now, setNow] = useState(Date.now());
@@ -43,7 +44,13 @@ export const HelpButton = () => {
 
   return (
     <>
-      <div className="fixed bottom-4 right-4 flex space-x-4" onKeyDown={e => e.stopPropagation()}>
+      <div
+        className={classNames(
+          "fixed bottom-4 right-4 flex space-x-4",
+          isSimpleLayout && "lg:right-96  ",
+        )}
+        onKeyDown={e => e.stopPropagation()}
+      >
         {taskStartedAt !== 0 && taskStartedAt < now - 1000 * 60 * 2 && (
           <Link href="/survey" passHref>
             <ButtonLink

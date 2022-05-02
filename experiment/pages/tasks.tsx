@@ -37,7 +37,7 @@ const TasksPage = () => {
           </p>
         </div>
       </section>
-      <HelpButton />
+      <HelpButton isSimpleLayout={true} />
     </>
   );
 };
