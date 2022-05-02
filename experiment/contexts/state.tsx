@@ -15,6 +15,8 @@ export const timeToRead = (message: string): number => message.length * 60 * 1.5
 const StateContext = createContext<{
   notifications: NotificationItem[];
   addNotification: (message: string, level: NotificationLevel) => void;
+  askedForHelp: number;
+  increaseAskedForHelp: () => void;
   taskStartedAt: number;
   setTaskStartedAt: Dispatch<SetStateAction<number>>;
   taskFinishedAt: number;
@@ -26,6 +28,8 @@ const StateContext = createContext<{
 }>({
   notifications: [],
   addNotification: () => {},
+  askedForHelp: 0,
+  increaseAskedForHelp: () => {},
   taskStartedAt: 0,
   setTaskStartedAt: () => {},
   taskFinishedAt: 0,
@@ -38,10 +42,13 @@ const StateContext = createContext<{
 
 export const StateProvider = ({ children }: { children: ReactNode }) => {
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+  const [askedForHelp, setAskedForHelp] = useState<number>(0);
   const [taskStartedAt, setTaskStartedAt] = useState<number>(0);
   const [taskFinishedAt, setTaskFinishedAt] = useState<number>(0);
   const [experimentGroup, setExperimentGroup] = useState<ExperimentGroup>("accessible");
   const [taskAbandoned, setTaskAbandoned] = useState(false);
+
+  const increaseAskedForHelp = () => setAskedForHelp(askedForHelp + 1);
 
   const addNotification = (message: string, level: NotificationLevel) =>
     setNotifications([...notifications, { timestamp: Date.now(), message, level }]);
@@ -58,6 +65,8 @@ export const StateProvider = ({ children }: { children: ReactNode }) => {
       value={{
         notifications,
         addNotification,
+        askedForHelp,
+        increaseAskedForHelp,
         taskStartedAt,
         setTaskStartedAt,
         taskFinishedAt,

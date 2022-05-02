@@ -8,7 +8,8 @@ import { Button } from "./Button";
 import { TasksList } from "./TasksList";
 
 export const HelpButton = () => {
-  const { taskStartedAt, setTaskFinishedAt, setTaskAbandoned } = useContext(StateContext);
+  const { taskStartedAt, setTaskFinishedAt, setTaskAbandoned, increaseAskedForHelp } =
+    useContext(StateContext);
   const [now, setNow] = useState(Date.now());
 
   useEffect(() => {
@@ -21,6 +22,7 @@ export const HelpButton = () => {
   const [show, setShow] = useState(false);
 
   const openDialog = () => {
+    increaseAskedForHelp();
     setShow(true);
   };
   const closeDialog = () => setShow(false);
@@ -28,6 +30,7 @@ export const HelpButton = () => {
   useEffect(() => {
     const handleEnter = (event: KeyboardEvent) => {
       if (event.key === "h") {
+        increaseAskedForHelp();
         setShow(!show);
       }
     };

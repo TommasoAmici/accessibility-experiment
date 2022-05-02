@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS surveyResponses(
     id                      INTEGER PRIMARY KEY,
     experimentGroup         TEXT CHECK( experimentGroup IN ('accessible','inaccessible') ) NOT NULL,
+    askedForHelp            INTEGER NOT NULL,
     taskStartedAt           INTEGER NOT NULL,
     taskFinishedAt          INTEGER NOT NULL,
     taskAbandoned           BOOLEAN NOT NULL,
