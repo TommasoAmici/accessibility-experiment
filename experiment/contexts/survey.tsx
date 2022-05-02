@@ -1,12 +1,12 @@
 import { createContext, ReactNode, useState } from "react";
 
 const initialState = {
-  "task-difficulty": { value: null, touched: false },
+  taskDifficulty: { value: null, touched: false },
   age: { value: null, touched: false },
-  "how-often-do-you-shop-online": { value: null, touched: false },
-  "accessibility-options": { value: null, touched: false },
+  onlineShoppingFrequency: { value: null, touched: false },
+  accessibilityOptions: { value: null, touched: false },
   disability: { value: null, touched: false },
-  "assistive-technology": { value: null, touched: false },
+  assistiveTechnology: { value: null, touched: false },
 };
 
 const SurveyContext = createContext<{

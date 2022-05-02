@@ -8,7 +8,7 @@ const SurveyPage = ({
   useCompleteExperiment();
 
   const PageComponent = surveyPageComponentMap[pageComponent];
-  return <PageComponent field={slug} {...props} />;
+  return <PageComponent {...props} />;
 };
 
 export default SurveyPage;

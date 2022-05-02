@@ -31,6 +31,7 @@ export const surveyPageComponentMap: {
 export const survey: SurveyItem[] = [
   {
     slug: "task-difficulty",
+    field: "taskDifficulty",
     pageComponent: "radio",
     label: "How did you find ?",
     nextURL: "/survey/age",
@@ -38,6 +39,7 @@ export const survey: SurveyItem[] = [
   },
   {
     slug: "age",
+    field: "age",
     pageComponent: "input",
     label: "How old are you?",
     nextURL: "/survey/how-often-do-you-shop-online",
@@ -46,6 +48,7 @@ export const survey: SurveyItem[] = [
   },
   {
     slug: "disability",
+    field: "disability",
     pageComponent: "radio",
     label: "Do you suffer from any condition that makes it hard to navigate websites?",
     helpText:
@@ -55,6 +58,7 @@ export const survey: SurveyItem[] = [
   },
   {
     slug: "accessibility-options",
+    field: "accessibilityOptions",
     pageComponent: "radio",
     label: "Do you have any accessibility options turned on on your device?",
     helpText: "For example, larger text, increased contrast, bold text, reduced motion, etc.",
@@ -63,6 +67,7 @@ export const survey: SurveyItem[] = [
   },
   {
     slug: "assistive-technology",
+    field: "assistiveTechnology",
     pageComponent: "radio",
     label: "Do you make use of any assistive technology?",
     helpText: "For example, screen reader, dictation, etc.",
@@ -71,6 +76,7 @@ export const survey: SurveyItem[] = [
   },
   {
     slug: "how-often-do-you-shop-online",
+    field: "onlineShoppingFrequency",
     pageComponent: "radio",
     label: "How often do you shop online?",
     nextURL: "#TODO",
