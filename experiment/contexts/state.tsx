@@ -1,5 +1,7 @@
 import { createContext, Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
 
+export type ExperimentGroup = "accessible" | "inaccessible";
+
 export type NotificationLevel = "info" | "success" | "warning" | "error";
 
 export type NotificationItem = {
@@ -17,6 +19,8 @@ const StateContext = createContext<{
   setExperimentStartedAt: Dispatch<SetStateAction<number>>;
   experimentFinishedAt: number;
   setExperimentFinishedAt: Dispatch<SetStateAction<number>>;
+  experimentGroup: ExperimentGroup;
+  setExperimentGroup: Dispatch<SetStateAction<ExperimentGroup>>;
 }>({
   notifications: [],
   addNotification: () => {},
@@ -24,12 +28,15 @@ const StateContext = createContext<{
   setExperimentStartedAt: () => {},
   experimentFinishedAt: 0,
   setExperimentFinishedAt: () => {},
+  experimentGroup: "accessible",
+  setExperimentGroup: () => {},
 });
 
 export const StateProvider = ({ children }: { children: ReactNode }) => {
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [experimentStartedAt, setExperimentStartedAt] = useState<number>(0);
   const [experimentFinishedAt, setExperimentFinishedAt] = useState<number>(0);
+  const [experimentGroup, setExperimentGroup] = useState<ExperimentGroup>("accessible");
 
   const addNotification = (message: string, level: NotificationLevel) =>
     setNotifications([...notifications, { timestamp: Date.now(), message, level }]);
@@ -50,6 +57,8 @@ export const StateProvider = ({ children }: { children: ReactNode }) => {
         setExperimentStartedAt,
         experimentFinishedAt,
         setExperimentFinishedAt,
+        experimentGroup,
+        setExperimentGroup,
       }}
     >
       {children}

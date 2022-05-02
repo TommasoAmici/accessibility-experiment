@@ -46,7 +46,8 @@ const Home = (props: { accessible: boolean }) => {
   useExperimentFinished();
 
   const { accessible } = props;
-  const { experimentStartedAt, setExperimentStartedAt } = useContext(StateContext);
+  const { experimentStartedAt, setExperimentStartedAt, setExperimentGroup } =
+    useContext(StateContext);
   const [query, setQuery] = useState("");
   const [openFilters, setOpenFilters] = useState(false);
   const [colorFilters, setColorFilters] = useState<ColorFilters>({
@@ -73,6 +74,10 @@ const Home = (props: { accessible: boolean }) => {
     if (experimentStartedAt === 0) {
       setExperimentStartedAt(Date.now());
     }
+  }, []);
+
+  useEffect(() => {
+    setExperimentGroup(accessible ? "accessible" : "inaccessible");
   }, []);
 
   return (
