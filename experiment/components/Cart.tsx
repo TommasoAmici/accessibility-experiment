@@ -2,7 +2,6 @@ import { Dialog, Transition } from "@headlessui/react";
 import { CheckCircleIcon, ShoppingCartIcon, XIcon } from "@heroicons/react/outline";
 import classNames from "classnames";
 import { useRouter } from "next/router";
-import posthog from "posthog-js";
 import { Fragment, useContext } from "react";
 import CartContext from "../contexts/cart";
 import StateContext from "../contexts/state";
@@ -31,12 +30,10 @@ const useValidateCart = () => {
   const validate = () => {
     const taskCompleted = checkTaskCompletion(items);
     if (taskCompleted) {
-      posthog.capture("task_completed");
       setTaskFinishedAt(Date.now());
       addNotification("You successfully completed the task!", "success");
       router.push("/survey");
     } else {
-      posthog.capture("task_invalid");
       addNotification(
         "The items in your cart are incorrect. If you forgot your tasks, check the help button in the bottom right of the screen.",
         "warning",

@@ -1,7 +1,6 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { QuestionMarkCircleIcon, XIcon } from "@heroicons/react/outline";
 import Link from "next/link";
-import posthog from "posthog-js";
 import { Fragment, useContext, useEffect, useState } from "react";
 import ButtonLink from "../components/ButtonLink";
 import StateContext from "../contexts/state";
@@ -23,7 +22,6 @@ export const HelpButton = () => {
 
   const openDialog = () => {
     setShow(true);
-    posthog.capture("asked_for_help");
   };
   const closeDialog = () => setShow(false);
 
@@ -31,7 +29,6 @@ export const HelpButton = () => {
     const handleEnter = (event: KeyboardEvent) => {
       if (event.key === "h") {
         setShow(!show);
-        posthog.capture("asked_for_help");
       }
     };
     window.addEventListener("keydown", handleEnter);
@@ -48,7 +45,6 @@ export const HelpButton = () => {
           <Link href="/survey" passHref>
             <ButtonLink
               onClick={() => {
-                posthog.capture("task_skipped");
                 setTaskFinishedAt(Date.now());
                 setTaskAbandoned(true);
               }}
