@@ -15,27 +15,27 @@ export const timeToRead = (message: string): number => message.length * 60 * 1.5
 const StateContext = createContext<{
   notifications: NotificationItem[];
   addNotification: (message: string, level: NotificationLevel) => void;
-  experimentStartedAt: number;
-  setExperimentStartedAt: Dispatch<SetStateAction<number>>;
-  experimentFinishedAt: number;
-  setExperimentFinishedAt: Dispatch<SetStateAction<number>>;
+  taskStartedAt: number;
+  setTaskStartedAt: Dispatch<SetStateAction<number>>;
+  taskFinishedAt: number;
+  setTaskFinishedAt: Dispatch<SetStateAction<number>>;
   experimentGroup: ExperimentGroup;
   setExperimentGroup: Dispatch<SetStateAction<ExperimentGroup>>;
 }>({
   notifications: [],
   addNotification: () => {},
-  experimentStartedAt: 0,
-  setExperimentStartedAt: () => {},
-  experimentFinishedAt: 0,
-  setExperimentFinishedAt: () => {},
+  taskStartedAt: 0,
+  setTaskStartedAt: () => {},
+  taskFinishedAt: 0,
+  setTaskFinishedAt: () => {},
   experimentGroup: "accessible",
   setExperimentGroup: () => {},
 });
 
 export const StateProvider = ({ children }: { children: ReactNode }) => {
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
-  const [experimentStartedAt, setExperimentStartedAt] = useState<number>(0);
-  const [experimentFinishedAt, setExperimentFinishedAt] = useState<number>(0);
+  const [taskStartedAt, setTaskStartedAt] = useState<number>(0);
+  const [taskFinishedAt, setTaskFinishedAt] = useState<number>(0);
   const [experimentGroup, setExperimentGroup] = useState<ExperimentGroup>("accessible");
 
   const addNotification = (message: string, level: NotificationLevel) =>
@@ -53,10 +53,10 @@ export const StateProvider = ({ children }: { children: ReactNode }) => {
       value={{
         notifications,
         addNotification,
-        experimentStartedAt,
-        setExperimentStartedAt,
-        experimentFinishedAt,
-        setExperimentFinishedAt,
+        taskStartedAt,
+        setTaskStartedAt,
+        taskFinishedAt,
+        setTaskFinishedAt,
         experimentGroup,
         setExperimentGroup,
       }}

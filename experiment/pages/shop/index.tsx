@@ -46,8 +46,7 @@ const Home = (props: { accessible: boolean }) => {
   useExperimentFinished();
 
   const { accessible } = props;
-  const { experimentStartedAt, setExperimentStartedAt, setExperimentGroup } =
-    useContext(StateContext);
+  const { taskStartedAt, setTaskStartedAt, setExperimentGroup } = useContext(StateContext);
   const [query, setQuery] = useState("");
   const [colorFilters, setColorFilters] = useState<ColorFilters>({
     beige: false,
@@ -70,8 +69,8 @@ const Home = (props: { accessible: boolean }) => {
   const products = filterProducts(allProducts, colorFilters, sportFilters, query);
 
   useEffect(() => {
-    if (experimentStartedAt === 0) {
-      setExperimentStartedAt(Date.now());
+    if (taskStartedAt === 0) {
+      setTaskStartedAt(Date.now());
     }
   }, []);
 

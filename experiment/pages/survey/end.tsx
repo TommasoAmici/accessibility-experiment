@@ -53,7 +53,7 @@ const SubscribeForResults = () => {
 const SurveyEndPage = () => {
   useCompleteExperiment();
 
-  const { experimentGroup, experimentFinishedAt, experimentStartedAt, addNotification } =
+  const { experimentGroup, taskFinishedAt, taskStartedAt, addNotification } =
     useContext(StateContext);
   const {
     data: {
@@ -73,8 +73,8 @@ const SurveyEndPage = () => {
         method: "POST",
         body: JSON.stringify({
           experimentGroup,
-          experimentStartedAt,
-          experimentFinishedAt,
+          taskStartedAt,
+          taskFinishedAt,
           age: age.value,
           disability: disability.value,
           accessibilityOptions: accessibilityOptions.value,

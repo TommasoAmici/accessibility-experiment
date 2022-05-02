@@ -26,13 +26,13 @@ const checkTaskCompletion = (items: Product[]) => {
 const useValidateCart = () => {
   const router = useRouter();
   const { items } = useContext(CartContext);
-  const { addNotification, setExperimentFinishedAt } = useContext(StateContext);
+  const { addNotification, setTaskFinishedAt } = useContext(StateContext);
 
   const validate = () => {
     const taskCompleted = checkTaskCompletion(items);
     if (taskCompleted) {
       posthog.capture("task_completed");
-      setExperimentFinishedAt(Date.now());
+      setTaskFinishedAt(Date.now());
       addNotification("You successfully completed the task!", "success");
       router.push("/survey");
     } else {

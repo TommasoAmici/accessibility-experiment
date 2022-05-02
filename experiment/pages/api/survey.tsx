@@ -7,8 +7,8 @@ const postSurvey = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
     const {
       experimentGroup,
-      experimentStartedAt,
-      experimentFinishedAt,
+      taskStartedAt,
+      taskFinishedAt,
       age,
       disability,
       accessibilityOptions,
@@ -18,12 +18,12 @@ const postSurvey = async (req: NextApiRequest, res: NextApiResponse) => {
     } = req.body;
     try {
       const statement = db.prepare(
-        "INSERT INTO surveyResponses (experimentGroup, experimentStartedAt, experimentFinishedAt, age, disability, accessibilityOptions, assistiveTechnology, taskDifficulty, onlineShoppingFrequency) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO surveyResponses (experimentGroup, taskStartedAt, taskFinishedAt, age, disability, accessibilityOptions, assistiveTechnology, taskDifficulty, onlineShoppingFrequency) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
       );
       statement.run(
         experimentGroup,
-        experimentStartedAt,
-        experimentFinishedAt,
+        taskStartedAt,
+        taskFinishedAt,
         age,
         disability,
         accessibilityOptions,

@@ -9,7 +9,7 @@ import { Button } from "./Button";
 import { TasksList } from "./TasksList";
 
 export const HelpButton = () => {
-  const { experimentStartedAt, setExperimentFinishedAt } = useContext(StateContext);
+  const { taskStartedAt, setTaskFinishedAt } = useContext(StateContext);
   const [now, setNow] = useState(Date.now());
 
   useEffect(() => {
@@ -44,12 +44,12 @@ export const HelpButton = () => {
   return (
     <>
       <div className="fixed bottom-4 right-4 flex space-x-4" onKeyDown={e => e.stopPropagation()}>
-        {experimentStartedAt !== 0 && experimentStartedAt < now - 1000 * 60 * 2 && (
+        {taskStartedAt !== 0 && taskStartedAt < now - 1000 * 60 * 2 && (
           <Link href="/survey" passHref>
             <ButtonLink
               onClick={() => {
                 posthog.capture("task_skipped");
-                setExperimentFinishedAt(Date.now());
+                setTaskFinishedAt(Date.now());
               }}
             >
               Are you stuck? Go to survey
