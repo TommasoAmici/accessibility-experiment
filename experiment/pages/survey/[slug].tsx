@@ -1,9 +1,12 @@
 import { GetStaticProps, InferGetStaticPropsType } from "next";
+import { useCompleteExperiment } from "../../hooks/useCompleteExperiment";
 import { survey, surveyPageComponentMap } from "../../lib/survey";
 
 const SurveyPage = ({
   question: { pageComponent, slug, ...props },
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
+  useCompleteExperiment();
+
   const PageComponent = surveyPageComponentMap[pageComponent];
   return <PageComponent field={slug} {...props} />;
 };
