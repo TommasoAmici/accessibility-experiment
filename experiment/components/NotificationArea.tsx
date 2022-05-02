@@ -14,7 +14,7 @@ const NotificationCountdownBar = ({
   notification: NotificationItem;
 }) => {
   const [width, setWidth] = useState(1);
-  const interval = timeToRead(notification.message, accessible) / 1000;
+  const interval = timeToRead(notification.message) / 1000;
 
   useEffect(() => {
     const intervalID = setInterval(() => {
