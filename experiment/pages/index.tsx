@@ -11,6 +11,7 @@ const HomePage = () => {
 
   return (
     <section className="prose prose-lg mx-auto px-8">
+      <h1>Web accessibility experiment</h1>
       <p>
         Hello there, thanks for taking the time to participate. I&apos;m Tommaso Amici, a web
         developer and a master student at the University of Amsterdam.

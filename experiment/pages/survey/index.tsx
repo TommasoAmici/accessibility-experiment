@@ -10,7 +10,7 @@ const SurveyPage = () => {
   usePressEnter(nextURL, router);
 
   return (
-    <section className="prose mx-auto">
+    <section className="prose prose-lg mx-auto px-8">
       <p>
         Thanks for completing the task! I will now ask you a few questions about yourself and the
         task you just completed.
