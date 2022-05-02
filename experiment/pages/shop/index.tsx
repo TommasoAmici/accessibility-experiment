@@ -49,7 +49,6 @@ const Home = (props: { accessible: boolean }) => {
   const { experimentStartedAt, setExperimentStartedAt, setExperimentGroup } =
     useContext(StateContext);
   const [query, setQuery] = useState("");
-  const [openFilters, setOpenFilters] = useState(false);
   const [colorFilters, setColorFilters] = useState<ColorFilters>({
     beige: false,
     orange: false,
@@ -108,7 +107,7 @@ const Home = (props: { accessible: boolean }) => {
               setSportFilters={setSportFilters}
               query={query}
               setQuery={setQuery}
-              className={[openFilters ? "block" : "hidden", "lg:block"]}
+              className={["hidden lg:block"]}
             />
           </aside>
           <main id="main" className="lg:col-span-6">
@@ -141,7 +140,7 @@ const Home = (props: { accessible: boolean }) => {
               setSportFilters={setSportFilters}
               query={query}
               setQuery={setQuery}
-              className={[openFilters ? "block" : "hidden", "lg:block"]}
+              className={["hidden lg:block"]}
             />
           </div>
           <div className="lg:col-span-6">
