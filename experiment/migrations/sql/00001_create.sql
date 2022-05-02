@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS surveyResponses(
     experimentGroup         TEXT CHECK( experimentGroup IN ('accessible','inaccessible') ) NOT NULL,
     taskStartedAt           INTEGER NOT NULL,
     taskFinishedAt          INTEGER NOT NULL,
+    taskAbandoned           BOOLEAN NOT NULL,
     age                     INTEGER NOT NULL,
     disability              BOOLEAN NOT NULL,
     accessibilityOptions    BOOLEAN NOT NULL,

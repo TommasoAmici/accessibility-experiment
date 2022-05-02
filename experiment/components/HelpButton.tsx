@@ -9,7 +9,7 @@ import { Button } from "./Button";
 import { TasksList } from "./TasksList";
 
 export const HelpButton = () => {
-  const { taskStartedAt, setTaskFinishedAt } = useContext(StateContext);
+  const { taskStartedAt, setTaskFinishedAt, setTaskAbandoned } = useContext(StateContext);
   const [now, setNow] = useState(Date.now());
 
   useEffect(() => {
@@ -50,6 +50,7 @@ export const HelpButton = () => {
               onClick={() => {
                 posthog.capture("task_skipped");
                 setTaskFinishedAt(Date.now());
+                setTaskAbandoned(true);
               }}
             >
               Are you stuck? Go to survey

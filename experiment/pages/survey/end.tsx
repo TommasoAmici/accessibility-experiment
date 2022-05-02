@@ -53,7 +53,7 @@ const SubscribeForResults = () => {
 const SurveyEndPage = () => {
   useCompleteExperiment();
 
-  const { experimentGroup, taskFinishedAt, taskStartedAt, addNotification } =
+  const { experimentGroup, taskAbandoned, taskFinishedAt, taskStartedAt, addNotification } =
     useContext(StateContext);
   const {
     data: {
@@ -75,6 +75,7 @@ const SurveyEndPage = () => {
           experimentGroup,
           taskStartedAt,
           taskFinishedAt,
+          taskAbandoned,
           age: age.value,
           disability: disability.value,
           accessibilityOptions: accessibilityOptions.value,

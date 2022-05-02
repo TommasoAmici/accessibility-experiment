@@ -19,6 +19,8 @@ const StateContext = createContext<{
   setTaskStartedAt: Dispatch<SetStateAction<number>>;
   taskFinishedAt: number;
   setTaskFinishedAt: Dispatch<SetStateAction<number>>;
+  taskAbandoned: boolean;
+  setTaskAbandoned: Dispatch<SetStateAction<boolean>>;
   experimentGroup: ExperimentGroup;
   setExperimentGroup: Dispatch<SetStateAction<ExperimentGroup>>;
 }>({
@@ -30,6 +32,8 @@ const StateContext = createContext<{
   setTaskFinishedAt: () => {},
   experimentGroup: "accessible",
   setExperimentGroup: () => {},
+  taskAbandoned: false,
+  setTaskAbandoned: () => {},
 });
 
 export const StateProvider = ({ children }: { children: ReactNode }) => {
@@ -37,6 +41,7 @@ export const StateProvider = ({ children }: { children: ReactNode }) => {
   const [taskStartedAt, setTaskStartedAt] = useState<number>(0);
   const [taskFinishedAt, setTaskFinishedAt] = useState<number>(0);
   const [experimentGroup, setExperimentGroup] = useState<ExperimentGroup>("accessible");
+  const [taskAbandoned, setTaskAbandoned] = useState(false);
 
   const addNotification = (message: string, level: NotificationLevel) =>
     setNotifications([...notifications, { timestamp: Date.now(), message, level }]);
@@ -59,6 +64,8 @@ export const StateProvider = ({ children }: { children: ReactNode }) => {
         setTaskFinishedAt,
         experimentGroup,
         setExperimentGroup,
+        taskAbandoned,
+        setTaskAbandoned,
       }}
     >
       {children}
