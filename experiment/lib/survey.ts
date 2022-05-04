@@ -3,9 +3,9 @@ import { stringToSlug } from "./stringToSlug";
 
 export const difficultyOptions: { value: string; label: string }[] = [
   { value: "very-easy", label: "Very easy" },
-  { value: "somewhat-easy", label: "Somewhat easy" },
+  { value: "easy", label: "Easy" },
   { value: "neither-easy-nor-hard", label: "Neither easy nor hard" },
-  { value: "somewhat-hard", label: "Somewhat hard" },
+  { value: "hard", label: "Hard" },
   { value: "very-hard", label: "Very hard" },
 ];
 
