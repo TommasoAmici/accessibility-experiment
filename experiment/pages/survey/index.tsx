@@ -14,7 +14,7 @@ const SurveyPage = () => {
     useContext(StateContext);
 
   useEffect(() => {
-    if (taskStartedAt === 0 || taskFinishedAt === 0) {
+    if (taskStartedAt === null || taskFinishedAt === null) {
       return;
     }
 

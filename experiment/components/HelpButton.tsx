@@ -57,11 +57,11 @@ export const HelpButton = ({ isSimpleLayout }: { isSimpleLayout?: boolean }) => 
         )}
         onKeyDown={stopKeydownPropagation}
       >
-        {taskStartedAt !== 0 && taskStartedAt < now - 1000 * 60 * 2 && (
+        {taskStartedAt !== null && taskStartedAt.getTime() < now - 1000 * 60 * 2 && (
           <Link href="/survey" passHref>
             <ButtonLink
               onClick={() => {
-                setTaskFinishedAt(Date.now());
+                setTaskFinishedAt(new Date());
                 setTaskAbandoned(true);
               }}
             >

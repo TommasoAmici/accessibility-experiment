@@ -7,7 +7,7 @@ export const useExperimentFinished = () => {
   const { taskFinishedAt, addNotification } = useContext(StateContext);
 
   useEffect(() => {
-    if (taskFinishedAt !== 0) {
+    if (taskFinishedAt !== null) {
       addNotification("You have already completed the experiment", "error");
       router.push("survey");
     }

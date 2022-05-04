@@ -69,8 +69,8 @@ const Home = (props: { accessible: boolean }) => {
   const products = filterProducts(allProducts, colorFilters, sportFilters, query);
 
   useEffect(() => {
-    if (taskStartedAt === 0) {
-      setTaskStartedAt(Date.now());
+    if (taskStartedAt === null) {
+      setTaskStartedAt(new Date());
     }
   }, []);
 

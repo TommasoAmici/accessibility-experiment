@@ -30,7 +30,7 @@ const useValidateCart = () => {
   const validate = () => {
     const taskCompleted = checkTaskCompletion(items);
     if (taskCompleted) {
-      setTaskFinishedAt(Date.now());
+      setTaskFinishedAt(new Date());
       addNotification("You successfully completed the task!", "success");
       router.push("/survey");
     } else {

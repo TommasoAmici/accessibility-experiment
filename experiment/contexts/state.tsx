@@ -17,10 +17,10 @@ const StateContext = createContext<{
   addNotification: (message: string, level: NotificationLevel) => void;
   askedForHelp: number;
   increaseAskedForHelp: () => void;
-  taskStartedAt: number;
-  setTaskStartedAt: Dispatch<SetStateAction<number>>;
-  taskFinishedAt: number;
-  setTaskFinishedAt: Dispatch<SetStateAction<number>>;
+  taskStartedAt: Date | null;
+  setTaskStartedAt: Dispatch<SetStateAction<Date | null>>;
+  taskFinishedAt: Date | null;
+  setTaskFinishedAt: Dispatch<SetStateAction<Date | null>>;
   taskAbandoned: boolean;
   setTaskAbandoned: Dispatch<SetStateAction<boolean>>;
   experimentGroup: ExperimentGroup;
@@ -30,9 +30,9 @@ const StateContext = createContext<{
   addNotification: () => {},
   askedForHelp: 0,
   increaseAskedForHelp: () => {},
-  taskStartedAt: 0,
+  taskStartedAt: null,
   setTaskStartedAt: () => {},
-  taskFinishedAt: 0,
+  taskFinishedAt: null,
   setTaskFinishedAt: () => {},
   experimentGroup: "accessible",
   setExperimentGroup: () => {},
@@ -43,8 +43,8 @@ const StateContext = createContext<{
 export const StateProvider = ({ children }: { children: ReactNode }) => {
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [askedForHelp, setAskedForHelp] = useState<number>(0);
-  const [taskStartedAt, setTaskStartedAt] = useState<number>(0);
-  const [taskFinishedAt, setTaskFinishedAt] = useState<number>(0);
+  const [taskStartedAt, setTaskStartedAt] = useState<Date | null>(null);
+  const [taskFinishedAt, setTaskFinishedAt] = useState<Date | null>(null);
   const [experimentGroup, setExperimentGroup] = useState<ExperimentGroup>("accessible");
   const [taskAbandoned, setTaskAbandoned] = useState(false);
 

@@ -3,8 +3,8 @@ CREATE TABLE IF NOT EXISTS results(
   userID                  INTEGER NOT NULL UNIQUE,
   experimentGroup         TEXT CHECK( experimentGroup IN ('accessible','inaccessible') ) NOT NULL,
   askedForHelp            INTEGER NOT NULL,
-  taskStartedAt           INTEGER NOT NULL,
-  taskFinishedAt          INTEGER NOT NULL,
+  taskStartedAt           TEXT NOT NULL,
+  taskFinishedAt          TEXT NOT NULL,
   taskAbandoned           BOOLEAN NOT NULL,
   -- survey drops the NOT NULL constraint as I predict some people may not complete the survey
   age                     INTEGER,
