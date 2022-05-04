@@ -1,14 +1,13 @@
 \documentclass[12pt, a4paper]{article}
 
 \usepackage{graphicx}
-\usepackage{ifdraft}
-\usepackage[obeyDraft, textsize=small]{todonotes}
-
 \usepackage{setspace}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
 
 % STYLE
 \usepackage[pdfborder={0 0 0}]{hyperref}
-\usepackage[\ifdraft {left=1.5cm, textwidth=345pt, marginparwidth=5cm} {}]{geometry}
+\usepackage{geometry}
 \usepackage{numprint}
 
 % BIBLIOGRAPHY
@@ -17,11 +16,19 @@
 \usepackage{epigraph}
 \setlength\epigraphwidth{.8\textwidth}
 
-\title{The role of web accessibility in an online business's performance}
+% HYPOTHESES
+% \usepackage{etoolbox,changepage}
+\usepackage{ntheorem}
+\newtheorem{req}{Research question}
+\newtheorem{hyp}{Hypothesis}
+% \AtBeginEnvironment{hyp}{\begin{adjustwidth}{3em}{3em}}
+% \AtEndEnvironment{hyp}{\end{adjustwidth}}
+\theoremseparator{:}
+
+\title{The impact of web accessibility on the desire for avoidance}
 \author{Tommaso Amici}
 
 \begin{document}
-\listoftodos
 \doublespacing
 \pagenumbering{gobble}
 
@@ -30,20 +37,194 @@
 
 \pagenumbering{roman}
 
-% \input{sections/abstract.tex}
-% \newpage
+\begin{abstract}
+  \#TODO
+\end{abstract}
+\newpage
 
-% \tableofcontents
-% \listoffigures
-% \listoftables
-% \newpage
+\tableofcontents
+\listoffigures
+\listoftables
+\newpage
 
 \pagenumbering{arabic}
 
-\input{sections/introduction.tex}
-\input{sections/literature_review.tex}
-\input{sections/method.tex}
-\input{sections/work_plan.tex}
+\section{Introduction}
+
+\epigraph{The power of the Web is in its universality. Access by everyone regardless
+  of disability is an essential aspect.}{Tim Berners-Lee, W3C Director and inventor
+  of the World Wide Web}
+
+\epigraph{Accessibility is the right thing to do.}{\citeA{valdes1999} for the United Nations}
+
+\noindent
+After more than twenty years, we have reached a tipping point: accessibility is not only
+the right thing to do, but it is a legal requirement for public sector bodies in the EU
+since the approval of the Web Accessibility Directive in 2016, and it may soon be a legal
+requirement for private sector bodies should the European Accessibility Act be approved.
+
+In \citeA{carter2001web}, a spokesperson for an electronics retailer when asked about
+Internet users with disabilities is quoted as saying: ``that's not a market we've
+thought about pursuing'' (p. 227). However, looking at some recent statistics paints a
+striking picture: the Office for National Statistics estimates that, in 2020, 22\% of
+internet users in the UK have self-assessed disabilities
+\citeyear{ukinternetusers2020}, and according to different estimates 100 million people
+in the EU and one billion people in the world have some form of disability
+\cite{euWebAccessibility2021, whoDisability2021}.
+
+Voluntarily excluding such a huge part of your customer base is shortsighted at best,
+and illegal at worst. However, assuming they are managed rationally, businesses may be
+operating under the impression that web accessibility does not affect purchase
+intention, and as a consequence they will not dedicate resources to it.
+
+In this paper, we will attempt to answer the following questions:
+
+\begin{req}
+  Does web accessibility have an effect on the desire for avoidance of disabled and non-disabled users?
+\end{req}
+\begin{req}
+  Is accessibility a concern for online businesses, or are they justified in ignoring it, from an economic perspective?
+\end{req}
+
+The next section explains what web accessibility is, and why many websites fail to
+properly support disabled users. Additionally, we describe the theoretical framework
+which will be used to establish the relevancy of online complaints addressing web
+accessibility.
+
+\section{Theoretical background and hypotheses}
+
+\subsection{Web accessibility}\label{sec:web-accessibility}
+
+According to the Web Content Accessibility Guidelines (WCAG) 2.1, the objective of
+developers and designers implementing accessible websites is to make content ``more
+accessible to a wider range of people with disabilities, including accommodations for
+blindness and low vision, deafness and hearing loss, limited movement, speech
+disabilities, photosensitivity, and combinations of these, and some accommodation for
+learning disabilities and cognitive limitations'' \cite[para. 1]{wcag21}.
+
+It is important to note that disability can be temporary or situational: for example
+people with a broken arm are temporarily disabled, while a parent holding a child is
+situationally disabled, i.e., they cannot use two arms in that specific situation
+\cite{henry2006}. This means that effectively any Internet user is potentially disabled
+in a given moment. The respondents of a survey conducted in 2015 among web
+accessibility specialists agreed that accessibility is applicable to everyone and that
+it is highly related to usability \cite{yesilada2015}.
+
+\citeA{carter2001web} nonetheless reports a second reason why accessibility is often
+ignored by web developers and businesses: ``making the site accessible makes it
+boring'' (p. 227). Designers are often convinced that building an accessible
+site results in uninteresting and plain sites. Accessibility is thus considered useless
+for non-disabled users, if not outright damaging to their experience, forcing them to
+use a subpar product. On the contrary, \citeA{schmutz2016implementing} finds that
+non-disabled users also benefit from a more accessible interface, and research by
+\citeA{petrie2004} finds that accessibility does not constrain visual design.
+
+The existing literature focuses primarily on the perceptions of businesses,
+practitioners, and users, both disabled and non-disabled, highlighting how
+accessibility is often ignored while it should not, both from a moral perspective and
+from a practical perspective. However, a question that is not directly answered is
+whether a lack of accessibility can lead to a loss of customers for an online business.
+
+\citeA{morris2016} lightly touches upon this topic: analyzing the results of a survey
+conducted on blind users of Twitter, they find that, as the platform becomes less
+accessible with more and more users posting visual content rather than written content,
+blind users' desire for avoidance increases because they simply cannot use the site in a
+meaningful way anymore.
+
+Because of all the aforementioned reasons, we predict that users complain online about
+web accessibility, as it can be an afterthought, formally the hypothesis we intend to
+test is:
+
+\begin{hyp}
+  Disabled users complain online about web accessibility
+\end{hyp}
+\begin{hyp}
+  Non-disabled users complain online about web accessibility
+\end{hyp}
+
+However, despite evidence that companies have historically neglected web accessibility,
+we predict that businesses nowadays promptly address complaints about web
+accessibility, formally:
+
+\begin{hyp}
+  Complaints about web accessibility receive a response in a shorter time than other topics
+\end{hyp}
+
+In other words, we expect web accessibility to act as a moderator on the speed of the
+responses from companies. In order to establish whether this is the case, we will draw
+insights from the literature on electronic word of mouth (eWOM).
+
+\subsection{Electronic word of mouth}\label{sec:ewom}
+
+In this paper, we will adopt the definition of eWOM given by \citeA{hennigthurau2004}:
+``any positive or negative statement made by potential, actual, or former customers
+about a product or company, which is made available to a multitude of people and
+institutions via the Internet'' (p. 38). In particular, we will restrict our focus to
+social media, as they provide engagement metrics that the Internet in general does not.
+
+When analyzing social media data, engagement metrics are useful for two reasons. First,
+as a proxy of reach, as it is not possible to have exact statistics of how many people
+saw a particular post or page, unless we are the publishers. Second, and this is
+strictly related to the first reason, to control for the effect of activists, i.e.,
+users who post often and who tend to be negative, as previous studies find empirically
+that online reviews are dominated by them \cite{moe2012}. If we had to rely only on the
+content that is published we may incorrectly attribute more importance to content that
+was actually not widely shared or consumed.
+
+Users that complain online tend to hold a grudge and although their desire for revenge
+diminishes over time, their desire for avoidance does not and they will take their
+business elsewhere \cite{tripp2011unhappy}. Moreover, if the complaint is public, other
+users, so-called silent observers, may also be witnesses to the complaint and may start
+avoiding a business as a consequence \cite{lopez2021}. We expect that a user's desire
+for avoidance will be higher if the failure is related to accessibility rather than,
+for example, shipping or price fairness, as the impossibility or reduced capability of
+using a website is fundamental in choosing whether or not to keep using it. Thus, we
+introduce another hypothesis:
+
+\begin{hyp}
+  Users' expressed desire for avoidance is relatively higher when complaining about web
+  accessibility
+\end{hyp}
+
+When it comes to disabled users specifically, the literature finds they rely on online
+reviews to bypass physical requirements, but while a recent empirical study in the
+hotel industry finds that disabled guests' perception of risk is positively mitigated
+by trustworthy reviews, it finds no significant effect on purchase decision
+\cite{williams2006, zhang2021}. However, this should not be considered conclusive as
+other studies conducted on the general population find that trustworthy online reviews
+do have a positive effect on purchase intention \cite{chevalier2006, chakraborty2019,
+  ventre2020}, and ultimately we are not concerned only with disabled users, because all
+users benefit from accessible interfaces, as discussed in
+\autoref{sec:web-accessibility}.
+
+\section{Research method}
+
+As mentioned in \autoref{sec:ewom}, we are restricting our data collection to social
+media because they provide engagement metrics, more specifically we collected data from
+Twitter. Among all the different social media sites, Twitter is more appropriate than
+others because of its public nature, and because it allows users to both capture a
+company's attention and to reach a wide audience with their complaining
+\cite{lopez2021}.
+
+Additionally, unlike research that focuses on online reviews, which will be usually
+posted on a retailer's website (e.g., Amazon) or on websites specialized in reviews
+(e.g., Yelp), this paper deals with meta complaints about the websites themselves and
+about the customer experience, not about products customers have bought. For this
+reason, we believe Twitter is more likely to be the place where to find meta
+complaints.
+
+\subsection{Data collection}
+
+Through the Twitter API, \#XXX tweets posted between \#XXX date and \#XXX date were
+collected. The content of each tweet has been categorized using a classifier trained on
+a manually labeled subset of data.
+
+\section{Results}
+
+\section{Discussion}
+\subsection{Theoretical contributions}
+\subsection{Managerial implications}
+\subsection{Limitations and future research}
 
 \newpage
 \bibliographystyle{apacite}
