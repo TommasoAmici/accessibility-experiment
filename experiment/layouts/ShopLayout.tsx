@@ -1,4 +1,3 @@
-import Head from "next/head";
 import { ReactNode } from "react";
 import { Header } from "../components/Header";
 import { HelpButton } from "../components/HelpButton";
@@ -18,13 +17,9 @@ export const ShopLayout = ({
   return (
     <>
       <CartProvider accessible={accessible}>
-        <Head>
-          <title>{accessible ? "accessible" : "inaccessible"}</title>
-        </Head>
         {accessible && <SkipNav />}
         <Header accessible={accessible} breadcrumbs={breadcrumbs} />
         {children}
-        <footer className=""></footer>
       </CartProvider>
       <NotificationArea accessible={accessible} />
       <HelpButton />

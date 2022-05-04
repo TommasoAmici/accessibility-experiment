@@ -1,4 +1,3 @@
-import Head from "next/head";
 import { ReactNode } from "react";
 import { NotificationArea } from "../components/NotificationArea";
 import { SurveyProvider } from "../contexts/survey";
@@ -6,10 +5,6 @@ import { SurveyProvider } from "../contexts/survey";
 export const SimpleLayout = ({ children }: { children: ReactNode }) => {
   return (
     <SurveyProvider>
-      <Head>
-        <title>Web accessibility experiment - Tommaso Amici</title>
-      </Head>
-
       <main className="mx-auto mt-8 w-full flex-1">{children}</main>
 
       <svg
