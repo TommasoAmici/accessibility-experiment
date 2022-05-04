@@ -13,8 +13,8 @@ interface ComponentProps {
 const Accessible = ({ productDB, color, setColor }: ComponentProps) => {
   return (
     <RadioGroup value={color} onChange={setColor}>
-      <RadioGroup.Label className="sr-only">Shoe color</RadioGroup.Label>
-      <div className="grid grid-cols-2 place-content-stretch gap-6 sm:grid-cols-4">
+      <RadioGroup.Label className="text-lg font-semibold">Select color</RadioGroup.Label>
+      <div className="mt-4 grid grid-cols-2 place-content-stretch gap-6 sm:grid-cols-4">
         {productDB.colors.map(c => (
           <RadioGroup.Option key={c} value={c} className="cursor-pointer focus:outline-none">
             {({ active, checked }) => (
@@ -50,30 +50,33 @@ const Accessible = ({ productDB, color, setColor }: ComponentProps) => {
 
 const Inaccessible = ({ productDB, color, setColor }: ComponentProps) => {
   return (
-    <div className="grid grid-cols-2 place-content-stretch gap-6 sm:grid-cols-4">
-      {productDB.colors.map(c => (
-        <div key={c} onClick={() => setColor(c)}>
-          <div className="flex flex-col-reverse items-center">
-            <div className="mt-2 text-sm capitalize text-neutral-400">{c}</div>
-            <div
-              className={classNames(
-                "aspect-square border-[6px] border-white transition-opacity duration-75 hover:opacity-100",
-                c === color
-                  ? classNames(ui.inaccessible.borderFromColor[color], "opacity-100")
-                  : "opacity-80",
-              )}
-            >
-              <Image
-                src={productDB.collection.images[c][0]}
-                width={256}
-                height={256}
-                objectFit="cover"
-                className="aspect-square"
-              />
+    <div>
+      <div className="text-lg font-semibold text-inaccessible-title">Select color</div>
+      <div className="mt-4 grid grid-cols-2 place-content-stretch gap-6 sm:grid-cols-4">
+        {productDB.colors.map(c => (
+          <div key={c} onClick={() => setColor(c)}>
+            <div className="flex flex-col-reverse items-center">
+              <div className="mt-2 text-sm capitalize text-inaccessible">{c}</div>
+              <div
+                className={classNames(
+                  "aspect-square border-[6px] border-white transition-opacity duration-75 hover:opacity-100",
+                  c === color
+                    ? classNames(ui.inaccessible.borderFromColor[color], "opacity-100")
+                    : "opacity-80",
+                )}
+              >
+                <Image
+                  src={productDB.collection.images[c][0]}
+                  width={256}
+                  height={256}
+                  objectFit="cover"
+                  className="aspect-square"
+                />
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };
