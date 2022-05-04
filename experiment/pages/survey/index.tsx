@@ -11,6 +11,7 @@ const SurveyPage = () => {
 
   return (
     <section className="prose prose-lg mx-auto px-8">
+      <h1>Final survey</h1>
       <p>
         Thanks for completing the task! I will now ask you a few questions about yourself and the
         task you just completed.
