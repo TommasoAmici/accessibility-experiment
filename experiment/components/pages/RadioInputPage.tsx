@@ -85,7 +85,7 @@ export const RadioInputPage = ({
                   <RadioGroup.Label
                     className={classNames(
                       "relative mt-2 flex cursor-pointer items-baseline ring-black ring-offset-8",
-                      checked && active ? "ring-4" : "ring-1",
+                      active ? "ring-4" : "ring-1",
                       checked && !active && "ring-2",
                     )}
                   >
