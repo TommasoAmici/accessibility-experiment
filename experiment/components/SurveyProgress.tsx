@@ -23,7 +23,7 @@ export const SurveyProgress = ({
       >
         <span
           className="h-full w-full origin-left bg-black transition-transform"
-          style={{ transform: `scaleX(${Math.max(0.05, value / max)})` }}
+          style={{ transform: `scaleX(${(value + 1) / max})` }}
         />
       </div>
       <span className="absolute -top-[0.4rem] -right-10" aria-hidden="true">
