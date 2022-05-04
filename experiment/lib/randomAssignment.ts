@@ -17,6 +17,16 @@ const cyrb53 = (str: string, seed = 0) => {
   return 4294967296 * (2097151 & h2) + (h1 >>> 0);
 };
 
+export const userIDFromRequest = (
+  remoteAddress: string | undefined,
+  userAgent: string | undefined,
+) => {
+  if (remoteAddress === undefined) {
+    throw new Error("Failed to assign client to experiment");
+  }
+  return cyrb53(`${remoteAddress}${userAgent}`);
+};
+
 export const randomAssignment = (
   remoteAddress: string | undefined,
   userAgent: string | undefined,
@@ -24,8 +34,8 @@ export const randomAssignment = (
   if (remoteAddress === undefined) {
     throw new Error("Failed to assign client to experiment");
   }
-  const hash = cyrb53(`${remoteAddress}${userAgent}`);
-  if (hash % 2 === 0) {
+  const userID = userIDFromRequest(remoteAddress, userAgent);
+  if (userID % 2 === 0) {
     return true;
   } else {
     return false;

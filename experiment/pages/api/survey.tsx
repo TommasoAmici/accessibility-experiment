@@ -1,5 +1,6 @@
 import Database from "better-sqlite3";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { userIDFromRequest } from "../../lib/randomAssignment";
 
 const db = new Database("experiment.sqlite3");
 
@@ -18,11 +19,13 @@ const postSurvey = async (req: NextApiRequest, res: NextApiResponse) => {
       taskDifficulty,
       onlineShoppingFrequency,
     } = req.body;
+    const userID = userIDFromRequest(req.socket.remoteAddress, req.headers["user-agent"]);
     try {
       const statement = db.prepare(
-        "INSERT INTO surveyResponses (experimentGroup, taskStartedAt, taskFinishedAt, taskAbandoned, askedForHelp, age, disability, accessibilityOptions, assistiveTechnology, taskDifficulty, onlineShoppingFrequency) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO surveyResponses (userID, experimentGroup, taskStartedAt, taskFinishedAt, taskAbandoned, askedForHelp, age, disability, accessibilityOptions, assistiveTechnology, taskDifficulty, onlineShoppingFrequency) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       );
       statement.run(
+        userID,
         experimentGroup,
         taskStartedAt,
         taskFinishedAt,
