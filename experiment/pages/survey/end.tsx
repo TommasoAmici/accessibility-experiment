@@ -43,7 +43,7 @@ const SubscribeForResults = () => {
           }
         />
       </label>
-      <Button type="submit" className="h-fit grow-0 px-4">
+      <Button type="submit" className="h-fit grow-0 px-4 !py-[0.32rem]">
         Submit
       </Button>
     </form>
