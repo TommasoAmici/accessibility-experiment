@@ -63,7 +63,7 @@ export const RadioInputPage = ({
     <section className="mx-auto w-3/4 lg:w-3/5">
       <div className="mx-auto mt-24 w-full">
         <RadioGroup value={value} onChange={setValue}>
-          <RadioGroup.Label className="block max-w-prose text-3xl font-bold">
+          <RadioGroup.Label className="block max-w-2xl text-3xl font-bold">
             {label}
           </RadioGroup.Label>
           {helpText && <p className="mt-4">{helpText}</p>}
