@@ -1,10 +1,9 @@
 import classNames from "classnames";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { DetailedHTMLProps, InputHTMLAttributes, useContext, useEffect, useState } from "react";
 import { RegisterOptions, useForm } from "react-hook-form";
 import SurveyContext from "../../contexts/survey";
-import ButtonLink from "../ButtonLink";
+import { Button } from "../Button";
 
 export type InputPageProps = {
   field: string;
@@ -71,15 +70,13 @@ export const InputPage = ({ field, label, nextURL, options, inputProps }: InputP
         <p aria-live="polite" className="mt-2 h-4 text-red-700">
           {errors[field]?.type === "required" && "This field is required"}
         </p>
+        <div className="mt-4 flex items-baseline">
+          <Button type="submit">OK</Button>
+          <p className="ml-4 text-sm">
+            press <kbd className="font-sans font-semibold">Enter ↵</kbd>
+          </p>
+        </div>
       </form>
-      <div className="mt-4 flex items-baseline">
-        <Link href={nextURL} passHref>
-          <ButtonLink>OK</ButtonLink>
-        </Link>
-        <p className="ml-4 text-sm">
-          press <kbd className="font-sans font-semibold">Enter ↵</kbd>
-        </p>
-      </div>
     </section>
   );
 };

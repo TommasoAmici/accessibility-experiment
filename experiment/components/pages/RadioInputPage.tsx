@@ -1,10 +1,9 @@
 import { RadioGroup } from "@headlessui/react";
 import classNames from "classnames";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useContext, useEffect, useState } from "react";
 import SurveyContext from "../../contexts/survey";
-import ButtonLink from "../ButtonLink";
+import { Button } from "../Button";
 
 const alphabet = "abcdefghijklmnopqrstuvwxyz";
 
@@ -26,11 +25,21 @@ export const RadioInputPage = ({
   const router = useRouter();
   const { data, setData } = useContext(SurveyContext);
   const [value, setValue] = useState(data[field].touched ? data[field].value : undefined);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    setValue(data[field].touched ? data[field].value : undefined);
+    setError("");
+  }, [data, field]);
 
   const onSubmit = useCallback(() => {
-    setData(field, data[field]);
-    router.push(nextURL);
-  }, [field, nextURL, data, router, setData]);
+    if (value === undefined || value === null) {
+      setError("Please select an answer");
+    } else {
+      setData(field, value);
+      router.push(nextURL);
+    }
+  }, [field, nextURL, value, router, setData]);
 
   useEffect(() => {
     const optionKeyMap: { [k: string]: string } = {};
@@ -41,10 +50,7 @@ export const RadioInputPage = ({
 
     const handleEnter = (event: KeyboardEvent) => {
       if (event.key === "Enter") {
-        if (value !== undefined) {
-          onSubmit();
-          return;
-        }
+        onSubmit();
       } else {
         const valueMatchesKey = optionKeyMap[event.key];
         if (valueMatchesKey) {
@@ -105,11 +111,12 @@ export const RadioInputPage = ({
             ))}
           </div>
         </RadioGroup>
+        <p aria-live="polite" className="mt-4 h-4 text-red-700">
+          {error}
+        </p>
       </div>
       <div className="mt-8 flex items-baseline">
-        <Link href={nextURL} passHref>
-          <ButtonLink>OK</ButtonLink>
-        </Link>
+        <Button onClick={onSubmit}>OK</Button>
         <p className="ml-4 text-sm">
           press <kbd className="font-sans font-semibold">Enter ↵</kbd>
         </p>
