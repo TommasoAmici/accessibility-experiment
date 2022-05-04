@@ -2,7 +2,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { QuestionMarkCircleIcon, XIcon } from "@heroicons/react/outline";
 import classNames from "classnames";
 import Link from "next/link";
-import { Fragment, useContext, useEffect, useState } from "react";
+import { Fragment, KeyboardEventHandler, useContext, useEffect, useState } from "react";
 import ButtonLink from "../components/ButtonLink";
 import StateContext from "../contexts/state";
 import { Button } from "./Button";
@@ -42,6 +42,12 @@ export const HelpButton = ({ isSimpleLayout }: { isSimpleLayout?: boolean }) => 
     };
   }, [show, setShow]);
 
+  const stopKeydownPropagation: KeyboardEventHandler<HTMLDivElement> = e => {
+    if (e.key !== "Escape") {
+      e.stopPropagation();
+    }
+  };
+
   return (
     <>
       <div
@@ -49,7 +55,7 @@ export const HelpButton = ({ isSimpleLayout }: { isSimpleLayout?: boolean }) => 
           "fixed bottom-4 right-4 flex space-x-4",
           isSimpleLayout && "lg:right-96  ",
         )}
-        onKeyDown={e => e.stopPropagation()}
+        onKeyDown={stopKeydownPropagation}
       >
         {taskStartedAt !== 0 && taskStartedAt < now - 1000 * 60 * 2 && (
           <Link href="/survey" passHref>
@@ -74,7 +80,7 @@ export const HelpButton = ({ isSimpleLayout }: { isSimpleLayout?: boolean }) => 
 
       <Transition appear show={show} as={Fragment}>
         <Dialog as="div" className="fixed inset-0 z-10 overflow-y-auto" onClose={closeDialog}>
-          <div className="h-full px-4 text-center" onKeyDown={e => e.stopPropagation()}>
+          <div className="h-full px-4 text-center" onKeyDown={stopKeydownPropagation}>
             <Transition.Child
               enter="ease-out duration-300"
               enterFrom="opacity-0"
