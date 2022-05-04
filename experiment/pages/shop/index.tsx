@@ -153,7 +153,10 @@ const Home = (props: { accessible: boolean }) => {
 
 // This gets called on every request
 export const getServerSideProps: GetServerSideProps = async context => {
-  let accessible = randomAssignment(context.req.socket.remoteAddress);
+  let accessible = randomAssignment(
+    context.req.socket.remoteAddress,
+    context.req.headers["user-agent"],
+  );
 
   const inaccessibleOverride = context.query["accessible"] === "0";
   if (inaccessibleOverride) {
