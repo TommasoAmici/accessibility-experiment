@@ -96,8 +96,3 @@ interface Survey {
     touched: boolean;
   };
 }
-
-type SurveyItem = { slug: string; pageComponent: "input" | "radio" } & (
-  | RadioInputPageProps
-  | InputPageProps
-);

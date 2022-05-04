@@ -28,7 +28,7 @@ export const surveyPageComponentMap: {
   radio: RadioInputPage,
 };
 
-export const survey: SurveyItem[] = [
+export const survey = [
   {
     slug: "task-difficulty",
     field: "taskDifficulty",
