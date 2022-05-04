@@ -41,7 +41,7 @@ const Accessible = ({ productDB, color, size, setSize }: SelectSizeProps) => {
 const Inaccessible = ({ productDB, color, size, setSize }: SelectSizeProps) => {
   return (
     <div>
-      <div className="text-lg font-light text-neutral-400">Select size</div>
+      <div className="text-lg font-semibold text-inaccessible-title">Select size</div>
       <div className="mt-4 grid grid-cols-4 gap-4 md:grid-cols-6">
         {productDB.sizes.map(s => (
           <div

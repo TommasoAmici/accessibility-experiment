@@ -52,7 +52,7 @@ const Inaccessible = ({
 }: ComponentProps) => {
   return (
     <div className={classNames("space-y-6", className)}>
-      <p className="mb-4 text-3xl font-bold text-neutral-400">Filters</p>
+      <p className="mb-4 text-3xl font-bold text-inaccessible-title">Filters</p>
       <Search
         query={query}
         setQuery={setQuery}

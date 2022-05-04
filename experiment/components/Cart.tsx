@@ -160,7 +160,7 @@ const Inaccessible = ({ className }: ComponentProps) => {
             {items.length}
           </span>
         )}
-        <ShoppingCartIcon className="h-8 w-8 text-neutral-400" />
+        <ShoppingCartIcon className="h-8 w-8 text-inaccessible" />
       </div>
       <Transition
         as={Fragment}
@@ -183,21 +183,21 @@ const Inaccessible = ({ className }: ComponentProps) => {
               className="absolute right-[1.375rem] top-4 outline-none"
               onClick={() => setShowCart(false)}
             >
-              <XIcon className="h-6 w-6 text-neutral-400" />
+              <XIcon className="h-6 w-6 text-inaccessible" />
             </div>
             <div className="flex items-center">
-              <ShoppingCartIcon className="mr-2 h-6 w-6 text-neutral-400" />
-              <span className="text-xl font-bold text-neutral-400">Cart</span>
+              <ShoppingCartIcon className="mr-2 h-6 w-6 text-inaccessible" />
+              <span className="text-xl font-bold text-inaccessible-title">Cart</span>
             </div>
             <div className="mt-4">
               {isEmpty ? (
-                <p className="text-neutral-400">The cart is empty</p>
+                <p className="text-inaccessible">The cart is empty</p>
               ) : (
                 <>
                   {itemAdded && (
                     <p className="my-2 flex items-center">
                       <CheckCircleIcon className="mr-2 h-4 w-4 text-green-400" />
-                      <span className="text-lg text-neutral-400">Added to cart</span>
+                      <span className="text-lg text-inaccessible">Added to cart</span>
                     </p>
                   )}
                   <ul className="grid grid-flow-row gap-4">

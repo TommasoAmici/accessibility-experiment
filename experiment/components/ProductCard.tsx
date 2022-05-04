@@ -39,11 +39,11 @@ const Inaccessible = ({ product }: ComponentProps) => {
   const mainImage = product.collection.images[mainColor][0];
 
   return (
-    <div className="relative isolate w-full text-neutral-400">
+    <div className="relative isolate w-full text-inaccessible">
       <Link href={`/shop/${product.slug}`}>
         <a className="cursor-default outline-none">
           <Image src={mainImage} width={1728 / 3} height={2160 / 4} objectFit="cover" />
-          <div className="mt-1 text-xl font-bold">{product.name}</div>
+          <div className="mt-1 text-xl font-bold text-inaccessible-title">{product.name}</div>
         </a>
       </Link>
       <div>{product.description}</div>

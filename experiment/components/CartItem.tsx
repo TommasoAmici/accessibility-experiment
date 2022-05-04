@@ -42,13 +42,13 @@ const Inaccessible = ({ item, removeFromCart }: ComponentProps) => {
       <Image src={imageSrc} width={128} height={128} objectFit="cover" />
       <div className="ml-4 flex w-full items-center justify-between">
         <div>
-          <p className="text-sm font-semibold capitalize text-neutral-400">{product.name}</p>
+          <p className="text-sm font-semibold capitalize text-inaccessible">{product.name}</p>
           <p className="text-sm capitalize text-gray-400">
             {item.color}, {item.size}
           </p>
         </div>
         <div onClick={removeFromCart} className="mr-2 outline-none">
-          <TrashIcon className="h-5 w-5 text-neutral-400" />
+          <TrashIcon className="h-5 w-5 text-inaccessible" />
         </div>
       </div>
     </div>

@@ -114,7 +114,7 @@ const Inaccessible = ({
   return (
     <>
       <div
-        className="ml-auto mb-8 flex items-center border border-neutral-400 px-3 py-2 text-neutral-400 outline-none lg:hidden"
+        className="ml-auto mb-8 flex items-center border border-neutral-400 px-3 py-2 text-inaccessible outline-none lg:hidden"
         onClick={openDialog}
       >
         <AdjustmentsIcon className="mr-2 h-4 w-4" /> <span>Filters</span>
@@ -135,9 +135,9 @@ const Inaccessible = ({
           <div className="fixed inset-0 z-10 bg-black/30" onClick={closeDialog} />
           <div className="prose fixed left-1/2 top-1/2 z-20 w-full max-w-lg -translate-y-1/2 -translate-x-1/2 bg-white p-6 transition-all">
             <div className="absolute right-[1.375rem] top-4 outline-none" onClick={closeDialog}>
-              <XIcon className="h-6 w-6 text-neutral-400" />
+              <XIcon className="h-6 w-6 text-inaccessible" />
             </div>
-            <p className="mt-0 -mb-4 text-3xl font-bold text-neutral-400">Filters</p>
+            <p className="mt-0 -mb-4 text-3xl font-bold text-inaccessible">Filters</p>
 
             <ProductFilterSport
               sportFilters={sportFilters}

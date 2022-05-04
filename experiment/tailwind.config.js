@@ -7,6 +7,12 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors: {
+        inaccessible: {
+          title: "#959595",
+          DEFAULT: "#777",
+        },
+      },
       typography: {
         DEFAULT: {
           css: {

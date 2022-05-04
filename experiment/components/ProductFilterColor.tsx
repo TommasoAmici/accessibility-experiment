@@ -45,7 +45,7 @@ const Accessible = ({ colorFilters, setColorFilters }: ComponentProps) => {
 const Inaccessible = ({ colorFilters, setColorFilters }: ComponentProps) => {
   return (
     <div>
-      <p className="text-2xl font-bold text-neutral-400">Color</p>
+      <p className="text-2xl font-bold text-inaccessible-title">Color</p>
       <div className="mt-2 grid grid-cols-6 justify-items-start gap-4 gap-y-8 lg:grid-cols-3">
         {allColors.map(color => (
           <div
@@ -65,7 +65,7 @@ const Inaccessible = ({ colorFilters, setColorFilters }: ComponentProps) => {
                 />
               )}
             </div>
-            <span className="absolute mt-[2.125rem] text-neutral-400">{color}</span>
+            <span className="absolute mt-[2.125rem] text-inaccessible">{color}</span>
           </div>
         ))}
       </div>

@@ -34,7 +34,7 @@ const checkboxFromColor: ProductUI = {
   yellow: "bg-yellow-400 text-yellow-400",
   orange: "bg-orange-400 text-orange-400",
   beige: "bg-[#e5cfb2] text-[#e5cfb2]",
-  gray: "bg-neutral-400 text-neutral-400",
+  gray: "bg-neutral-400 text-inaccessible",
 };
 
 const colorFromLevel = {

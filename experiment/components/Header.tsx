@@ -40,7 +40,7 @@ const Inaccessible = ({ breadcrumbs }: ComponentProps) => {
       <div className="flex items-center justify-between border-b-4 border-stone-100 px-8 py-4">
         <div className="flex items-baseline space-x-2">
           <Link href="/shop">
-            <a className="whitespace-nowrap text-xl font-bold text-neutral-400 outline-none">
+            <a className="whitespace-nowrap text-xl font-bold text-inaccessible-title outline-none">
               Sheer Shoes
             </a>
           </Link>
@@ -49,7 +49,7 @@ const Inaccessible = ({ breadcrumbs }: ComponentProps) => {
               <ChevronRightIcon className="h-5 w-5 translate-y-1 text-stone-500" />
               <Link href={b.path}>
                 <a className="outline-none">
-                  <span className="capitalize text-neutral-400">{b.title}</span>
+                  <span className="capitalize text-inaccessible">{b.title}</span>
                 </a>
               </Link>
             </div>
