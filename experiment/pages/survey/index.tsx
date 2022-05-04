@@ -1,9 +1,40 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useContext, useEffect } from "react";
 import ButtonLink from "../../components/ButtonLink";
+import StateContext from "../../contexts/state";
+import { useCompleteExperiment } from "../../hooks/useCompleteExperiment";
 import { usePressEnter } from "../../hooks/usePressEnter";
 
 const SurveyPage = () => {
+  useCompleteExperiment();
+
+  const { experimentGroup, taskAbandoned, taskFinishedAt, taskStartedAt, askedForHelp } =
+    useContext(StateContext);
+
+  useEffect(() => {
+    if (taskStartedAt === 0 || taskFinishedAt === 0) {
+      return;
+    }
+
+    const sendResults = () => {
+      const url = "/api/experiment";
+      const body = JSON.stringify({
+        experimentGroup,
+        askedForHelp,
+        taskStartedAt,
+        taskFinishedAt,
+        taskAbandoned,
+      });
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon(url, body);
+      } else {
+        fetch(url, { body, method: "POST", keepalive: true });
+      }
+    };
+    sendResults();
+  }, []);
+
   const router = useRouter();
   const nextURL = "/survey/age";
 

@@ -1,17 +1,18 @@
-CREATE TABLE IF NOT EXISTS surveyResponses(
+CREATE TABLE IF NOT EXISTS results(
   id                      INTEGER PRIMARY KEY,
-  userID                  INTEGER NOT NULL,
+  userID                  INTEGER NOT NULL UNIQUE,
   experimentGroup         TEXT CHECK( experimentGroup IN ('accessible','inaccessible') ) NOT NULL,
   askedForHelp            INTEGER NOT NULL,
   taskStartedAt           INTEGER NOT NULL,
   taskFinishedAt          INTEGER NOT NULL,
   taskAbandoned           BOOLEAN NOT NULL,
-  age                     INTEGER NOT NULL,
-  disability              BOOLEAN NOT NULL,
-  accessibilityOptions    BOOLEAN NOT NULL,
-  assistiveTechnology     BOOLEAN NOT NULL,
-  taskDifficulty          TEXT NOT NULL,
-  onlineShoppingFrequency TEXT NOT NULL
+  -- survey drops the NOT NULL constraint as I predict some people may not complete the survey
+  age                     INTEGER,
+  disability              BOOLEAN,
+  accessibilityOptions    BOOLEAN,
+  assistiveTechnology     BOOLEAN,
+  taskDifficulty          TEXT,
+  onlineShoppingFrequency TEXT
 );
 
 CREATE TABLE IF NOT EXISTS wantFinalPaper(

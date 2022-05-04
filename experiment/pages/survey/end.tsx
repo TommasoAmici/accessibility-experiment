@@ -53,14 +53,7 @@ const SubscribeForResults = () => {
 const SurveyEndPage = () => {
   useCompleteExperiment();
 
-  const {
-    experimentGroup,
-    taskAbandoned,
-    taskFinishedAt,
-    taskStartedAt,
-    addNotification,
-    askedForHelp,
-  } = useContext(StateContext);
+  const { addNotification } = useContext(StateContext);
   const {
     data: {
       age,
@@ -72,31 +65,32 @@ const SurveyEndPage = () => {
     },
   } = useContext(SurveyContext);
 
+  const successNotification = (success: boolean) => {
+    if (success) {
+      addNotification("Response successfully saved, thank you!", "success");
+    } else {
+      addNotification("Failed to save response", "error");
+    }
+  };
+
   useEffect(() => {
-    // TODO submit data
-    const sendResults = async () => {
-      const res = await fetch("/api/survey", {
-        method: "POST",
-        body: JSON.stringify({
-          experimentGroup,
-          askedForHelp,
-          taskStartedAt,
-          taskFinishedAt,
-          taskAbandoned,
-          age: age.value,
-          disability: disability.value,
-          accessibilityOptions: accessibilityOptions.value,
-          assistiveTechnology: assistiveTechnology.value,
-          taskDifficulty: taskDifficulty.value,
-          onlineShoppingFrequency: onlineShoppingFrequency.value,
-        }),
-        headers: { "Content-Type": "application/json;charset=utf-8" },
+    const sendResults = () => {
+      const url = "/api/survey";
+      const body = JSON.stringify({
+        age: age.value,
+        disability: disability.value,
+        accessibilityOptions: accessibilityOptions.value,
+        assistiveTechnology: assistiveTechnology.value,
+        taskDifficulty: taskDifficulty.value,
+        onlineShoppingFrequency: onlineShoppingFrequency.value,
       });
-      const json = await res.json();
-      if (res.ok) {
-        addNotification(json.message, "success");
+      if (navigator.sendBeacon) {
+        const success = navigator.sendBeacon(url, body);
+        successNotification(success);
       } else {
-        addNotification(json.message, res.status >= 500 ? "error" : "warning");
+        fetch(url, { body, method: "POST", keepalive: true }).then(res =>
+          successNotification(res.ok),
+        );
       }
     };
     sendResults();
