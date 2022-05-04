@@ -15,7 +15,7 @@ const borderFromColor: ProductUI = {
   green: "border-green-300",
   purple: "border-fuchsia-300",
   white: "border-blue-300",
-  black: "border-neutral-400",
+  black: "!border-neutral-400",
   red: "border-red-300",
   blue: "border-blue-300",
   yellow: "border-yellow-200",
