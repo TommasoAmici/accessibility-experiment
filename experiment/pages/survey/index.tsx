@@ -5,6 +5,7 @@ import ButtonLink from "../../components/ButtonLink";
 import StateContext from "../../contexts/state";
 import { useCompleteExperiment } from "../../hooks/useCompleteExperiment";
 import { usePressEnter } from "../../hooks/usePressEnter";
+import { survey } from "../../lib/survey";
 
 const SurveyPage = () => {
   useCompleteExperiment();
@@ -36,7 +37,7 @@ const SurveyPage = () => {
   }, []);
 
   const router = useRouter();
-  const nextURL = "/survey/age";
+  const nextURL = `/survey/${survey[0].slug}`;
 
   usePressEnter(nextURL, router);
 

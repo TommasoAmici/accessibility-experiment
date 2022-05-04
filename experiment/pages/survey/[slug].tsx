@@ -10,9 +10,18 @@ const SurveyPage = ({
   useCompleteExperiment();
 
   const PageComponent = surveyPageComponentMap[pageComponent];
+
+  const currentQuestion = survey.findIndex(s => s.slug === slug);
+  const nextQuestion = survey[currentQuestion + 1];
+
   return (
     <>
-      <PageComponent {...props} />
+      <PageComponent
+        {...props}
+        nextURL={
+          currentQuestion === survey.length - 1 ? "/survey/end" : `/survey/${nextQuestion.slug}`
+        }
+      />
       <div className="mx-auto mt-10 w-3/4 lg:w-3/5">
         <SurveyProgress
           className={classNames(
@@ -20,7 +29,7 @@ const SurveyPage = ({
             pageComponent === "input" ? "max-w-md" : "max-w-[calc(28rem+8px)]",
           )}
           max={survey.length}
-          value={survey.findIndex(s => s.slug === slug)}
+          value={currentQuestion}
         />
       </div>
     </>

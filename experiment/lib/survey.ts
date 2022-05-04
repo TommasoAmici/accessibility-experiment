@@ -1,4 +1,5 @@
 import { InputPage, RadioInputPage } from "../components/pages";
+import { stringToSlug } from "./stringToSlug";
 
 export const difficultyOptions: { value: string; label: string }[] = [
   { value: "very-easy", label: "Very easy" },
@@ -28,58 +29,48 @@ export const surveyPageComponentMap: {
   radio: RadioInputPage,
 };
 
-export const survey = [
+const surveyNoSlugs = [
   {
-    slug: "task-difficulty",
-    field: "taskDifficulty",
-    pageComponent: "radio",
-    label: "How did you find ?",
-    nextURL: "/survey/age",
-    options: difficultyOptions,
-  },
-  {
-    slug: "age",
     field: "age",
     pageComponent: "input",
     label: "How old are you?",
-    nextURL: "/survey/how-often-do-you-shop-online",
     options: { required: true, min: 12, max: 99, valueAsNumber: true },
     inputProps: { type: "number", min: "12", max: "99" },
   },
   {
-    slug: "disability",
+    field: "taskDifficulty",
+    pageComponent: "radio",
+    label: "How easy or difficult was it to use the site?",
+    options: difficultyOptions,
+  },
+  {
     field: "disability",
     pageComponent: "radio",
     label: "Do you suffer from any condition that makes it hard to navigate websites?",
     helpText:
       "For example, color blindness, disabilities, changing abilities because of aging, etc.",
-    nextURL: "/survey/assistive-technology",
     options: boolOptions,
   },
   {
-    slug: "accessibility-options",
     field: "accessibilityOptions",
     pageComponent: "radio",
     label: "Do you have any accessibility options turned on on your device?",
     helpText: "For example, larger text, increased contrast, bold text, reduced motion, etc.",
-    nextURL: "/survey/how-often-do-you-shop-online",
     options: boolOptions,
   },
   {
-    slug: "assistive-technology",
     field: "assistiveTechnology",
     pageComponent: "radio",
     label: "Do you make use of any assistive technology?",
     helpText: "For example, screen reader, dictation, etc.",
-    nextURL: "/survey/accessibility-options",
     options: boolOptions,
   },
   {
-    slug: "how-often-do-you-shop-online",
     field: "onlineShoppingFrequency",
     pageComponent: "radio",
     label: "How often do you shop online?",
-    nextURL: "#TODO",
     options: frequencyOptions,
   },
 ];
+
+export const survey = surveyNoSlugs.map(s => ({ ...s, slug: stringToSlug(s.label) }));
