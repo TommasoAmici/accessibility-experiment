@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS results(
   id                      INTEGER PRIMARY KEY,
   userID                  INTEGER NOT NULL UNIQUE,
+  userAgent               TEXT NOT NULL,
   experimentGroup         TEXT CHECK( experimentGroup IN ('accessible','inaccessible') ) NOT NULL,
   askedForHelp            INTEGER NOT NULL,
   taskStartedAt           TEXT NOT NULL,

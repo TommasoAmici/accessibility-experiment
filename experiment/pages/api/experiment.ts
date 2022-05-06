@@ -6,15 +6,17 @@ const db = new Database("experiment.sqlite3");
 
 const postSurvey = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
+    const userAgent = req.headers["user-agent"];
     const { experimentGroup, taskStartedAt, taskFinishedAt, taskAbandoned, askedForHelp } =
       JSON.parse(req.body);
     const userID = userIDFromRequest(req.socket.remoteAddress, req.headers["user-agent"]);
     try {
       const statement = db.prepare(
-        "INSERT INTO results (userID, experimentGroup, taskStartedAt, taskFinishedAt, taskAbandoned, askedForHelp) VALUES (?, ?, ?, ?, ?, ?)",
+        "INSERT INTO results (userID, userAgent, experimentGroup, taskStartedAt, taskFinishedAt, taskAbandoned, askedForHelp) VALUES (?, ?, ?, ?, ?, ?)",
       );
       statement.run(
         userID,
+        userAgent,
         experimentGroup,
         taskStartedAt,
         taskFinishedAt,
