@@ -26,9 +26,11 @@ const Accessible = ({ product }: ComponentProps) => {
 const Inaccessible = ({ product }: ComponentProps) => {
   return (
     <div className="text-inaccessible">
-      <div className="text-4xl font-bold text-inaccessible-title">{product.name}</div>
-      <div className="mt-2">{product.description}</div>
-      <div className="mt-2">{priceLabel(product.price)}</div>
+      <div className="text-[36px] font-bold leading-[40px] text-inaccessible-title">
+        {product.name}
+      </div>
+      <div className="mt-[8px]">{product.description}</div>
+      <div className="mt-[8px]">{priceLabel(product.price)}</div>
     </div>
   );
 };

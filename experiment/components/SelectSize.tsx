@@ -41,14 +41,16 @@ const Accessible = ({ productDB, color, size, setSize }: SelectSizeProps) => {
 const Inaccessible = ({ productDB, color, size, setSize }: SelectSizeProps) => {
   return (
     <div>
-      <div className="text-lg font-semibold text-inaccessible-title">Select size</div>
-      <div className="mt-4 grid grid-cols-4 gap-4 md:grid-cols-6">
+      <div className="text-[18px] font-semibold leading-[28px] text-inaccessible-title">
+        Select size
+      </div>
+      <div className="mt-[16px] grid grid-cols-4 gap-[16px] md:grid-cols-6">
         {productDB.sizes.map(s => (
           <div
             key={s}
             onClick={() => setSize(s)}
             className={classNames(
-              "w-full border-4 border-white bg-neutral-100 py-2 text-center font-semibold text-neutral-500 outline-none transition-colors duration-75 hover:bg-neutral-200",
+              "w-full border-4 border-white bg-neutral-100 py-[8px] text-center font-semibold text-neutral-500 outline-none transition-colors duration-75 hover:bg-neutral-200",
               s === size
                 ? classNames(ui.inaccessible.borderFromColor[color], "text-neutral-600 opacity-100")
                 : "opacity-80",

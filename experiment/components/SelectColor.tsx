@@ -51,12 +51,14 @@ const Accessible = ({ productDB, color, setColor }: ComponentProps) => {
 const Inaccessible = ({ productDB, color, setColor }: ComponentProps) => {
   return (
     <div>
-      <div className="text-lg font-semibold text-inaccessible-title">Select color</div>
-      <div className="mt-4 grid grid-cols-2 place-content-stretch gap-6 sm:grid-cols-4">
+      <div className="text-[18px] font-semibold leading-[28px] text-inaccessible-title">
+        Select color
+      </div>
+      <div className="mt-[16px] grid grid-cols-2 place-content-stretch gap-[24px] sm:grid-cols-4">
         {productDB.colors.map(c => (
           <div key={c} onClick={() => setColor(c)}>
             <div className="flex flex-col-reverse items-center">
-              <div className="mt-2 text-sm capitalize text-inaccessible">{c}</div>
+              <div className="mt-[8px] text-sm capitalize text-inaccessible">{c}</div>
               <div
                 className={classNames(
                   "aspect-square border-[6px] border-white transition-opacity duration-75 hover:opacity-100",

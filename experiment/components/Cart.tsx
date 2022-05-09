@@ -155,15 +155,15 @@ const Inaccessible = ({ className }: ComponentProps) => {
   return (
     <>
       <div
-        className={classNames("flex items-center space-x-2 outline-none", className)}
+        className={classNames("flex items-center space-x-[8px] outline-none", className)}
         onClick={() => setShowCart(true)}
       >
         {!isEmpty && (
-          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-neutral-400 text-sm text-white">
+          <span className="flex h-[24px] w-[24px] items-center justify-center rounded-full bg-neutral-400 text-[14px] leading-[20px] text-white">
             {items.length}
           </span>
         )}
-        <ShoppingCartIcon className="h-8 w-8 text-inaccessible" />
+        <ShoppingCartIcon className="h-[32px] w-[32px] text-inaccessible" />
       </div>
       <Transition
         as={Fragment}
@@ -181,29 +181,31 @@ const Inaccessible = ({ className }: ComponentProps) => {
             className="fixed inset-0 z-10 bg-black opacity-30"
             onClick={() => setShowCart(false)}
           />
-          <div className="fixed right-0 top-3 z-10 w-96 -translate-x-4 bg-white p-4 shadow-lg ring-4 ring-neutral-400">
+          <div className="fixed right-0 top-[12px] z-10 w-[384px] -translate-x-[16px] bg-white p-[16px] shadow-lg ring-4 ring-neutral-400">
             <div
-              className="absolute right-[1.375rem] top-4 outline-none"
+              className="absolute right-[22px] top-[16px] outline-none"
               onClick={() => setShowCart(false)}
             >
-              <XIcon className="h-6 w-6 text-inaccessible" />
+              <XIcon className="h-[24px] w-[24px] text-inaccessible" />
             </div>
             <div className="flex items-center">
-              <ShoppingCartIcon className="mr-2 h-6 w-6 text-inaccessible" />
+              <ShoppingCartIcon className="mr-[8px] h-[24px] w-[24px] text-inaccessible" />
               <span className="text-xl font-bold text-inaccessible-title">Cart</span>
             </div>
-            <div className="mt-4">
+            <div className="mt-[16px]">
               {isEmpty ? (
                 <p className="text-inaccessible">The cart is empty</p>
               ) : (
                 <>
                   {itemAdded && (
-                    <p className="my-2 flex items-center">
-                      <CheckCircleIcon className="mr-2 h-4 w-4 text-green-400" />
-                      <span className="text-lg text-inaccessible">Added to cart</span>
+                    <p className="my-[8px] flex items-center">
+                      <CheckCircleIcon className="mr-[8px] h-[16px] w-[16px] text-green-400" />
+                      <span className="text-[18px] leading-[28px] text-inaccessible">
+                        Added to cart
+                      </span>
                     </p>
                   )}
-                  <ul className="grid grid-flow-row gap-4">
+                  <ul className="grid grid-flow-row gap-[16px]">
                     {items.map(item => (
                       <li key={item.id}>
                         <CartItem
@@ -220,7 +222,7 @@ const Inaccessible = ({ className }: ComponentProps) => {
             <div
               className={classNames(
                 ui.inaccessible.bgFromColor["black"],
-                "mt-4 grid w-full place-content-center py-2 text-white outline-none",
+                "mt-[16px] grid w-full place-content-center py-[8px] text-white outline-none",
               )}
               onClick={validate}
             >

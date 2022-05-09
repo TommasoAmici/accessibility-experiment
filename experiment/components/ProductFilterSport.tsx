@@ -37,21 +37,21 @@ const Accessible = ({ sportFilters, setSportFilters }: ComponentProps) => {
 const Inaccessible = ({ sportFilters, setSportFilters }: ComponentProps) => {
   return (
     <div>
-      <p className="text-2xl font-bold text-inaccessible-title">Sport</p>
-      <div className="mt-2">
+      <p className="text-[24px] font-bold leading-[32px] text-inaccessible-title">Sport</p>
+      <div className="mt-[8px]">
         {allSports.map(sport => (
           <div
             key={sport}
-            className="mt-2 flex items-center capitalize"
+            className="mt-[8px] flex items-center capitalize"
             onClick={() => setSportFilters({ ...sportFilters, [sport]: !sportFilters[sport] })}
           >
             <div
               className={classNames(
-                "mr-2 grid h-6 w-6 place-content-center border",
+                "mr-[8px] grid h-[24px] w-[24px] place-content-center border",
                 sportFilters[sport] ? "border-black bg-black" : "border-neutral-400",
               )}
             >
-              {sportFilters[sport] && <CheckIcon className="h-5 w-5 text-inaccessible" />}
+              {sportFilters[sport] && <CheckIcon className="h-[20px] w-[20px] text-inaccessible" />}
             </div>
             <span className="text-inaccessible">{sport}</span>
           </div>

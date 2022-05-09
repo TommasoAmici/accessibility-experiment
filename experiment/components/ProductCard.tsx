@@ -43,15 +43,17 @@ const Inaccessible = ({ product }: ComponentProps) => {
       <Link href={`/shop/${product.slug}`}>
         <a className="cursor-default outline-none">
           <Image src={mainImage} width={1728 / 3} height={2160 / 4} objectFit="cover" />
-          <div className="mt-1 text-xl font-bold text-inaccessible-title">{product.name}</div>
+          <div className="mt-[4px] text-[20px] font-bold leading-[28px] text-inaccessible-title">
+            {product.name}
+          </div>
         </a>
       </Link>
       <div>{product.description}</div>
-      <div className="mt-2 flex space-x-1">
+      <div className="mt-[8px] flex space-x-[4px]">
         {product.colors.map(color => (
           <div
             key={color}
-            className={classNames("h-1 w-6", ui.accessible.checkboxFromColor[color])}
+            className={classNames("h-[4px] w-[24px]", ui.accessible.checkboxFromColor[color])}
           />
         ))}
       </div>

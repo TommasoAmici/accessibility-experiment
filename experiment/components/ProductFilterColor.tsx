@@ -45,27 +45,30 @@ const Accessible = ({ colorFilters, setColorFilters }: ComponentProps) => {
 const Inaccessible = ({ colorFilters, setColorFilters }: ComponentProps) => {
   return (
     <div>
-      <p className="text-2xl font-bold text-inaccessible-title">Color</p>
-      <div className="mt-2 grid grid-cols-6 justify-items-start gap-4 gap-y-8 lg:grid-cols-3">
+      <p className="text-[24px] font-bold leading-[32px] text-inaccessible-title">Color</p>
+      <div className="mt-[8px] grid grid-cols-6 justify-items-start gap-[16px] gap-y-[32px] lg:grid-cols-3">
         {allColors.map(color => (
           <div
             key={color}
-            className="relative mt-0.5 flex flex-col items-center text-xs capitalize"
+            className="relative mt-[2px] flex flex-col items-center text-[12px] capitalize leading-[16px]"
           >
             <div
               className={classNames(
-                "grid h-8 w-8 place-content-center",
+                "grid h-[32px] w-[32px] place-content-center",
                 ui.inaccessible.checkboxFromColor[color],
               )}
               onClick={() => setColorFilters({ ...colorFilters, [color]: !colorFilters[color] })}
             >
               {colorFilters[color] && (
                 <CheckIcon
-                  className={classNames("h-7 w-7", color === "white" ? "text-black" : "text-white")}
+                  className={classNames(
+                    "h-[28px] w-[28px]",
+                    color === "white" ? "text-black" : "text-white",
+                  )}
                 />
               )}
             </div>
-            <span className="absolute mt-[2.125rem] text-inaccessible">{color}</span>
+            <span className="absolute mt-[34px] text-inaccessible">{color}</span>
           </div>
         ))}
       </div>

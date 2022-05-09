@@ -26,9 +26,9 @@ const Accessible = ({ images, alts }: ComponentProps) => {
 
 const Inaccessible = ({ images }: ComponentProps) => {
   return (
-    <div className="flex space-x-4 overflow-scroll lg:grid lg:grid-cols-2 lg:gap-y-4 lg:gap-x-6 lg:space-x-0 lg:overflow-hidden">
+    <div className="flex space-x-[16px] overflow-scroll lg:grid lg:grid-cols-2 lg:gap-y-[16px] lg:gap-x-[24px] lg:space-x-0 lg:overflow-hidden">
       {images.map((image, index) => (
-        <div className="w-64 min-w-[16rem] lg:w-auto" key={index}>
+        <div className="w-[256px] min-w-[256px] lg:w-auto" key={index}>
           <Image
             src={image}
             width={360}

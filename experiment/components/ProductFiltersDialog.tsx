@@ -114,10 +114,10 @@ const Inaccessible = ({
   return (
     <>
       <div
-        className="ml-auto mb-8 flex items-center border border-neutral-400 px-3 py-2 text-inaccessible outline-none lg:hidden"
+        className="ml-auto mb-[32px] flex items-center border border-neutral-400 px-[12px] py-[8px] text-inaccessible outline-none lg:hidden"
         onClick={openDialog}
       >
-        <AdjustmentsIcon className="mr-2 h-4 w-4" /> <span>Filters</span>
+        <AdjustmentsIcon className="mr-[8px] h-[16px] w-[16px]" /> <span>Filters</span>
       </div>
 
       <Transition
@@ -133,11 +133,13 @@ const Inaccessible = ({
       >
         <div className="fixed inset-0 z-30 !m-0 !p-0">
           <div className="fixed inset-0 z-10 bg-black/30" onClick={closeDialog} />
-          <div className="prose fixed left-1/2 top-1/2 z-20 w-full max-w-lg -translate-y-1/2 -translate-x-1/2 bg-white p-6 transition-all">
-            <div className="absolute right-[1.375rem] top-4 outline-none" onClick={closeDialog}>
-              <XIcon className="h-6 w-6 text-inaccessible" />
+          <div className="prose fixed left-1/2 top-1/2 z-20 w-full max-w-lg -translate-y-1/2 -translate-x-1/2 bg-white p-[24px] transition-all">
+            <div className="absolute right-[22px] top-4 outline-none" onClick={closeDialog}>
+              <XIcon className="h-[24px] w-[24px] text-inaccessible" />
             </div>
-            <p className="mt-0 -mb-4 text-3xl font-bold text-inaccessible">Filters</p>
+            <p className="mt-0 -mb-[16px] text-[30px] font-bold leading-[36px] text-inaccessible">
+              Filters
+            </p>
 
             <ProductFilterSport
               sportFilters={sportFilters}
@@ -150,10 +152,10 @@ const Inaccessible = ({
               accessible={false}
             />
 
-            <div className="mt-12 flex">
+            <div className="mt-[48px] flex">
               <div
                 className={classNames(
-                  "mx-auto grid w-full place-content-center px-3 py-1.5 text-white",
+                  "mx-auto grid w-full place-content-center px-[12px] py-[6px] text-white",
                   ui.inaccessible.bgFromColor.black,
                 )}
                 onClick={closeDialog}

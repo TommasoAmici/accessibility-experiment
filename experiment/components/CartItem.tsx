@@ -40,15 +40,15 @@ const Inaccessible = ({ item, removeFromCart }: ComponentProps) => {
   return (
     <div className="flex items-center">
       <Image src={imageSrc} width={128} height={128} objectFit="cover" />
-      <div className="ml-4 flex w-full items-center justify-between">
+      <div className="ml-[16px] flex w-full items-center justify-between text-[14px] leading-[20px]">
         <div>
-          <p className="text-sm font-semibold capitalize text-inaccessible">{product.name}</p>
-          <p className="text-sm capitalize text-gray-400">
+          <p className="font-semibold capitalize text-inaccessible">{product.name}</p>
+          <p className="capitalize text-gray-400">
             {item.color}, {item.size}
           </p>
         </div>
-        <div onClick={removeFromCart} className="mr-2 outline-none">
-          <TrashIcon className="h-5 w-5 text-inaccessible" />
+        <div onClick={removeFromCart} className="mr-[8px] outline-none">
+          <TrashIcon className="h-[20px] w-[20px] text-inaccessible" />
         </div>
       </div>
     </div>

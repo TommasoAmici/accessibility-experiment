@@ -71,7 +71,7 @@ const Accessible = ({}: ComponentProps) => {
 const Inaccessible = ({}: ComponentProps) => {
   const { notifications } = useContext(StateContext);
   return (
-    <div className="space-y-2">
+    <div className="space-y-[8px]">
       {notifications.map(n => (
         <Transition
           show={true}
@@ -88,10 +88,10 @@ const Inaccessible = ({}: ComponentProps) => {
           <div
             className={classNames(
               ui.inaccessible.colorFromLevel[n.level],
-              "relative w-96 border-4 bg-white",
+              "relative w-[384px] border-4 bg-white",
             )}
           >
-            <p className="px-2 pt-1 pb-2 text-inaccessible">{n.message}</p>
+            <p className="px-[8px] pt-[4px] pb-[8px] text-inaccessible">{n.message}</p>
             <NotificationCountdownBar accessible={false} notification={n} />
           </div>
         </Transition>

@@ -32,9 +32,11 @@ const Inaccessible = ({ query, setQuery, className }: ComponentProps) => {
       className={classNames("text-inaccessible", className)}
       onKeyDown={e => e.stopPropagation()}
     >
-      <p className="mb-2 hidden text-2xl font-bold text-inaccessible-title lg:block">Search</p>
+      <p className="mb-[8px] hidden text-[24px] font-bold leading-[32px] text-inaccessible-title lg:block">
+        Search
+      </p>
       <div className="relative">
-        <SearchIcon className="absolute top-2 left-1.5 h-6 w-6" />
+        <SearchIcon className="absolute top-[8px] left-[6px] h-[24px] w-[24px]" />
         <input
           type="text"
           value={query}
@@ -42,7 +44,7 @@ const Inaccessible = ({ query, setQuery, className }: ComponentProps) => {
             setQuery(e.currentTarget.value);
           }}
           placeholder="Search..."
-          className="w-full border-neutral-400 pl-9 placeholder:text-neutral-300 focus:border-neutral-400 focus:outline-none focus:ring-0"
+          className="w-full border-neutral-400 pl-[36px] placeholder:text-neutral-300 focus:border-neutral-400 focus:outline-none focus:ring-0"
         />
       </div>
     </div>

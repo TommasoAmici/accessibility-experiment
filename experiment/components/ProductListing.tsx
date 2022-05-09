@@ -22,7 +22,7 @@ const Accessible = ({ products }: ComponentProps) => {
 
 const Inaccessible = ({ products }: ComponentProps) => {
   return (
-    <div className="grid grid-cols-1 gap-4 gap-y-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
+    <div className="grid grid-cols-1 gap-[16px] gap-y-[48px] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
       {products.length === 0 ? (
         <p className="w-full text-inaccessible">No products matching these filters</p>
       ) : (

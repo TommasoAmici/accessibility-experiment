@@ -37,16 +37,19 @@ const Accessible = ({ breadcrumbs }: ComponentProps) => {
 const Inaccessible = ({ breadcrumbs }: ComponentProps) => {
   return (
     <>
-      <div className="flex items-center justify-between border-b-4 border-stone-100 px-8 py-4">
-        <div className="flex items-baseline space-x-2">
+      <div className="flex items-center justify-between border-b-4 border-stone-100 px-[32px] py-[16px]">
+        <div className="flex items-baseline space-x-[8px]">
           <Link href="/shop">
-            <a className="whitespace-nowrap text-xl font-bold text-inaccessible-title outline-none">
+            <a className="whitespace-nowrap text-[20px] font-bold leading-[28px] text-inaccessible-title outline-none">
               Sheer Shoes
             </a>
           </Link>
           {breadcrumbs.map(b => (
-            <div key={b.path} className="flex items-baseline space-x-2 last:hidden last:lg:flex">
-              <ChevronRightIcon className="h-5 w-5 translate-y-1 text-stone-500" />
+            <div
+              key={b.path}
+              className="flex items-baseline space-x-[8px] last:hidden last:lg:flex"
+            >
+              <ChevronRightIcon className="h-[20px] w-[20px] translate-y-[4px] text-stone-500" />
               <Link href={b.path}>
                 <a className="outline-none">
                   <span className="capitalize text-inaccessible">{b.title}</span>
