@@ -62,7 +62,7 @@ const surveyNoSlugs = [
     field: "assistiveTechnology",
     pageComponent: "radio",
     label: "Do you make use of any assistive technology?",
-    helpText: "For example, screen reader, dictation, etc.",
+    helpText: "For example, a screen reader, dictation, etc.",
     options: boolOptions,
   },
   {
