@@ -36,6 +36,7 @@ const SubscribeForResults = () => {
         <span>Email</span>
         <input
           type="email"
+          name="email"
           value={email}
           onInput={e => setEmail(e.currentTarget.value)}
           className={

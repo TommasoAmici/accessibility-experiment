@@ -33,6 +33,7 @@ export const surveyPageComponentMap: {
 const surveyNoSlugs = [
   {
     field: "age",
+    name: "age",
     pageComponent: "input",
     label: "How old are you?",
     options: { required: true, min: 12, max: 99, valueAsNumber: true },
