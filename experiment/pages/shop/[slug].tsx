@@ -7,6 +7,8 @@ import { SelectColor } from "../../components/SelectColor";
 import { SelectSize } from "../../components/SelectSize";
 import { ShoeDescription } from "../../components/ShoeDescription";
 import CartContext from "../../contexts/cart";
+import StateContext from "../../contexts/state";
+import { useAbandonedExperiment } from "../../hooks/useAbandonedExperiment";
 import { useExperimentFinished } from "../../hooks/useExperimentFinished";
 import { ShopLayout } from "../../layouts/ShopLayout";
 import { db } from "../../lib/db";
@@ -26,6 +28,9 @@ const ShoePage = ({
   const [color, setColor] = useState<Color>(product.colors[0]);
   const [size, setSize] = useState<Size>(product.sizes[0]);
   const { addItem, setItemAdded } = useContext(CartContext);
+  const { experimentGroup, askedForHelp, taskStartedAt } = useContext(StateContext);
+
+  useAbandonedExperiment({ experimentGroup, askedForHelp, taskStartedAt });
 
   return (
     <main id="main" className="mx-auto max-w-screen-2xl pb-20 lg:pb-0">

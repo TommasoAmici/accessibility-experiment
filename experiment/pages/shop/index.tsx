@@ -5,6 +5,7 @@ import { ProductFiltersDialog } from "../../components/ProductFiltersDialog";
 import { ProductListing } from "../../components/ProductListing";
 import { Search } from "../../components/Search";
 import StateContext from "../../contexts/state";
+import { useAbandonedExperiment } from "../../hooks/useAbandonedExperiment";
 import { useExperimentFinished } from "../../hooks/useExperimentFinished";
 import { ShopLayout } from "../../layouts/ShopLayout";
 import { allProducts } from "../../lib/db";
@@ -46,7 +47,8 @@ const Home = (props: { accessible: boolean }) => {
   useExperimentFinished();
 
   const { accessible } = props;
-  const { taskStartedAt, setTaskStartedAt, setExperimentGroup } = useContext(StateContext);
+  const { experimentGroup, askedForHelp, taskStartedAt, setTaskStartedAt, setExperimentGroup } =
+    useContext(StateContext);
   const [query, setQuery] = useState("");
   const [colorFilters, setColorFilters] = useState<ColorFilters>({
     beige: false,
@@ -77,6 +79,8 @@ const Home = (props: { accessible: boolean }) => {
   useEffect(() => {
     setExperimentGroup(accessible ? "accessible" : "inaccessible");
   }, []);
+
+  useAbandonedExperiment({ experimentGroup, askedForHelp, taskStartedAt });
 
   return (
     <div className="max-w-screen-2xl gap-12 p-8 lg:grid lg:grid-cols-7">
