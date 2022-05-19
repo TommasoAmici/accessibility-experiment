@@ -1,3 +1,4 @@
+import countries from "iso3166-2-db/countryList/en.json";
 import { InputPage, RadioInputPage, SelectPage } from "../components/pages";
 import { stringToSlug } from "./stringToSlug";
 
@@ -38,6 +39,22 @@ const surveyNoSlugs = [
     label: "How old are you?",
     options: { required: true, min: 12, max: 99, valueAsNumber: true },
     inputProps: { type: "number", min: "12", max: "99" },
+  },
+  {
+    field: "country",
+    name: "country",
+    pageComponent: "select",
+    label: "Where are you from?",
+    options: Object.keys(countries)
+      .map(code => ({
+        value: (countries as CountryList)[code].iso3,
+        label: (countries as CountryList)[code].name,
+      }))
+      .sort((x, y) => {
+        const a = x.label.toUpperCase();
+        const b = y.label.toUpperCase();
+        return a == b ? 0 : a > b ? 1 : -1;
+      }),
   },
   {
     field: "taskDifficulty",

@@ -8,6 +8,7 @@ const postSurvey = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
     const {
       age,
+      country,
       disability,
       accessibilityOptions,
       assistiveTechnology,
@@ -17,10 +18,11 @@ const postSurvey = async (req: NextApiRequest, res: NextApiResponse) => {
     const userID = userIDFromRequest(req.socket.remoteAddress, req.headers["user-agent"]);
     try {
       const statement = db.prepare(
-        "UPDATE results SET age = ?, disability = ?, accessibilityOptions = ?, assistiveTechnology = ?, taskDifficulty = ?, onlineShoppingFrequency = ? WHERE userID = ?",
+        "UPDATE results SET age = ?, country = ?, disability = ?, accessibilityOptions = ?, assistiveTechnology = ?, taskDifficulty = ?, onlineShoppingFrequency = ? WHERE userID = ?",
       );
       statement.run(
         age,
+        country,
         disability,
         accessibilityOptions,
         assistiveTechnology,

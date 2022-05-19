@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS results(
   taskAbandoned           BOOLEAN NOT NULL,
   -- survey drops the NOT NULL constraint as I predict some people may not complete the survey
   age                     INTEGER,
+  country                 TEXT,
   disability              BOOLEAN,
   accessibilityOptions    BOOLEAN,
   assistiveTechnology     BOOLEAN,

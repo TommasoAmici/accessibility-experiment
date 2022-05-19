@@ -58,6 +58,7 @@ const SurveyEndPage = () => {
   const {
     data: {
       age,
+      country,
       disability,
       accessibilityOptions,
       assistiveTechnology,
@@ -79,6 +80,7 @@ const SurveyEndPage = () => {
       const url = "/api/survey";
       const body = JSON.stringify({
         age: age.value,
+        country: country.value,
         disability: disability.value,
         accessibilityOptions: accessibilityOptions.value,
         assistiveTechnology: assistiveTechnology.value,

@@ -7,6 +7,7 @@ const initialState = {
   accessibilityOptions: { value: null, touched: false },
   disability: { value: null, touched: false },
   assistiveTechnology: { value: null, touched: false },
+  country: { value: null, touched: false },
 };
 
 const SurveyContext = createContext<{
