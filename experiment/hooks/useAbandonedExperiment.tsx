@@ -12,8 +12,8 @@ export const useAbandonedExperiment = ({
 }) =>
   useEffect(() => {
     const handler = () => {
-      if (document.visibilityState === "hidden") {
-        const url = "/api/experiment";
+      if (document.visibilityState === "hidden" && taskStartedAt !== null) {
+        const url = "/api/abandoned";
         const body = JSON.stringify({
           experimentGroup,
           askedForHelp,

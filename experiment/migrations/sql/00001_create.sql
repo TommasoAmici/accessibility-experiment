@@ -17,6 +17,17 @@ CREATE TABLE IF NOT EXISTS results(
   onlineShoppingFrequency TEXT
 );
 
+CREATE TABLE IF NOT EXISTS abandoned(
+  id                      INTEGER PRIMARY KEY,
+  userID                  INTEGER NOT NULL,
+  userAgent               TEXT NOT NULL,
+  experimentGroup         TEXT CHECK( experimentGroup IN ('accessible','inaccessible') ) NOT NULL,
+  askedForHelp            INTEGER NOT NULL,
+  taskStartedAt           TEXT NOT NULL,
+  taskFinishedAt          TEXT NOT NULL,
+  taskAbandoned           BOOLEAN NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS wantFinalPaper(
   id            INTEGER PRIMARY KEY,
   email         TEXT NOT NULL UNIQUE
