@@ -1,8 +1,17 @@
 import classNames from "classnames";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
+import { InputPage, RadioInputPage, SelectPage } from "../../components/pages";
 import { SurveyProgress } from "../../components/SurveyProgress";
 import { useCompleteExperiment } from "../../hooks/useCompleteExperiment";
-import { survey, surveyPageComponentMap } from "../../lib/survey";
+import { survey } from "../../lib/survey";
+
+export const surveyPageComponentMap: {
+  [c: string]: typeof InputPage | typeof RadioInputPage | typeof SelectPage;
+} = {
+  input: InputPage,
+  radio: RadioInputPage,
+  select: SelectPage,
+};
 
 const SurveyPage = ({
   question: { pageComponent, slug, ...props },

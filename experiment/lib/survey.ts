@@ -1,5 +1,4 @@
 import countries from "iso3166-2-db/countryList/en.json";
-import { InputPage, RadioInputPage, SelectPage } from "../components/pages";
 import { stringToSlug } from "./stringToSlug";
 
 export const difficultyOptions: { value: string; label: string }[] = [
@@ -22,14 +21,6 @@ export const boolOptions: { value: BoolResponse; label: string }[] = [
   { value: "true", label: "Yes" },
   { value: "false", label: "No" },
 ];
-
-export const surveyPageComponentMap: {
-  [c: string]: typeof InputPage | typeof RadioInputPage | typeof SelectPage;
-} = {
-  input: InputPage,
-  radio: RadioInputPage,
-  select: SelectPage,
-};
 
 const surveyNoSlugs = [
   {
