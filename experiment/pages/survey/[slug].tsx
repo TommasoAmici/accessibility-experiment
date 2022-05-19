@@ -15,24 +15,24 @@ const SurveyPage = ({
   const nextQuestion = survey[currentQuestion + 1];
 
   return (
-    <>
+    <div className="relative">
       <PageComponent
         {...props}
         nextURL={
           currentQuestion === survey.length - 1 ? "/survey/end" : `/survey/${nextQuestion.slug}`
         }
       />
-      <div className="mx-auto mt-10 w-3/4 lg:w-3/5">
+      <div className="z-0 mx-auto mt-10 w-3/4 lg:w-3/5">
         <SurveyProgress
           className={classNames(
             "w-full",
-            pageComponent === "input" ? "max-w-md" : "max-w-[calc(28rem+8px)]",
+            pageComponent === "radio" ? "max-w-[calc(28rem+8px)]" : "max-w-md",
           )}
           max={survey.length}
           value={currentQuestion}
         />
       </div>
-    </>
+    </div>
   );
 };
 

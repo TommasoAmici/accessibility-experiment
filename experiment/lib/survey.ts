@@ -1,4 +1,4 @@
-import { InputPage, RadioInputPage } from "../components/pages";
+import { InputPage, RadioInputPage, SelectPage } from "../components/pages";
 import { stringToSlug } from "./stringToSlug";
 
 export const difficultyOptions: { value: string; label: string }[] = [
@@ -23,10 +23,11 @@ export const boolOptions: { value: BoolResponse; label: string }[] = [
 ];
 
 export const surveyPageComponentMap: {
-  [c: string]: typeof InputPage | typeof RadioInputPage;
+  [c: string]: typeof InputPage | typeof RadioInputPage | typeof SelectPage;
 } = {
   input: InputPage,
   radio: RadioInputPage,
+  select: SelectPage,
 };
 
 const surveyNoSlugs = [
