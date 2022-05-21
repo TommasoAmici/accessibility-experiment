@@ -48,7 +48,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@headlessui/react@npm:^1.6.2":
+"@headlessui/react@npm:1.6.2":
   version: 1.6.2
   resolution: "@headlessui/react@npm:1.6.2"
   peerDependencies:
@@ -58,7 +58,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroicons/react@npm:^1.0.6":
+"@heroicons/react@npm:1.0.6":
   version: 1.0.6
   resolution: "@heroicons/react@npm:1.0.6"
   peerDependencies:
@@ -85,7 +85,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@icons-pack/react-simple-icons@npm:^4.7.0":
+"@icons-pack/react-simple-icons@npm:4.7.0":
   version: 4.7.0
   resolution: "@icons-pack/react-simple-icons@npm:4.7.0"
   dependencies:
@@ -250,7 +250,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tailwindcss/forms@npm:^0.5.2":
+"@tailwindcss/forms@npm:0.5.2":
   version: 0.5.2
   resolution: "@tailwindcss/forms@npm:0.5.2"
   dependencies:
@@ -261,7 +261,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tailwindcss/typography@npm:^0.5.2":
+"@tailwindcss/typography@npm:0.5.2":
   version: 0.5.2
   resolution: "@tailwindcss/typography@npm:0.5.2"
   dependencies:
@@ -281,7 +281,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/better-sqlite3@npm:^7.5.0":
+"@types/better-sqlite3@npm:7.5.0":
   version: 7.5.0
   resolution: "@types/better-sqlite3@npm:7.5.0"
   dependencies:
@@ -682,7 +682,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"better-sqlite3@npm:^7.5.3":
+"better-sqlite3@npm:7.5.3":
   version: 7.5.3
   resolution: "better-sqlite3@npm:7.5.3"
   dependencies:
@@ -864,7 +864,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"classnames@npm:^2.3.1":
+"classnames@npm:2.3.1":
   version: 2.3.1
   resolution: "classnames@npm:2.3.1"
   checksum: 14db8889d56c267a591f08b0834989fe542d47fac659af5a539e110cc4266694e8de86e4e3bbd271157dbd831361310a8293e0167141e80b0f03a0f175c80960
@@ -1523,29 +1523,29 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "experiment@workspace:."
   dependencies:
-    "@headlessui/react": ^1.6.2
-    "@heroicons/react": ^1.0.6
-    "@icons-pack/react-simple-icons": ^4.7.0
-    "@tailwindcss/forms": ^0.5.2
-    "@tailwindcss/typography": ^0.5.2
-    "@types/better-sqlite3": ^7.5.0
+    "@headlessui/react": 1.6.2
+    "@heroicons/react": 1.0.6
+    "@icons-pack/react-simple-icons": 4.7.0
+    "@tailwindcss/forms": 0.5.2
+    "@tailwindcss/typography": 0.5.2
+    "@types/better-sqlite3": 7.5.0
     "@types/node": 17.0.35
     "@types/react": 18.0.9
     "@types/react-dom": 18.0.4
     autoprefixer: 10.4.7
-    better-sqlite3: ^7.5.3
-    classnames: ^2.3.1
+    better-sqlite3: 7.5.3
+    classnames: 2.3.1
     eslint: 8.16.0
     eslint-config-next: 12.1.6
-    iso3166-2-db: ^2.3.10
+    iso3166-2-db: 2.3.10
     next: 12.1.6
     postcss: 8.4.14
-    prettier: ^2.6.2
-    prettier-plugin-tailwindcss: ^0.1.11
+    prettier: 2.6.2
+    prettier-plugin-tailwindcss: 0.1.11
     react: 18.1.0
     react-dom: 18.1.0
-    react-hook-form: ^7.31.2
-    sharp: ^0.30.4
+    react-hook-form: 7.31.2
+    sharp: 0.30.4
     tailwindcss: 3.0.24
     typescript: 4.6.4
   languageName: unknown
@@ -2205,7 +2205,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"iso3166-2-db@npm:^2.3.10":
+"iso3166-2-db@npm:2.3.10":
   version: 2.3.10
   resolution: "iso3166-2-db@npm:2.3.10"
   checksum: 463a0510f2cf00c7538d98f31272740c53541940b8e079ebf229c72b894e2f1057d9051c8e80d54abf57ee10fcd21a3039a94d06b8c9226ddba6146f5fdb8824
@@ -3038,7 +3038,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier-plugin-tailwindcss@npm:^0.1.11":
+"prettier-plugin-tailwindcss@npm:0.1.11":
   version: 0.1.11
   resolution: "prettier-plugin-tailwindcss@npm:0.1.11"
   peerDependencies:
@@ -3047,7 +3047,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.6.2":
+"prettier@npm:2.6.2":
   version: 2.6.2
   resolution: "prettier@npm:2.6.2"
   bin:
@@ -3148,7 +3148,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-hook-form@npm:^7.31.2":
+"react-hook-form@npm:7.31.2":
   version: 7.31.2
   resolution: "react-hook-form@npm:7.31.2"
   peerDependencies:
@@ -3376,7 +3376,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sharp@npm:^0.30.4":
+"sharp@npm:0.30.4":
   version: 0.30.4
   resolution: "sharp@npm:0.30.4"
   dependencies:
