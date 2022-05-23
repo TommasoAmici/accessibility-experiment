@@ -12,13 +12,13 @@ export const db: {
   };
 } = {
   products: {
-    pegasus,
+    jordan,
     "metcon-4": metcon4,
     "metcon-7": metcon7,
     "metcon-7-flyease": metcon7Flyease,
     "tiempo-legend-9": tiempo,
     "zoom-freak-3": zoomFreak,
-    jordan,
+    pegasus,
   },
 };
 
