@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { GoToSurveyDialog } from "../components/GoToSurveyDialog";
 import { Header } from "../components/Header";
 import { HelpButton } from "../components/HelpButton";
 import { NotificationArea } from "../components/NotificationArea";
@@ -23,6 +24,7 @@ export const ShopLayout = ({
       </CartProvider>
       <NotificationArea accessible={accessible} />
       <HelpButton />
+      <GoToSurveyDialog />
     </>
   );
 };

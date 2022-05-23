@@ -9,7 +9,7 @@ const ButtonLink = forwardRef<HTMLAnchorElement, AnchorProps>((props, ref) => {
       ref={ref}
       {...props}
       className={classNames(
-        "bg-black px-3 py-1.5 text-white no-underline outline-none",
+        "grid place-content-center bg-black px-3 py-1.5 text-white no-underline outline-none",
         "transition-colors hover:bg-neutral-800 focus:ring-4 focus:ring-black focus:ring-offset-4",
         props.className,
       )}
