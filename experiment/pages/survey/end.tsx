@@ -57,13 +57,17 @@ const SurveyEndPage = () => {
   const { addNotification } = useContext(StateContext);
   const {
     data: {
+      taskDifficulty,
+      realistic,
+      enjoyability,
+      safeness,
       age,
       country,
       disability,
       accessibilityOptions,
       assistiveTechnology,
-      taskDifficulty,
       onlineShoppingFrequency,
+      abandonedWebsite,
     },
   } = useContext(SurveyContext);
 
@@ -79,13 +83,17 @@ const SurveyEndPage = () => {
     const sendResults = () => {
       const url = "/api/survey";
       const body = JSON.stringify({
+        taskDifficulty: taskDifficulty.value,
+        realistic: realistic.value,
+        enjoyability: enjoyability.value,
+        safeness: safeness.value,
         age: age.value,
         country: country.value,
         disability: disability.value,
         accessibilityOptions: accessibilityOptions.value,
         assistiveTechnology: assistiveTechnology.value,
-        taskDifficulty: taskDifficulty.value,
         onlineShoppingFrequency: onlineShoppingFrequency.value,
+        abandonedWebsite: abandonedWebsite.value,
       });
       if (navigator.sendBeacon) {
         const success = navigator.sendBeacon(url, body);
