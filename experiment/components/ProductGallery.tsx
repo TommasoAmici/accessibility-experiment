@@ -29,6 +29,7 @@ const Inaccessible = ({ images }: ComponentProps) => {
     <div className="flex space-x-[16px] overflow-scroll lg:grid lg:grid-cols-2 lg:gap-y-[16px] lg:gap-x-[24px] lg:space-x-0 lg:overflow-hidden">
       {images.map((image, index) => (
         <div className="w-[256px] min-w-[256px] lg:w-auto" key={index}>
+          {/* eslint-disable-next-line jsx-a11y/alt-text */}
           <Image
             src={image}
             width={360}

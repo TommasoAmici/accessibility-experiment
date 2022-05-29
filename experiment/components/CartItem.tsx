@@ -39,6 +39,7 @@ const Inaccessible = ({ item, removeFromCart }: ComponentProps) => {
   const imageSrc = product.collection.images[item.color][0];
   return (
     <div className="flex items-center">
+      {/* eslint-disable-next-line jsx-a11y/alt-text */}
       <Image src={imageSrc} width={128} height={128} objectFit="cover" />
       <div className="ml-[16px] flex w-full items-center justify-between text-[14px] leading-[20px]">
         <div>

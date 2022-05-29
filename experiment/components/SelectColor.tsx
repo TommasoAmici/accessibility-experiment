@@ -67,6 +67,7 @@ const Inaccessible = ({ productDB, color, setColor }: ComponentProps) => {
                     : "opacity-80",
                 )}
               >
+                {/* eslint-disable-next-line jsx-a11y/alt-text */}
                 <Image
                   src={productDB.collection.images[c][0]}
                   width={256}
