@@ -36,10 +36,6 @@ const HomePage = () => {
         </strong>{" "}
         to complete.
       </p>
-      <p>
-        Lastly, to thank you for your time, you can optionally enter a lottery and I will randomly
-        pick a participant to win 25€.
-      </p>
       <div className="relative flex w-full flex-col">
         <Link href={nextURL} passHref>
           <ButtonLink className="mx-auto mt-4">Start</ButtonLink>
