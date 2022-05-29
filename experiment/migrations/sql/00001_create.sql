@@ -18,7 +18,8 @@ CREATE TABLE IF NOT EXISTS results(
   accessibilityOptions    BOOLEAN,
   assistiveTechnology     BOOLEAN,
   onlineShoppingFrequency TEXT,
-  abandonedWebsite        BOOLEAN
+  abandonedWebsite        BOOLEAN,
+  timestamp               TEXT
 );
 
 CREATE TABLE IF NOT EXISTS abandoned(
@@ -29,7 +30,8 @@ CREATE TABLE IF NOT EXISTS abandoned(
   askedForHelp            INTEGER NOT NULL,
   taskStartedAt           TEXT NOT NULL,
   taskFinishedAt          TEXT NOT NULL,
-  taskAbandoned           BOOLEAN NOT NULL
+  taskAbandoned           BOOLEAN NOT NULL,
+  timestamp               TEXT
 );
 
 CREATE TABLE IF NOT EXISTS wantFinalPaper(
@@ -41,5 +43,6 @@ CREATE TABLE IF NOT EXISTS webVitals(
   id            INTEGER PRIMARY KEY,
   userID        INTEGER NOT NULL,
   metric        TEXT CHECK( metric IN ('FCP','LCP','CLS','FID','TTFB','Next.js-hydration','Next.js-route-change-to-render','Next.js-render') ) NOT NULL,
-  value         INTEGER NOT NULL
+  value         INTEGER NOT NULL,
+  timestamp     TEXT
 );

@@ -12,7 +12,10 @@ const postSurvey = async (req: NextApiRequest, res: NextApiResponse) => {
     const userID = userIDFromRequest(req.socket.remoteAddress, req.headers["user-agent"]);
     try {
       const statement = db.prepare(
-        "INSERT INTO results (userID, userAgent, experimentGroup, taskStartedAt, taskFinishedAt, taskAbandoned, askedForHelp) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        `INSERT INTO results
+          (timestamp, userID, userAgent, experimentGroup, taskStartedAt, taskFinishedAt, taskAbandoned, askedForHelp)
+        VALUES
+          (CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?)`,
       );
       statement.run(
         userID,

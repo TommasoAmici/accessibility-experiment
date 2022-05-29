@@ -12,7 +12,10 @@ const abandonedBeaconReceiver = async (req: NextApiRequest, res: NextApiResponse
     const userID = userIDFromRequest(req.socket.remoteAddress, req.headers["user-agent"]);
     try {
       const statement = db.prepare(
-        "INSERT INTO abandoned (userID, userAgent, experimentGroup, taskStartedAt, taskFinishedAt, taskAbandoned, askedForHelp) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        `INSERT INTO abandoned
+          (timestamp, userID, userAgent, experimentGroup, taskStartedAt, taskFinishedAt, taskAbandoned, askedForHelp)
+        VALUES
+          (CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?)`,
       );
       statement.run(
         userID,

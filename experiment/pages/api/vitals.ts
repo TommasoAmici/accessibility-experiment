@@ -10,7 +10,9 @@ const recordWebVitals = async (req: NextApiRequest, res: NextApiResponse) => {
     const { metric, value } = JSON.parse(req.body);
     try {
       const statement = db.prepare(
-        "INSERT INTO webVitals (userID, metric, value) VALUES (?, ?, ?)",
+        `INSERT INTO webVitals
+          (timestamp, userID, metric, value)
+        VALUES (CURRENT_TIMESTAMP, ?, ?, ?)`,
       );
       statement.run(userID, metric, value);
       res.status(200).json({ message: "OK" });
