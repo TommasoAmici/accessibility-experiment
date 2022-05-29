@@ -3,7 +3,7 @@ import { forwardRef } from "react";
 
 type AnchorProps = React.HTMLProps<HTMLAnchorElement>;
 
-const ButtonLink = forwardRef<HTMLAnchorElement, AnchorProps>((props, ref) => {
+export const ButtonLink = forwardRef<HTMLAnchorElement, AnchorProps>((props, ref) => {
   return (
     <a
       ref={ref}
@@ -19,4 +19,3 @@ const ButtonLink = forwardRef<HTMLAnchorElement, AnchorProps>((props, ref) => {
   );
 });
 ButtonLink.displayName = "ButtonLink";
-export default ButtonLink;

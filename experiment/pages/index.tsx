@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import ButtonLink from "../components/ButtonLink";
+import { ButtonLink } from "../components/ButtonLink";
 import { usePressEnter } from "../hooks/usePressEnter";
 
 const HomePage = () => {

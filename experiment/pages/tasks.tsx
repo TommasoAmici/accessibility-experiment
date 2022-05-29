@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import ButtonLink from "../components/ButtonLink";
+import { ButtonLink } from "../components/ButtonLink";
 import { HelpButton } from "../components/HelpButton";
 import { TasksList } from "../components/TasksList";
 import { usePressEnter } from "../hooks/usePressEnter";

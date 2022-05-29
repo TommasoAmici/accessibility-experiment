@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useContext, useEffect } from "react";
-import ButtonLink from "../../components/ButtonLink";
+import { ButtonLink } from "../../components/ButtonLink";
 import StateContext from "../../contexts/state";
 import { useCompleteExperiment } from "../../hooks/useCompleteExperiment";
 import { usePressEnter } from "../../hooks/usePressEnter";

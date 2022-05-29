@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Fragment, useContext, useEffect, useState } from "react";
 import StateContext from "../contexts/state";
 import { ButtonSecondary } from "./Button";
-import ButtonLink from "./ButtonLink";
+import { ButtonLink } from "./ButtonLink";
 
 const R_KEYCODE = 82;
 

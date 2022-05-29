@@ -3,7 +3,7 @@ import { QuestionMarkCircleIcon, XIcon } from "@heroicons/react/outline";
 import classNames from "classnames";
 import Link from "next/link";
 import { Fragment, KeyboardEventHandler, useContext, useEffect, useState } from "react";
-import ButtonLink from "../components/ButtonLink";
+import { ButtonLink } from "../components/ButtonLink";
 import StateContext from "../contexts/state";
 import { Button } from "./Button";
 import { TasksList } from "./TasksList";
