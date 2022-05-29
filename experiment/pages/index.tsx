@@ -13,8 +13,17 @@ const HomePage = () => {
     <section className="prose prose-lg mx-auto px-8">
       <h1>Web accessibility experiment</h1>
       <p>
-        Hello there, thanks for taking the time to participate. I&apos;m Tommaso Amici, a web
-        developer and a master student at the University of Amsterdam.
+        Hello there, thanks for taking the time to participate. I&apos;m{" "}
+        {/* eslint-disable-next-line react/jsx-no-target-blank */}
+        <a
+          className="focus:outline-none focus:ring-4 focus:ring-black focus:ring-offset-2"
+          href="https://tommasoamici.com"
+          target="_blank"
+          rel="noopener"
+        >
+          Tommaso Amici
+        </a>
+        , a web developer and a master student at the University of Amsterdam.
       </p>
       <p>
         For my thesis, I&apos;m researching the effects of web accessibility on consumer behavior.
