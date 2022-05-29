@@ -8,7 +8,7 @@ export const SimpleLayout = ({ children }: { children: ReactNode }) => {
       <main className="mx-auto mt-8 w-full flex-1">{children}</main>
 
       <svg
-        className="lg:fixed lg:right-1/2 lg:translate-x-[80%] lg:rotate-90"
+        className="hidden lg:fixed lg:right-1/2 lg:block lg:translate-x-[80%] lg:rotate-90"
         id="kander"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 3201 599"
@@ -156,7 +156,7 @@ export const SimpleLayout = ({ children }: { children: ReactNode }) => {
         </g>
       </svg>
 
-      <footer className="mx-auto pb-4 text-sm">
+      <footer className="mx-auto mt-10 pb-4 text-sm">
         {/* eslint-disable-next-line react/jsx-no-target-blank */}
         <a
           href="https://tommasoamici.com"

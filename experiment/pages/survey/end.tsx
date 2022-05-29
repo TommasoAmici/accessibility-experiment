@@ -112,14 +112,18 @@ const SurveyEndPage = () => {
       <h1>Thank you!</h1>
       <p>
         Thanks for completing the survey! I will soon process all the results and finish writing my
-        thesis. If you are interested in receiving a copy, you can leave your email address below.
+        thesis.
       </p>
-      <SubscribeForResults />
       <p>
         If you find the topic of web accessibility interesting, it would be very helpful if you
         could share this experiment with more people so I can have more data to analyze.
       </p>
       <SharingLinks />
+      <p>
+        If you are interested in receiving a copy of my paper, you can leave your email address
+        below.
+      </p>
+      <SubscribeForResults />
     </section>
   );
 };

@@ -26,7 +26,10 @@ export const SurveyProgress = ({
           style={{ transform: `scaleX(${(value + 1) / max})` }}
         />
       </div>
-      <span className="absolute -top-[0.4rem] -right-10" aria-hidden="true">
+      <span
+        className="absolute -right-10 hidden text-sm md:-top-[0.4rem] md:block"
+        aria-hidden="true"
+      >
         End
       </span>
     </div>

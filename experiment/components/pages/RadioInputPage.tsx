@@ -67,7 +67,7 @@ export const RadioInputPage = ({
 
   return (
     <section className="mx-auto w-3/4 lg:w-3/5">
-      <div className="mx-auto mt-24 w-full">
+      <div className="mx-auto mt-6 w-full md:mt-24">
         <RadioGroup value={value} onChange={setValue}>
           <RadioGroup.Label className="block max-w-2xl text-3xl font-bold">
             {label}
@@ -90,7 +90,7 @@ export const RadioInputPage = ({
                     )}
                   >
                     {index === 0 && (
-                      <p className="absolute translate-y-1 -translate-x-14 text-sm lowercase">
+                      <p className="absolute hidden translate-y-1 -translate-x-14 text-sm lowercase md:block">
                         press
                       </p>
                     )}
@@ -115,9 +115,11 @@ export const RadioInputPage = ({
           {error}
         </p>
       </div>
-      <div className="mt-8 flex items-baseline">
-        <Button onClick={onSubmit}>OK</Button>
-        <p className="ml-4 text-sm">
+      <div className="mt-8 flex max-w-md items-baseline">
+        <Button className="ml-auto md:ml-0" onClick={onSubmit}>
+          OK
+        </Button>
+        <p className="ml-4 hidden text-sm md:block">
           press <kbd className="font-sans font-semibold">Enter ↵</kbd>
         </p>
       </div>

@@ -28,7 +28,7 @@ export const SelectPage = ({ field, name, label, nextURL, options }: SelectPageP
 
   return (
     <form
-      className="z-10 mx-auto mt-24 w-3/4 lg:w-3/5"
+      className="z-10 mx-auto mt-6 w-3/4 md:mt-24 lg:w-3/5"
       onSubmit={e => {
         e.preventDefault();
         setData(field, selected.value);

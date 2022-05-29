@@ -91,7 +91,7 @@ const Accessible = ({ className }: ComponentProps) => {
             onClick={() => setShowCart(false)}
             className="fixed inset-0 z-10 bg-black opacity-30"
           />
-          <div className="fixed right-0 top-3 z-10 w-96 -translate-x-4 bg-white p-4 shadow-lg ring-4 ring-black">
+          <div className="fixed right-0 top-3 z-10 w-80 -translate-x-4 bg-white p-4 shadow-lg ring-4 ring-black md:w-96">
             <button
               className="absolute right-[1.375rem] top-4 outline-none focus:ring-[3px] focus:ring-black focus:ring-offset-4"
               type="button"

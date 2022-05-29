@@ -23,8 +23,8 @@ const TasksPage = () => {
         </p>
         <p>
           If you find yourself frustrated with the task, after{" "}
-          <time dateTime="2m">two minutes</time> a button that lets you skip the task and move
-          forward to a short survey will appear.
+          <time dateTime="2m">two minutes</time> a button that lets you skip it and move forward to
+          a short survey will appear.
         </p>
         <p>You will be shown an online shop that sells shoes. Your tasks are:</p>
         <TasksList />

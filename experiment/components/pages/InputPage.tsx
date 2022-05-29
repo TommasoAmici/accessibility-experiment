@@ -48,7 +48,7 @@ export const InputPage = ({ field, label, nextURL, options, inputProps }: InputP
 
   return (
     <section className="mx-auto w-3/4 lg:w-3/5">
-      <form className="mx-auto mt-24 w-full" onSubmit={handleSubmit(onSubmit)}>
+      <form className="mx-auto mt-6 w-full md:mt-24" onSubmit={handleSubmit(onSubmit)}>
         <label className="flex w-full flex-col">
           <span className="mb-4 text-3xl font-bold">{label}</span>
           <input

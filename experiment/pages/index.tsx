@@ -10,7 +10,7 @@ const HomePage = () => {
   usePressEnter(nextURL, router);
 
   return (
-    <section className="prose prose-lg mx-auto px-8">
+    <section className="prose mx-auto px-8 lg:prose-lg">
       <h1>Web accessibility experiment</h1>
       <p>
         Hello there, thanks for taking the time to participate. I&apos;m{" "}
