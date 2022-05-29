@@ -2,5 +2,13 @@
   "extends": "next/core-web-vitals",
   "rules": {
     "no-console": "warn"
-  }
+  },
+  "overrides": [
+    {
+      "files": ["pages/api/*.ts"],
+      "rules": {
+        "no-console": "off"
+      }
+    }
+  ]
 }
