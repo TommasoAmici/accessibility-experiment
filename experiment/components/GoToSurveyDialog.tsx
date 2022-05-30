@@ -16,11 +16,18 @@ export const GoToSurveyDialog = () => {
   // show dialog if users leave window or before unload
   useEffect(() => {
     const handler = (e: BeforeUnloadEvent) => {
-      if (firstTime) {
-        setShow(true);
-        setFirstTime(false);
-        e.preventDefault();
-      }
+      const timeoutID = setTimeout(() => {
+        if (firstTime) {
+          setShow(true);
+          setFirstTime(false);
+          e.preventDefault();
+        }
+      }, 350);
+      const removeTimeout = () => {
+        clearTimeout(timeoutID);
+        document.documentElement.removeEventListener("mouseenter", removeTimeout);
+      };
+      document.documentElement.addEventListener("mouseenter", removeTimeout);
     };
 
     document.documentElement.addEventListener("mouseleave", handler);
