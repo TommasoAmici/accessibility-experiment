@@ -1,7 +1,7 @@
 const bgFromColor: ProductUI = {
   green: "bg-green-400 hover:bg-green-300",
   purple: "bg-fuchsia-400 hover:bg-fuchsia-300",
-  white: "bg-blue-800 hover:bg-blue-600",
+  white: "bg-blue-400 hover:bg-blue-300",
   black: "bg-neutral-400 hover:bg-neutral-300",
   red: "bg-red-500 hover:bg-red-400",
   blue: "bg-blue-400 hover:bg-blue-300",
