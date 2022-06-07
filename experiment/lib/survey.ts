@@ -62,6 +62,7 @@ const surveyNoSlugs = [
     label: "How old are you?",
     options: { required: true, min: 12, max: 99, valueAsNumber: true },
     inputProps: { type: "number", min: "12", max: "99" },
+    skip: true,
   },
   {
     field: "country",
@@ -78,6 +79,7 @@ const surveyNoSlugs = [
         const b = y.label.toUpperCase();
         return a == b ? 0 : a > b ? 1 : -1;
       }),
+    skip: true,
   },
   {
     field: "disability",

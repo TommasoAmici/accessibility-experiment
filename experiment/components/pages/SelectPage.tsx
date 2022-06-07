@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { Fragment, useContext, useState } from "react";
 import SurveyContext from "../../contexts/survey";
 import { Button } from "../Button";
+import { Checkbox } from "../Checkbox";
 
 export type SelectPageProps = {
   field: string;
@@ -12,11 +13,13 @@ export type SelectPageProps = {
   label: string;
   nextURL: string;
   options: { value: string; label: string }[];
+  skip?: boolean;
 };
 
-export const SelectPage = ({ field, name, label, nextURL, options }: SelectPageProps) => {
+export const SelectPage = ({ field, name, label, nextURL, options, skip }: SelectPageProps) => {
   const router = useRouter();
   const { data, setData } = useContext(SurveyContext);
+  const [preferNotToAnswer, setPreferNotToAnswer] = useState(false);
 
   const optionsWithEmpty = [{ value: "", label: "-- Choose from the list --" }, ...options];
 
@@ -31,16 +34,20 @@ export const SelectPage = ({ field, name, label, nextURL, options }: SelectPageP
       className="z-10 mx-auto mt-6 w-3/4 md:mt-24 lg:w-3/5"
       onSubmit={e => {
         e.preventDefault();
-        setData(field, selected.value);
+        if (preferNotToAnswer) {
+          setData(field, "");
+        } else {
+          setData(field, selected.value);
+        }
         router.push(nextURL);
       }}
     >
       <label htmlFor={name} className="mb-4 block text-3xl font-bold">
         {label}
       </label>
-      <Listbox value={selected} onChange={setSelected} name={name}>
+      <Listbox value={selected} onChange={setSelected} name={name} disabled={preferNotToAnswer}>
         <div className="relative mt-1">
-          <Listbox.Button className="relative w-full max-w-md border border-black py-2 pl-4 text-left outline-none focus:border-black focus:ring-4 focus:ring-black">
+          <Listbox.Button className="relative w-full max-w-md border border-black py-2 pl-4 text-left outline-none focus:border-black focus:ring-4 focus:ring-black disabled:cursor-not-allowed disabled:border-gray-400 disabled:bg-gray-200 disabled:text-gray-700">
             <p className="truncate">{selected.label}</p>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
               <SelectorIcon className="h-5 w-5 text-gray-600" aria-hidden="true" />
@@ -84,6 +91,15 @@ export const SelectPage = ({ field, name, label, nextURL, options }: SelectPageP
           </Transition>
         </div>
       </Listbox>
+      {skip && (
+        <Checkbox
+          name="prefer-not-to-answer"
+          checked={preferNotToAnswer}
+          onChange={() => setPreferNotToAnswer(!preferNotToAnswer)}
+          label="Prefer not to answer"
+          className="mt-2"
+        />
+      )}
       <Button className="mt-4" type="submit">
         OK
       </Button>
