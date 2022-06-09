@@ -40,7 +40,7 @@ const Inaccessible = ({ breadcrumbs }: ComponentProps) => {
       <div className="flex items-center justify-between border-b-4 border-stone-100 px-[32px] py-[16px]">
         <div className="flex items-baseline space-x-[8px]">
           <Link href="/shop">
-            <a className="whitespace-nowrap text-[20px] font-bold leading-[28px] text-inaccessible-title outline-none">
+            <a className="cursor-default whitespace-nowrap text-[20px] font-bold leading-[28px] text-inaccessible-title outline-none">
               Sheer Shoes
             </a>
           </Link>
