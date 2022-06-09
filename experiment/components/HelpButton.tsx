@@ -3,14 +3,19 @@ import { QuestionMarkCircleIcon, XIcon } from "@heroicons/react/outline";
 import classNames from "classnames";
 import Link from "next/link";
 import { Fragment, KeyboardEventHandler, useContext, useEffect, useState } from "react";
-import { ButtonLink } from "../components/ButtonLink";
+import { ButtonLink, ButtonLinkSecondary } from "../components/ButtonLink";
 import StateContext from "../contexts/state";
 import { Button } from "./Button";
 import { TasksList } from "./TasksList";
 
 export const HelpButton = ({ isSimpleLayout }: { isSimpleLayout?: boolean }) => {
-  const { taskStartedAt, setTaskFinishedAt, setTaskAbandoned, increaseAskedForHelp } =
-    useContext(StateContext);
+  const {
+    taskStartedAt,
+    setTaskFinishedAt,
+    setTaskAbandoned,
+    increaseAskedForHelp,
+    addNotification,
+  } = useContext(StateContext);
   const [now, setNow] = useState(Date.now());
 
   useEffect(() => {
@@ -120,12 +125,27 @@ export const HelpButton = ({ isSimpleLayout }: { isSimpleLayout?: boolean }) => 
                 </Dialog.Title>
 
                 <TasksList />
-
                 <div className="mt-8 flex">
                   <Button type="button" className="mx-auto w-full" onClick={closeDialog}>
                     Got it, thanks! <span className="sr-only">Close dialog</span>
                   </Button>
                 </div>
+
+                <Link href={taskStartedAt === null ? "#" : "/survey"} passHref>
+                  <ButtonLinkSecondary
+                    onClick={() => {
+                      if (taskStartedAt !== null) {
+                        setTaskFinishedAt(new Date());
+                        setTaskAbandoned(true);
+                      } else {
+                        addNotification("The experiment hasn't started yet", "warning");
+                      }
+                    }}
+                    className="mt-4 w-full"
+                  >
+                    Are you stuck? Skip to survey
+                  </ButtonLinkSecondary>
+                </Link>
               </div>
             </Transition.Child>
           </div>

@@ -15,6 +15,8 @@ const TasksPage = () => {
     <>
       <section className="prose prose-lg mx-auto px-8">
         <h1>Your tasks</h1>
+        <p>You will be shown an online shop that sells shoes. Your tasks are:</p>
+        <TasksList />
         <p>
           If at any time you forgot your task, there will always be a <strong>help button</strong>{" "}
           in the bottom right corner. You can click on it or press the{" "}
@@ -24,10 +26,8 @@ const TasksPage = () => {
         <p>
           If you find yourself frustrated with the task, after{" "}
           <time dateTime="2m">two minutes</time> a button that lets you skip it and move forward to
-          a short survey will appear.
+          a short survey will appear. You can also skip to the survey directly from the help dialog.
         </p>
-        <p>You will be shown an online shop that sells shoes. Your tasks are:</p>
-        <TasksList />
         <div className="relative flex w-full flex-col">
           <Link href={nextURL} passHref>
             <ButtonLink className="mx-auto mt-4">Start</ButtonLink>
