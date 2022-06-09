@@ -42,7 +42,7 @@ type Product = {
 
 type Shoe = Product;
 
-type ProductImages = { [color: string]: string[] };
+type ProductImages = { [color: string]: StaticImageData[] };
 type ProductImagesAlts = { [k: number]: string };
 type ProductCollection = {
   images: ProductImages;
