@@ -16,7 +16,7 @@ const postSurvey = async (req: NextApiRequest, res: NextApiResponse) => {
       disability,
       accessibilityOptions,
       assistiveTechnology,
-      onlineShoppingFrequency,
+      timeSpentOnline,
       abandonedWebsite,
     } = JSON.parse(req.body);
     const userID = userIDFromRequest(req.socket.remoteAddress, req.headers["user-agent"]);
@@ -32,7 +32,7 @@ const postSurvey = async (req: NextApiRequest, res: NextApiResponse) => {
           disability = ?,
           accessibilityOptions = ?,
           assistiveTechnology = ?,
-          onlineShoppingFrequency = ?,
+          timeSpentOnline = ?,
           abandonedWebsite = ?
         WHERE
           userID = ?`,
@@ -47,7 +47,7 @@ const postSurvey = async (req: NextApiRequest, res: NextApiResponse) => {
         disability,
         accessibilityOptions,
         assistiveTechnology,
-        onlineShoppingFrequency,
+        timeSpentOnline,
         abandonedWebsite,
         userID,
       );

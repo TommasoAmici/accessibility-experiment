@@ -66,7 +66,7 @@ const SurveyEndPage = () => {
       disability,
       accessibilityOptions,
       assistiveTechnology,
-      onlineShoppingFrequency,
+      timeSpentOnline,
       abandonedWebsite,
     },
   } = useContext(SurveyContext);
@@ -92,7 +92,7 @@ const SurveyEndPage = () => {
         disability: disability.value,
         accessibilityOptions: accessibilityOptions.value,
         assistiveTechnology: assistiveTechnology.value,
-        onlineShoppingFrequency: onlineShoppingFrequency.value,
+        timeSpentOnline: timeSpentOnline.value,
         abandonedWebsite: abandonedWebsite.value,
       });
       if (navigator.sendBeacon) {

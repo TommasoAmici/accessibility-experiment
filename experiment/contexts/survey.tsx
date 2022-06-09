@@ -10,7 +10,7 @@ const initialState = {
   disability: { value: null, touched: false },
   accessibilityOptions: { value: null, touched: false },
   assistiveTechnology: { value: null, touched: false },
-  onlineShoppingFrequency: { value: null, touched: false },
+  timeSpentOnline: { value: null, touched: false },
   abandonedWebsite: { value: null, touched: false },
 };
 

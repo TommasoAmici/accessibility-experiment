@@ -104,15 +104,15 @@ const surveyNoSlugs = [
     options: boolOptions,
   },
   {
-    field: "onlineShoppingFrequency",
+    field: "timeSpentOnline",
     pageComponent: "radio",
-    label: "How often do you shop online?",
+    label: "How much time do you spend online each day?",
     options: [
-      { value: "few-times-a-week", label: "A few times a week" },
-      { value: "once-a-week", label: "Once a week" },
-      { value: "few-times-per-month", label: "A few times per month" },
-      { value: "once-a-month", label: "Once a month" },
-      { value: "never", label: "Never" },
+      { value: "0-1-hours", label: "0-1 hours a day" },
+      { value: "2-3-hours", label: "2-3 hours a day" },
+      { value: "4-5-hours", label: "4-5 hours a day" },
+      { value: "6-7-hours", label: "6-7 hours a day" },
+      { value: "more-than-7-hours", label: "More than 7 hours a day" },
     ],
   },
   {

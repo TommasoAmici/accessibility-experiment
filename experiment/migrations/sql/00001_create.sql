@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS results(
   disability              BOOLEAN,
   accessibilityOptions    BOOLEAN,
   assistiveTechnology     BOOLEAN,
-  onlineShoppingFrequency TEXT,
+  timeSpentOnline      TEXT,
   abandonedWebsite        BOOLEAN,
   timestamp               TEXT
 );
