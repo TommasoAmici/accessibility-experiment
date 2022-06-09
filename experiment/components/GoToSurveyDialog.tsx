@@ -22,7 +22,7 @@ export const GoToSurveyDialog = () => {
           setFirstTime(false);
           e.preventDefault();
         }
-      }, 350);
+      }, 500);
       const removeTimeout = () => {
         clearTimeout(timeoutID);
         document.documentElement.removeEventListener("mouseenter", removeTimeout);
