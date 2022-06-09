@@ -8,7 +8,7 @@ const bgFromColor: ProductUI = {
   yellow: "bg-yellow-400 hover:bg-yellow-300",
   orange: "bg-orange-400 hover:bg-orange-300",
   beige: "bg-[#e5cfb2] hover:bg-[#f9e2c8]",
-  gray: "bg-neutral-700 hover:bg-neutral-500",
+  gray: "bg-neutral-400 hover:bg-neutral-300",
 };
 
 const borderFromColor: ProductUI = {
@@ -21,7 +21,7 @@ const borderFromColor: ProductUI = {
   yellow: "border-yellow-200",
   orange: "border-orange-400",
   beige: "border-[#e5cfb2]",
-  gray: "border-neutral-600",
+  gray: "!border-neutral-400",
 };
 
 const checkboxFromColor: ProductUI = {
