@@ -105,7 +105,7 @@ export const NotificationArea = ({
   ...props
 }: { accessible: boolean } & ComponentProps) => {
   return (
-    <div className="fixed top-1 right-1/2 z-10 translate-x-1/2">
+    <div className="fixed top-1 right-1/2 z-50 translate-x-1/2">
       {accessible ? <Accessible {...props} /> : <Inaccessible {...props} />}
     </div>
   );
