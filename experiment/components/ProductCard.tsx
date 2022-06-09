@@ -5,15 +5,24 @@ import ui from "../lib/ui";
 
 interface ComponentProps {
   product: ProductDatabase;
+  priority: boolean;
 }
 
-const Accessible = ({ product }: ComponentProps) => {
+const Accessible = ({ product, priority }: ComponentProps) => {
   const [mainColor] = product.colors;
   const mainImage = product.collection.images[mainColor][0];
 
   return (
     <article className="relative isolate w-full">
-      <Image src={mainImage} alt="" width={1728 / 3} height={2160 / 4} objectFit="cover" />
+      <Image
+        src={mainImage}
+        alt=""
+        width={1728 / 3}
+        height={2160 / 4}
+        objectFit="cover"
+        priority={priority}
+        loading={priority ? "eager" : "lazy"}
+      />
       <h2 className="mt-1 text-xl font-bold underline underline-offset-2 hover:text-neutral-700">
         <Link href={`/shop/${product.slug}`}>
           <a className="block outline-none after:absolute after:inset-0 after:content-[''] focus-visible:ring-2 focus-visible:ring-black">
@@ -34,7 +43,7 @@ const Accessible = ({ product }: ComponentProps) => {
   );
 };
 
-const Inaccessible = ({ product }: ComponentProps) => {
+const Inaccessible = ({ product, priority }: ComponentProps) => {
   const [mainColor] = product.colors;
   const mainImage = product.collection.images[mainColor][0];
 
@@ -43,7 +52,14 @@ const Inaccessible = ({ product }: ComponentProps) => {
       <Link href={`/shop/${product.slug}`}>
         <a className="cursor-default outline-none">
           {/* eslint-disable-next-line jsx-a11y/alt-text */}
-          <Image src={mainImage} width={1728 / 3} height={2160 / 4} objectFit="cover" />
+          <Image
+            src={mainImage}
+            width={1728 / 3}
+            height={2160 / 4}
+            objectFit="cover"
+            priority={priority}
+            loading={priority ? "eager" : "lazy"}
+          />
           <div className="mt-[4px] text-[20px] font-bold leading-[28px] text-inaccessible-title">
             {product.name}
           </div>

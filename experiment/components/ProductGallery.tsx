@@ -15,6 +15,7 @@ const Accessible = ({ images, alts }: ComponentProps) => {
             alt={alts[index]}
             width={360}
             height={450}
+            priority={index < 2}
             loading={index < 2 ? "eager" : "lazy"}
             decoding="async"
           />

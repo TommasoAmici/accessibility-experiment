@@ -10,9 +10,9 @@ const Accessible = ({ products }: ComponentProps) => {
       {products.length === 0 ? (
         <li>No products matching these filters</li>
       ) : (
-        products.map(product => (
+        products.map((product, i) => (
           <li key={product.name}>
-            <ProductCard accessible={true} product={product} />
+            <ProductCard accessible={true} product={product} priority={i <= 3} />
           </li>
         ))
       )}
@@ -26,8 +26,8 @@ const Inaccessible = ({ products }: ComponentProps) => {
       {products.length === 0 ? (
         <p className="w-full text-inaccessible">No products matching these filters</p>
       ) : (
-        products.map(product => (
-          <ProductCard accessible={false} product={product} key={product.name} />
+        products.map((product, i) => (
+          <ProductCard accessible={false} product={product} key={product.name} priority={i <= 3} />
         ))
       )}
     </div>
