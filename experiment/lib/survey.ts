@@ -10,7 +10,7 @@ const surveyNoSlugs = [
   {
     field: "taskDifficulty",
     pageComponent: "radio",
-    label: "How easy or difficult was it to use this site?",
+    label: "I find this website easy to use",
     options: [
       { value: 2, label: "Very easy" },
       { value: 1, label: "Easy" },
@@ -22,7 +22,7 @@ const surveyNoSlugs = [
   {
     field: "realistic",
     pageComponent: "radio",
-    label: "Was this website similar or different from the online stores you normally visit?",
+    label: "This website is similar to the online stores I normally visit",
     options: [
       { value: 2, label: "Very similar" },
       { value: 1, label: "Similar" },
@@ -34,25 +34,25 @@ const surveyNoSlugs = [
   {
     field: "enjoyability",
     pageComponent: "radio",
-    label: "Did you like or dislike using this site?",
+    label: "The screen design (i.e. colors, images, layout etc.) is attractive",
     options: [
-      { value: 2, label: "I liked it very much" },
-      { value: 1, label: "I liked it" },
-      { value: 0, label: "I neither liked it nor disliked it" },
-      { value: -1, label: "I disliked it" },
-      { value: -2, label: "I disliked it very much" },
+      { value: 2, label: "Very attractive" },
+      { value: 1, label: "Attractive" },
+      { value: 0, label: "Neither attractive nor unattractive" },
+      { value: -1, label: "Unattractive" },
+      { value: -2, label: "Very unattractive" },
     ],
   },
   {
     field: "safeness",
     pageComponent: "radio",
-    label: "Would you feel comfortable entering your credit card information on this site?",
+    label: "If I buy a product from this website, I believe it would be a secure transaction",
     options: [
-      { value: 2, label: "Very comfortable" },
-      { value: 1, label: "Comfortable" },
-      { value: 0, label: "Neither comfortable nor uncomfortable" },
-      { value: -1, label: "Uncomfortable" },
-      { value: -2, label: "Very uncomfortable" },
+      { value: 2, label: "Very secure" },
+      { value: 1, label: "Secure" },
+      { value: 0, label: "Neither secure nor insecure" },
+      { value: -1, label: "Insecure" },
+      { value: -2, label: "Very insecure" },
     ],
   },
   {
