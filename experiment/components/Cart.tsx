@@ -181,7 +181,7 @@ const Inaccessible = ({ className }: ComponentProps) => {
             className="fixed inset-0 z-10 bg-black opacity-30"
             onClick={() => setShowCart(false)}
           />
-          <div className="fixed right-0 top-[12px] z-10 w-[384px] -translate-x-[16px] bg-white p-[16px] shadow-lg ring-4 ring-neutral-400">
+          <div className="fixed right-0 top-[12px] z-10 w-[320px] -translate-x-[16px] bg-white p-[16px] shadow-lg ring-4 ring-neutral-400 md:w-[384px]">
             <div
               className="absolute right-[22px] top-[16px] outline-none"
               onClick={() => setShowCart(false)}
