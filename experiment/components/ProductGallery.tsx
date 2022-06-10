@@ -18,6 +18,7 @@ const Accessible = ({ images, alts }: ComponentProps) => {
             priority={index < 2}
             loading={index < 2 ? "eager" : "lazy"}
             decoding="async"
+            placeholder="blur"
           />
         </li>
       ))}
@@ -35,8 +36,10 @@ const Inaccessible = ({ images }: ComponentProps) => {
             src={image}
             width={360}
             height={450}
+            priority={index < 2}
             loading={index < 2 ? "eager" : "lazy"}
             decoding="async"
+            placeholder="blur"
           />
         </div>
       ))}

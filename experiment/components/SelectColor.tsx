@@ -37,6 +37,9 @@ const Accessible = ({ productDB, color, setColor }: ComponentProps) => {
                     height={256}
                     objectFit="cover"
                     className="aspect-square"
+                    placeholder="blur"
+                    loading="eager"
+                    priority={true}
                   />
                 </RadioGroup.Description>
               </div>
@@ -74,6 +77,9 @@ const Inaccessible = ({ productDB, color, setColor }: ComponentProps) => {
                   height={256}
                   objectFit="cover"
                   className="aspect-square"
+                  placeholder="blur"
+                  loading="eager"
+                  priority={true}
                 />
               </div>
             </div>

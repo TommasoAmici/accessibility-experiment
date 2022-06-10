@@ -22,6 +22,7 @@ const Accessible = ({ product, priority }: ComponentProps) => {
         objectFit="cover"
         priority={priority}
         loading={priority ? "eager" : "lazy"}
+        placeholder="blur"
       />
       <h2 className="mt-1 text-xl font-bold underline underline-offset-2 hover:text-neutral-700">
         <Link href={`/shop/${product.slug}`}>
@@ -59,6 +60,7 @@ const Inaccessible = ({ product, priority }: ComponentProps) => {
             objectFit="cover"
             priority={priority}
             loading={priority ? "eager" : "lazy"}
+            placeholder="blur"
           />
           <div className="mt-[4px] text-[20px] font-bold leading-[28px] text-inaccessible-title">
             {product.name}

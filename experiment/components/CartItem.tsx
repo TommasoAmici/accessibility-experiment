@@ -13,7 +13,14 @@ const Accessible = ({ item, removeFromCart }: ComponentProps) => {
   const imageSrc = product.collection.images[item.color][0];
   return (
     <article className="flex items-center">
-      <Image src={imageSrc} alt={""} width={128} height={128} objectFit="cover" />
+      <Image
+        src={imageSrc}
+        alt={""}
+        width={128}
+        height={128}
+        objectFit="cover"
+        placeholder="blur"
+      />
       <div className="ml-4 flex w-full items-center justify-between">
         <div>
           <p className="text-sm font-semibold capitalize">{product.name}</p>
@@ -40,7 +47,7 @@ const Inaccessible = ({ item, removeFromCart }: ComponentProps) => {
   return (
     <div className="flex items-center">
       {/* eslint-disable-next-line jsx-a11y/alt-text */}
-      <Image src={imageSrc} width={128} height={128} objectFit="cover" />
+      <Image src={imageSrc} width={128} height={128} objectFit="cover" placeholder="blur" />
       <div className="ml-[16px] flex w-full items-center justify-between text-[14px] leading-[20px]">
         <div>
           <p className="font-semibold capitalize text-inaccessible">{product.name}</p>
