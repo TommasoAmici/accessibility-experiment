@@ -20,7 +20,7 @@ export const ShopLayout = ({
       <CartProvider accessible={accessible}>
         {accessible && <SkipNav />}
         <Header accessible={accessible} breadcrumbs={breadcrumbs} />
-        {children}
+        <div className="mx-auto max-w-screen-2xl">{children}</div>
       </CartProvider>
       <NotificationArea accessible={accessible} />
       <HelpButton />

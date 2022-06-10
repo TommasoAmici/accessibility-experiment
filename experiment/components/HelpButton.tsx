@@ -53,34 +53,39 @@ export const HelpButton = ({ isSimpleLayout }: { isSimpleLayout?: boolean }) => 
     }
   };
 
+  const showStuck = taskStartedAt !== null && taskStartedAt.getTime() < now - 1000 * 60 * 1;
+
   return (
     <>
-      <div
-        className={classNames(
-          "fixed bottom-4 right-4 flex space-x-4",
-          isSimpleLayout && "lg:right-96  ",
-        )}
-        onKeyDown={stopKeydownPropagation}
-      >
-        {taskStartedAt !== null && taskStartedAt.getTime() < now - 1000 * 60 * 1 && (
-          <Link href="/survey" passHref>
-            <ButtonLink
-              onClick={() => {
-                setTaskFinishedAt(new Date());
-                setTaskAbandoned(true);
-              }}
-            >
-              Are you stuck? Go to survey
-            </ButtonLink>
-          </Link>
-        )}
-        <button
-          onClick={openDialog}
-          className="rounded-full bg-white outline-none focus:ring-4 focus:ring-black"
+      <div className="fixed left-1/2 bottom-4 w-full max-w-screen-2xl -translate-x-1/2">
+        <div
+          onKeyDown={stopKeydownPropagation}
+          className={classNames("flex space-x-4", isSimpleLayout && "mr-96")}
         >
-          <span className="sr-only">Help</span>
-          <QuestionMarkCircleIcon className="h-10 w-10" role="presentation" />
-        </button>
+          {showStuck && (
+            <Link href="/survey" passHref>
+              <ButtonLink
+                onClick={() => {
+                  setTaskFinishedAt(new Date());
+                  setTaskAbandoned(true);
+                }}
+                className="ml-auto"
+              >
+                Are you stuck? Go to survey
+              </ButtonLink>
+            </Link>
+          )}
+          <button
+            onClick={openDialog}
+            className={classNames(
+              "rounded-full bg-white outline-none focus:ring-4 focus:ring-black",
+              !showStuck && "ml-auto",
+            )}
+          >
+            <span className="sr-only">Help</span>
+            <QuestionMarkCircleIcon className="h-10 w-10" role="presentation" />
+          </button>
+        </div>
       </div>
 
       <Transition appear show={show} as={Fragment}>
