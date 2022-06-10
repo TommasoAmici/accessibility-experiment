@@ -9,7 +9,15 @@ const TasksPage = () => {
   const router = useRouter();
   const nextURL = "/shop";
 
-  usePressEnter(nextURL, router);
+  const startedReadingAt = new Date();
+  const readingTimeCallback = () => {
+    fetch("/api/reading", {
+      body: JSON.stringify({ startedReadingAt, finishedReadingAt: new Date() }),
+      method: "POST",
+      keepalive: true,
+    });
+  };
+  usePressEnter(nextURL, router, readingTimeCallback);
 
   return (
     <>
@@ -30,7 +38,9 @@ const TasksPage = () => {
         </p>
         <div className="relative flex w-full flex-col">
           <Link href={nextURL} passHref>
-            <ButtonLink className="mx-auto mt-4">Start</ButtonLink>
+            <ButtonLink onClick={readingTimeCallback} className="mx-auto mt-4">
+              Start
+            </ButtonLink>
           </Link>
           <p className="mx-auto text-sm">
             press <kbd className="font-sans font-semibold">Enter ↵</kbd>
