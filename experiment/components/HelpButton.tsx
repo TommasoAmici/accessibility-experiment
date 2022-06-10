@@ -60,7 +60,7 @@ export const HelpButton = ({ isSimpleLayout }: { isSimpleLayout?: boolean }) => 
       <div className="fixed left-1/2 bottom-4 w-full max-w-screen-2xl -translate-x-1/2">
         <div
           onKeyDown={stopKeydownPropagation}
-          className={classNames("flex space-x-4", isSimpleLayout && "mr-96")}
+          className={classNames("flex space-x-4", isSimpleLayout && "lg:mr-96")}
         >
           {showStuck && (
             <Link href="/survey" passHref>
