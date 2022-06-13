@@ -6,7 +6,7 @@ const db = new Database("experiment.sqlite3");
 
 const recordWebVitals = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
-    const userID = userIDFromRequest(req.socket.remoteAddress, req.headers["user-agent"]);
+    const userID = userIDFromRequest(req.headers["x-real-ip"] as string, req.headers["user-agent"]);
     const { metric, value } = JSON.parse(req.body);
     try {
       const statement = db.prepare(

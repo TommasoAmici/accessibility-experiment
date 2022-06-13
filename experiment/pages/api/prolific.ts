@@ -7,7 +7,7 @@ const db = new Database("experiment.sqlite3");
 const readingTimeReceiver = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
     const { prolificPID, studyID, sessionID } = JSON.parse(req.body);
-    const userID = userIDFromRequest(req.socket.remoteAddress, req.headers["user-agent"]);
+    const userID = userIDFromRequest(req.headers["x-real-ip"] as string, req.headers["user-agent"]);
     try {
       const statement = db.prepare(
         `INSERT INTO prolific
