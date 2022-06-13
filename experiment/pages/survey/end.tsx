@@ -1,9 +1,13 @@
+import Database from "better-sqlite3";
+import { GetServerSideProps } from "next";
 import { useContext, useEffect, useState } from "react";
 import { Button } from "../../components/Button";
+import { ProlificCode } from "../../components/ProlificCode";
 import { SharingLinks } from "../../components/SharingLinks";
 import StateContext from "../../contexts/state";
 import SurveyContext from "../../contexts/survey";
 import { useCompleteExperiment } from "../../hooks/useCompleteExperiment";
+import { userIDFromRequest } from "../../lib/randomAssignment";
 
 const SubscribeForResults = () => {
   const [email, setEmail] = useState("");
@@ -51,7 +55,7 @@ const SubscribeForResults = () => {
   );
 };
 
-const SurveyEndPage = () => {
+const SurveyEndPage = ({ fromProlific }: { fromProlific: boolean }) => {
   useCompleteExperiment();
 
   const { addNotification } = useContext(StateContext);
@@ -110,6 +114,7 @@ const SurveyEndPage = () => {
   return (
     <section className="prose prose-lg mx-auto px-8">
       <h1>Thank you!</h1>
+      {fromProlific && <ProlificCode />}
       <p>
         Thanks for completing the survey! I will soon process all the results and finish writing my
         thesis.
@@ -129,3 +134,23 @@ const SurveyEndPage = () => {
 };
 
 export default SurveyEndPage;
+
+const db = new Database("experiment.sqlite3");
+
+export const getServerSideProps: GetServerSideProps = async context => {
+  const userID = userIDFromRequest(
+    context.req.socket.remoteAddress,
+    context.req.headers["user-agent"],
+  );
+
+  const statement = db.prepare(
+    `SELECT EXISTS(SELECT userID FROM prolific WHERE userID=?) as fromProlific;`,
+  );
+  const { fromProlific } = statement.get(userID);
+
+  return {
+    props: {
+      fromProlific: fromProlific === 1,
+    },
+  };
+};

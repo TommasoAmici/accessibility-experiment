@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 import { ButtonLink } from "../components/ButtonLink";
 import { usePressEnter } from "../hooks/usePressEnter";
 
@@ -8,6 +9,20 @@ const HomePage = () => {
   const nextURL = "/tasks";
 
   usePressEnter(nextURL, router);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const prolificPID = params.get("prolificPID");
+    const studyID = params.get("studyID");
+    const sessionID = params.get("sessionID");
+    if (prolificPID !== null && studyID !== null && sessionID !== null) {
+      fetch("/api/prolific", {
+        body: JSON.stringify({ prolificPID, studyID, sessionID }),
+        method: "POST",
+        keepalive: true,
+      });
+    }
+  }, []);
 
   return (
     <section className="prose mx-auto px-8 lg:prose-lg">
