@@ -9,3 +9,4 @@ brew install texlive latexindent biber
 ```
 
 I used VSCode with [LaTeX Workshop](https://github.com/James-Yu/LaTeX-Workshop), but you should be able to build it with `make build` as well.
+

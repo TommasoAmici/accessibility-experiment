@@ -1,0 +1,2050 @@
+\documentclass[12pt, a4paper]{article}
+
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{etoolbox}
+\usepackage{float}
+
+% PARAGRAPHS AS SUBSUBSUBSECTIONS
+% https://tex.stackexchange.com/a/60218
+\makeatletter
+\renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
+            {-2.5ex\@plus -1ex \@minus -.25ex}%
+            {1.25ex \@plus .25ex}%
+            {\normalfont\normalsize\bfseries}}
+\makeatother
+\setcounter{secnumdepth}{4} % how many sectioning levels to assign numbers to
+\setcounter{tocdepth}{4}    % how many sectioning levels to show in ToC
+
+% TABLES
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+% STYLE
+\usepackage[pdfborder={0 0 0}]{hyperref}
+\usepackage[margin=1in]{geometry}
+\usepackage{numprint}
+
+% BIBLIOGRAPHY
+\usepackage{apacite} % after hyperref
+
+\usepackage{epigraph}
+\setlength\epigraphwidth{.8\textwidth}
+
+% HYPOTHESES
+% \usepackage{etoolbox,changepage}
+\usepackage{ntheorem}
+\newtheorem{req}{Research question}
+\newtheorem{hyp}{Hypothesis}
+% \AtBeginEnvironment{hyp}{\begin{adjustwidth}{3em}{3em}}
+% \AtEndEnvironment{hyp}{\end{adjustwidth}}
+\theoremseparator{:}
+
+\title{The impact of web accessibility on consumer behavior}
+\author{Tommaso Amici}
+
+\begin{document}
+<<include=FALSE>>=
+# install.packages("languageserver")
+# install.packages("httpgd")
+# install.packages("RSQLite")
+# install.packages("ggplot2")
+# install.packages("R.utils")
+# install.packages("xtable")
+# install.packages("dplyr")
+# install.packages("tidyr")
+# install.packages("uaparserjs")
+# install.packages("showtext")
+# install.packages("likert")
+# install.packages("broom")
+@
+<<include=FALSE>>=
+base_dir <- "/Users/tamici/Documents/uva/uva-thesis"
+
+library(ggplot2)
+theme_set(theme_bw())
+# color blind color palette
+cbbPalette <- c("#E69F00", "#009E73", "#56B4E9", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#000000")
+scale_fill_discrete <- function(...) {
+   scale_fill_manual(..., values = cbbPalette)
+}
+scale_colour_discrete <- function(...) {
+  scale_colour_manual(..., values = cbbPalette)
+}
+## use LM Roman 10 for graphs
+library("showtext")
+showtext_auto()
+latex_font <- "LM Roman 10"
+fonts_df <- font_files()
+font <- fonts_df[fonts_df$family == latex_font & fonts_df$face == "Regular", ]
+font_add(latex_font, file.path(font$path, font$file))
+
+theme_update(text = element_text(size = 10, family = latex_font))
+update_geom_defaults("text", list(family = latex_font))
+@
+
+<<include=FALSE>>=
+round_time <- function(n) {
+  round(n, digits=1)
+}
+round_survey <- function(n) {
+  round(n, digits=2)
+}
+round_p <- function(n) {
+  format(round(n, digits=4), scientific=FALSE)
+}
+anova_p <- function(sum) {
+  round_p(unlist(sum)["Pr(>F)1"])
+}
+glm_p <- function(sum, key) {
+  round_p(coef(sum)[,'Pr(>|z|)'][key])
+}
+pct <- function(n) {
+  round(100*n, digits=1)
+}
+count_true <- function(vec) {
+  length(vec[!is.na(vec) & vec])
+}
+@
+
+<<include=FALSE, cache=FALSE>>=
+library("RSQLite")
+library(R.utils)
+library(uaparserjs)
+library(xtable)
+library(dplyr)
+library(likert)
+library(grid)
+library(tidyr)
+library(broom)
+## connect to db and read data
+conn <- dbConnect(
+  drv = RSQLite::SQLite(),
+  dbname = file.path(base_dir, "experiment.sqlite3"),
+)
+
+web_vitals_df <- dbGetQuery(
+  conn = conn,
+  statement = "SELECT wv.*, r.experimentGroup
+  FROM webVitals wv
+  JOIN results r ON wv.userID=r.userID"
+)
+
+df <- dbGetQuery(
+  conn = conn,
+  statement = "SELECT * FROM results",
+)
+
+reading_df <- dbGetQuery(
+  conn = conn,
+  statement = "SELECT * FROM taskReadingTime",
+)
+
+abandoned_df <- dbGetQuery(
+  conn = conn,
+  statement = "SELECT * FROM abandoned a WHERE a.userID NOT IN (SELECT userID FROM results)"
+)
+
+dbDisconnect(conn = conn)
+
+abandoned_df <- abandoned_df[!duplicated(abandoned_df[c("userID")]), ]
+abandoned_df$taskDifficulty <- NA
+abandoned_df$realistic <- NA
+abandoned_df$enjoyability <- NA
+abandoned_df$safeness <- NA
+abandoned_df$age <- NA
+abandoned_df$country <- NA
+abandoned_df$disability <- NA
+abandoned_df$accessibilityOptions <- NA
+abandoned_df$assistiveTechnology <- NA
+abandoned_df$timeSpentOnline <- NA
+abandoned_df$abandonedWebsite <- NA
+
+df <- rbind(df, abandoned_df)
+
+## clean data
+start_date <- as.POSIXct(head(sort(df$timestamp), 1))
+end_date <- as.POSIXct(tail(sort(df$timestamp), 1))
+experiment_days_n <- as.integer(end_date - start_date)
+start_date_s <- substr(start_date, 0, 10)
+end_date_s <- substr(end_date, 0, 10)
+
+df$userID <- as.factor(df$userID)
+reading_df$userID <- as.factor(reading_df$userID)
+web_vitals_df$userID <- as.factor(web_vitals_df$userID)
+
+# sort by userID and timestamp to drop duplicates
+reading_df <- reading_df[order(reading_df$userID, reading_df$timestamp), ]
+reading_df <- reading_df[!duplicated(reading_df$userID), ]
+
+reading_df$startedReadingAt <- as.POSIXct(reading_df$startedReadingAt, format = "%Y-%m-%dT%H:%M:%OS")
+reading_df$finishedReadingAt <- as.POSIXct(reading_df$finishedReadingAt, format = "%Y-%m-%dT%H:%M:%OS")
+reading_df$task_reading_time <- as.numeric(reading_df$finishedReadingAt - reading_df$startedReadingAt, units = "secs")
+
+
+df <- merge(df, reading_df, by = "userID", all.x = TRUE)
+
+df$group <- df$experimentGroup
+df$group[df$experimentGroup=="accessible"] <- "Group A"
+df$group[df$experimentGroup=="inaccessible"] <- "Group I"
+df$group <- as.factor(df$group)
+
+df$country <- as.factor(df$country)
+
+df$age[df$age == 0] <- NA
+df$age_range[df$age < 20 & !is.na(df$age)] <- "< 20"
+df$age_range[df$age >= 20 & df$age < 30 & !is.na(df$age)] <- "20-29"
+df$age_range[df$age >= 30 & df$age < 40 & !is.na(df$age)] <- "30-39"
+df$age_range[df$age >= 40 & df$age < 50 & !is.na(df$age)] <- "40-49"
+age_50 <- (df$age >= 50 & df$age < 60 & !is.na(df$age))
+age_50_n <- length(df$age[age_50])
+df$age_range[age_50] <- "50-59"
+age_60 <- (df$age >= 60 & !is.na(df$age))
+age_60_n <- length(df$age[age_60])
+df$age_range[age_60] <- "60+"
+df$age_range <- factor(df$age_range, c("< 20", "20-29", "30-39", "40-49", "50-59", "60+"))
+
+df$country[df$country == ""] <- NA
+df$taskStartedAt <- as.POSIXct(df$taskStartedAt, format = "%Y-%m-%dT%H:%M:%OS")
+df$taskFinishedAt <- as.POSIXct(df$taskFinishedAt, format = "%Y-%m-%dT%H:%M:%OS")
+df$task_completion_time <- as.numeric(df$taskFinishedAt - df$taskStartedAt, units = "secs")
+
+df$taskAbandoned <- as.logical(df$taskAbandoned)
+df$disability <- as.logical(df$disability)
+df$assistiveTechnology <- as.logical(df$assistiveTechnology)
+df$accessibilityOptions <- as.logical(df$accessibilityOptions)
+df$abandonedWebsite <- as.logical(df$abandonedWebsite)
+df$any_accessibility <- df$disability | df$assistiveTechnology | df$accessibilityOptions
+df$any_accessibility <- factor(df$any_accessibility, c(TRUE, FALSE), c("Group D", "Group ND"))
+
+# likert
+df$realistic_likert <- df$realistic + 3
+df$enjoyability_likert <- df$enjoyability + 3
+df$difficulty_likert <- df$taskDifficulty + 3
+df$safeness_likert <- df$safeness + 3
+experience_scale <- c("0-1 hours", "2-3 hours", "4-5 hours", "6-7 hours", "More than 7 hours")
+df$experience_grouped <- dplyr::recode(
+  df$timeSpentOnline,
+  `0-1-hours`="5 hours or less",
+  `2-3-hours`="5 hours or less",
+  `4-5-hours`="5 hours or less",
+  `6-7-hours`="6 hours or more",
+  `more-than-7-hours`="6 hours or more"
+)
+df$experience <- dplyr::recode(
+  df$timeSpentOnline,
+  `0-1-hours`="0-1 hours",
+  `2-3-hours`="2-3 hours",
+  `4-5-hours`="4-5 hours",
+  `6-7-hours`="6-7 hours",
+  `more-than-7-hours`="More than 7 hours"
+)
+df$experience_likert <- dplyr::recode(
+  df$timeSpentOnline,
+  `0-1-hours`=1,
+  `2-3-hours`=2,
+  `4-5-hours`=3,
+  `6-7-hours`=4,
+  `more-than-7-hours`=5
+)
+
+df$"Task completion time" <- df$task_completion_time
+df$Group <- df$group
+df$"Time spent online" <- df$timeSpentOnline
+df$"Age range" <- df$age_range
+df$"Any accessibility" <- df$any_accessibility
+df$"Asked for help" <- df$askedForHelp
+
+## Clean user agent data
+ua_df <- ua_parse(df$userAgent)
+ua_df <- subset(ua_df, select = -userAgent)
+
+# identify browsers
+ua_df$browser <- ua_df$ua.family
+ua_df$browser[(ua_df$os.family == "Android" & ua_df$browser == "Facebook")] <- "Chromium"
+ua_df$browser[(ua_df$os.family == "Android" & ua_df$browser == "Twitter")] <- "Chromium"
+ua_df$browser[(ua_df$os.family == "iOS" & ua_df$browser == "Facebook")] <- "Safari"
+ua_df$browser <- dplyr::recode(
+  ua_df$browser,
+  `MiuiBrowser`="Chromium",
+  `Samsung Internet`="Chromium",
+  `Edge`="Chromium",
+  `Edge Mobile`="Chromium",
+  `Opera`="Chromium",
+  `Chrome`="Chromium",
+  `Chrome Mobile`="Chromium",
+  `Chrome Mobile WebView`="Chromium",
+  `Chrome Mobile iOS`="Safari",
+  `Mobile Safari`="Safari",
+  `Firefox Mobile`="Safari",
+)
+
+
+# identify desktop/mobile devices
+ua_df$device <- NA
+ua_df$device <- dplyr::recode(
+  ua_df$os.family,
+  `Mac OS X` = "Desktop",
+  `Windows` = "Desktop",
+  `Linux` = "Desktop",
+  `FreeBSD` = "Desktop",
+  `Android` = "Mobile",
+  `iOS` = "Mobile",
+)
+
+df <- cbind(df, ua_df)
+df$Device <- df$device
+
+web_vitals_device_df <- merge(web_vitals_df, df, by = "userID", all.x = TRUE)
+
+# fcp_df <- web_vitals_df[web_vitals_df$metric == "FCP", ] %>%
+#   dplyr::group_by(userID, metric) %>%
+#   dplyr::summarize(FCP = sum(value))
+# nextjs_df <- web_vitals_df[web_vitals_df$metric == "Next.js-hydration" | web_vitals_df$metric == "Next.js-render" | web_vitals_df$metric == "Next.js-route-change-to-render", ] %>%
+#   dplyr::group_by(userID, metric) %>%
+#   dplyr::summarize(nextjs_metrics = sum(value))
+
+# df <- merge(df, fcp_df, by = "userID", all.x = TRUE)
+# fcp_n <- count_true(!is.na(df$FCP))
+
+task_completed <- !df$taskAbandoned
+
+total_participants_n <- nrow(df)
+total_completed_n <- nrow(df[task_completed,])
+
+completed_survey_n <- count_true(!is.na(df$taskDifficulty))
+only_age_n <- count_true(!is.na(df$age) & is.na(df$country))
+only_country_n <- count_true(is.na(df$age) & !is.na(df$country))
+both_age_and_country_n <- count_true(!is.na(df$age) & !is.na(df$country))
+no_age_no_country_n <- count_true(!is.na(df$taskDifficulty) & is.na(df$age) & is.na(df$country))
+
+participants_disability_n <- count_true(df$disability)
+participants_accessibility_n <- count_true(df$accessibilityOptions)
+participants_assistive_n <- count_true(df$assistiveTechnology)
+participants_any_accessibility_n <- count_true(df$any_accessibility == "Group D")
+participants_disability_pct <- pct(participants_disability_n / total_participants_n)
+participants_accessibility_pct <- pct(participants_accessibility_n / total_participants_n)
+participants_assistive_pct <- pct(participants_assistive_n / total_participants_n)
+participants_any_accessibility_pct <- pct(participants_any_accessibility_n / completed_survey_n)
+
+device_d <- df$device == "Desktop"
+device_m <- df$device == "Mobile"
+pc_n <- length(df$device[device_d])
+mobile_n <- length(df$device[device_m])
+pc_pct <- pct(pc_n / total_participants_n)
+mobile_pct <- pct(mobile_n / total_participants_n)
+
+chromium_n <- length(df$browser[df$browser == "Chromium"])
+firefox_n <- length(df$browser[df$browser == "Firefox"])
+safari_n <- length(df$browser[df$browser == "Safari"])
+chromium_pct <- pct(chromium_n / total_participants_n)
+firefox_pct <- pct(firefox_n / total_participants_n)
+safari_pct <- pct(safari_n / total_participants_n)
+
+group_a <- df$group == "Group A"
+group_i <- df$group == "Group I"
+group_a_n <- length(df$group[group_a])
+group_i_n <- length(df$group[group_i])
+group_a_completion_time_desktop <- round_time(mean(df$task_completion_time[group_a & device_d & task_completed]))
+group_i_completion_time_desktop <- round_time(mean(df$task_completion_time[group_i & device_d & task_completed]))
+group_a_completion_time_mobile <- round_time(mean(df$task_completion_time[group_a & device_m & task_completed]))
+group_i_completion_time_mobile <- round_time(mean(df$task_completion_time[group_i & device_m & task_completed]))
+group_a_asked_for_help <- round_time(mean(df$askedForHelp[group_a & task_completed]))
+group_i_asked_for_help <- round_time(mean(df$askedForHelp[group_i & task_completed]))
+never_asked_for_help_n <- count_true(df$askedForHelp == 0)
+never_asked_for_help_pct <- pct(never_asked_for_help_n / total_completed_n)
+reading_time_avg <- round_time(mean(df$task_reading_time[df$task_reading_time < 400], na.rm = TRUE))
+
+abandoned_n <- count_true(df$taskAbandoned)
+not_abandoned_n <- count_true(!df$taskAbandoned)
+group_a_abandoned_n <- count_true(df$taskAbandoned[group_a])
+group_a_not_abandoned_n <- count_true(!df$taskAbandoned[group_a])
+group_i_abandoned_n <- count_true(df$taskAbandoned[group_i])
+group_i_not_abandoned_n <- count_true(!df$taskAbandoned[group_i])
+group_a_abandoned_pct <- pct(group_a_abandoned_n/abandoned_n)
+group_i_abandoned_pct <- pct(group_i_abandoned_n/abandoned_n)
+
+abandon_time_avg_a <- round_time(mean(df$task_completion_time[df$task_completion_time < 400 & !task_completed & group_a], na.rm = TRUE))
+abandon_time_avg_i <- round_time(mean(df$task_completion_time[df$task_completion_time < 400 & !task_completed & group_i], na.rm = TRUE))
+aov_abandoned_test <- aov(`Task completion time` ~ Group + Device, data = df[!task_completed,])
+aov_abandoned_sum <- summary(aov_abandoned_test)
+aov_abandoned_tidy <- broom::tidy(aov_abandoned_test)
+aov_abandoned_group_p <- round_p(aov_abandoned_tidy$p.value[1])
+
+aov_test <- aov(`Task completion time` ~ Group + `Time spent online` * `Age range` + `Age range` * Device + `Any accessibility`, data = df)
+aov_sum <- summary(aov_test)
+aov_tidy <- broom::tidy(aov_test)
+aov_group_p <- round_p(aov_tidy$p.value[1])
+aov_time_spent_online_p <- round_p(aov_tidy$p.value[2])
+aov_age_range_p <- round_p(aov_tidy$p.value[3])
+aov_device_p <- round_p(aov_tidy$p.value[4])
+aov_any_accessibility_p <- round_p(aov_tidy$p.value[5])
+aov_age_time_spent_online_p <- round_p(aov_tidy$p.value[6])
+aov_age_device_p <- round_p(aov_tidy$p.value[7])
+@
+
+\doublespacing
+\pagenumbering{gobble}
+
+\input{sections/title.tex}
+\newpage
+
+\pagenumbering{roman}
+
+\section*{Statement of originality}
+This document is written by Student Tommaso Amici who declares to take full
+responsibility for the contents of this document. I declare that the text and the work
+presented in this document is original and that no sources other than those mentioned
+in the text and its references have been used in creating it. The Faculty of Economics
+and Business is responsible solely for the supervision of completion of the work, not
+for the contents.
+
+\newpage
+
+\tableofcontents
+\listoffigures
+\listoftables
+\newpage
+\begin{abstract}
+
+  This empirical study belongs to the line of research conducted on usability and
+  consumer behavior and it extends the definition of usability to include web
+  accessibility. We randomly assign 287 participants to a custom made e-commerce website
+  manipulated at two levels of web accessibility and measure their performance as they
+  complete a series of tasks. Finally, we conduct a post-experiment survey focusing on
+  the task and on user's perception.
+
+  We find that the level of web accessibility does not significantly affect a user's
+  performance or their perception of trust in the website. We do, however, find a
+  significant difference in performance between age groups and class of device used.
+
+\end{abstract}
+\newpage
+
+\pagenumbering{arabic}
+
+\section{Introduction}\label{sec:introduction}
+
+\epigraph{The power of the Web is in its universality. Access by everyone regardless
+  of disability is an essential aspect.}{Tim Berners-Lee, W3C Director and inventor
+  of the World Wide Web}
+
+\epigraph{Accessibility is the right thing to do.}{\citeA{valdes1999} for the United Nations}
+
+\noindent
+
+In \citeA{carter2001web}, a spokesperson for an electronics retailer when asked about
+Internet users with disabilities is quoted as saying: ``that's not a market we've
+thought about pursuing'' (p. 227). However, some more recent statistics paint a
+striking picture: the Office for National Statistics estimates that, in 2020, 22\% of
+Internet users in the UK have self-assessed disabilities
+\citeyear{ukinternetusers2020}, and, according to different estimates, the number of
+people with some form of disability hovers around 100 million people in the EU and one
+billion people in the world \cite{euWebAccessibility2021, whoDisability2021}.
+
+For online businesses that target the general population, failing to adapt their
+website to the needs of users with disabilities means potentially missing out on
+revenue from this group of clients. Moreover, this failure may have legal implications,
+because nowadays accessibility is not only the right thing to do, but it will also be a
+legal requirement for private sector bodies in the EU starting in 2025, as sanctioned
+by the European Accessibility Act of 2019 \cite{eu2019}.
+
+However, assuming they are managed rationally, businesses may be operating under the
+impression that web accessibility does not affect purchase intention, and as a
+consequence they may be hesitant to devote resources to it, unless sanctioned by a
+regulatory framework. Hoever, not every online business is subject to EU regulations
+and not every country has drafter similar laws yet. In the absence of legal
+repercussions, a business case for web accessibility may be more convincing.
+
+In this paper, we will attempt to answer the following question:
+
+\begin{req}
+  Is accessibility a concern for online businesses, or are they justified in ignoring it,
+  from an economic perspective?
+\end{req}
+
+The next section defines web accessibility, and summarizes why many websites fail to
+properly support disabled users.
+
+\section{Theoretical background and hypotheses}
+
+\subsection{Web accessibility}\label{sec:web_accessibility}
+According to the Web Content Accessibility Guidelines (WCAG) 2.1, the objective of
+developers and designers implementing accessible websites is to make content ``more
+accessible to a wider range of people with disabilities, including accommodations for
+blindness and low vision, deafness and hearing loss, limited movement, speech
+disabilities, photosensitivity, and combinations of these, and some accommodation for
+learning disabilities and cognitive limitations'' \cite[para. 1]{wcag21}.
+
+It is, however, important to note that disability can also be temporary or situational:
+for example, people with a broken arm are temporarily disabled; while a parent holding
+a child is situationally disabled, i.e., they cannot use two arms in that specific
+situation \cite{henry2006}. This means that, effectively, any Internet user is
+potentially disabled in any given moment. Thus, businesses cannot assume that by not
+providing an accessible experience they are only affecting permanently disabled people.
+For example, an online business devoted to extreme sports may be tempted to cut some
+corners when it comes to web accessibility, thinking their customers have to be in
+shape to perform such sports, however these same customers may be temporarily injured,
+but still interested in purchasing equipment.
+
+The respondents of a survey conducted in 2015, among web accessibility specialists,
+agree that accessibility is applicable to everyone and that it is highly related to
+usability \cite{yesilada2015}. However, another survey conducted in 2018 among
+Brazilian web developers illustrates how these topics are still not fully understood by
+professionals that do not specialize in web accessibility: of the 404 respondents, 288
+(71.2\%) are aware of the laws that regulate web accessibility in Brazil, but the
+majority has never developed an accessible website, and 33.2\% does not plan on
+integrating accessibility best practices in future projects. \cite{antonelli2018}
+
+Aside from ignorance of best practices and laws, \citeA{carter2001web} reports another
+reason why accessibility is often ignored by web developers and businesses: ``making
+the site accessible makes it boring'' (p. 227). Designers are often convinced that
+building for accessibility results in uninteresting and plain sites. Accessibility is
+thus considered useless for non-disabled users, if not outright damaging to their
+experience by forcing them to use a subpar product. On the contrary,
+\citeA{schmutz2016} finds that non-disabled users also benefit from a more accessible
+interface, while \citeA{petrie2004} finds that accessibility does not constrain visual
+design. Thus, in this study we test the following hypothesis:
+
+\begin{hyp}\label{hyp:visually_inferior}
+  Web accessibility does not result in a visually inferior product
+\end{hyp}
+
+The existing literature we have summarized so far focuses primarily on the perceptions
+of businesses, practitioners, and users, both disabled and non-disabled, highlighting
+how accessibility is often ignored while it should not, both from a moral perspective
+and from a practical perspective. However, a question that is not directly answered is
+whether a lack of accessibility can lead to a loss of customers for an online business.
+Section \ref{sec:consumer_behavior} explores in depth the existing literature related
+to online consumer behavior.
+
+\citeA{morris2016} lightly touches upon this topic. Analyzing the results of a survey
+conducted on blind users of Twitter, they find that, as the platform becomes less
+accessible with more and more users posting visual content rather than written content,
+blind users' desire for avoidance increases because they simply cannot use the site in
+a meaningful way anymore. Perhaps aware of this study, in April 2022, Twitter made
+globally available what they call the ``ALT badge'', which allows users to add a text
+description to their images to improve the experience of non-sighted users
+\cite{twitteralt2022}. It is worth noting that visually disabled users,
+reportedly, do not appreciate having a separate text-only copy of a website out of fear
+that it may not be as updated as the main site \cite{weeratunga2015}.
+
+\subsection{Consumer behavior towards online shopping}\label{sec:consumer_behavior}
+Online shopping cannot be considered a recent trend, but its pervasiveness has picked
+up pace in the last few years. Globally, the number of people shopping online has
+increased from 12\% in 2017 to 41\% in 2021, accelerated partly by the COVID-19
+pandemic as people were not allowed to shop in physical stores during the lockdowns of
+2020 and 2021 \cite{pwc2021}.
+
+This section summarizes the existing literature on consumer behavior towards online
+shopping and its links to web accessibility.
+
+\subsubsection{Customer retention}
+Customer retention, or loyalty, is considered paramount to the success of online
+businesses for several reasons: the cost of acquiring new customers is up to seven
+times higher than that of retaining existing customers; retained customers are less
+sensitive to price changes; and they might even refer new customers \cite{khalifa2007}.
+
+Intuitively, loyalty is driven by satisfaction: the higher the level of satisfaction,
+the higher the level of loyalty. However, in the context of online shopping, this
+effect is moderated by two key factors, namely, inertia and convenience.
+
+First, customers driven by inertia tend to repeat purchases out of habit, because they
+made a purchase before. The impact of satisfaction on loyalty is higher for customers
+who are not prone to repeating purchases out of habit, as customers driven by inertia
+can be more easily retained despite lower levels of satisfaction \cite{anderson2003}.
+
+Second, customers driven by convenience are less likely to look for alternatives, and
+are thus more likely to be loyal, however their loyalty is more strongly affected by
+satisfaction compared to customers who are motivated by other factors. For example,
+customers exhibiting price seeking behavior are more likely to forego convenience to
+look for cheaper alternatives, while customers driven by convenience will not look for
+alternatives if they are satisfied \cite{anderson2003}. Satisfaction in the context of
+online shopping and its ties to web accessibility are further discussed in Section
+\ref{sec:satisfaction}.
+
+Lastly, trust in an online business positively affects loyalty, as customers who do not
+trust an online business will not be loyal to it, regardless of the level of
+satisfaction \cite{anderson2003}. The role of trust and its ties to web accessibility
+are further discussed in Section \ref{sec:trust}.
+
+\paragraph{Satisfaction}\label{sec:satisfaction}
+Existing research finds a positive relationship between perceived ease of use (PEOU)
+and website satisfaction \cite{amin2014,casalo2008}, however little research currently
+exists on whether web accessibility also positively contributes to satisfaction. For
+example, \citeA{liebana2013} studies the effects of accessibility as a determinant of
+satisfaction for users of online banking services, but the definition of accessibility
+used in the study is that of ``ease of access'', which is only partially related to web
+accessibility, as defined in Section \ref{sec:web_accessibility}.
+
+A survey conducted in 2011 among students with disabilities participating in online
+classes finds that only 45\% were satisfied with their institution's abilities to
+accommodate their disabilities \cite{roberts2011}. A qualitative study conducted ten
+years later still finds that disabled students are ``significantly less likely to feel
+that universities supported them during the COVID-19 pandemic'' \cite{kourea2021}.
+While this is not strictly related to online shopping, it does highlight a web
+accessibility failure, and, given that the accessibility requirements for public
+institutions, such as universities, tend to be stricter than those for the private
+sector, this suggests that people with disabilities likely experience the same, if not
+more severe, type of struggle when shopping online.
+
+\paragraph{Trust}\label{sec:trust}
+In online environments, perceived usefulness (PU) and PEOU from the technology
+acceptance model are not sufficient to fully explain consumer behavior: trust is just
+as important \cite{gefen2003}.
+
+There are different reasons why consumers may not trust a website. Some users have
+privacy concerns, e.g., they fear that websites may sell user data. Some users have
+security concerns, e.g., they fear that it is not safe to enter credit card information
+online or that a website is not legitimate. Finally, some users have more practical
+concerns, e.g., they fear they may not receive what they ordered \cite{hoffman1999}.
+
+Trust is one of the mental shortcuts that consumers use to reduce uncertainty and
+complexity when navigating the myriad of websites and online stores that fight for
+their attention \cite{grabner2002}. In particular, contextual or situational factors
+can affect trust and existing studies highlight how PEOU has a positive effect on
+trust, meaning that a website that is perceived as easier to use is also perceived as
+more trustworthy \cite{gefen2003,elhaddad2018}.
+
+Since we have so far extended the concept of usability to include web accessibility, we
+thus formulate the following, so far untested, hypothesis:
+
+\begin{hyp}\label{hyp:trust}
+  A lack of web accessibility has a negative effect on consumers' trust
+\end{hyp}
+
+\paragraph{Countries and culture}\label{sec:countries}
+One of the major appeals for businesses expanding online is that the Internet is a
+global medium, allowing them to potentially reach customers everywhere with a fraction
+of the costs of traditional advertising and brick and mortar stores.
+
+However, different cultures react differently to different websites. For example,
+\citeA{cyr2008,cyr2013} finds that a country's culture is a strong predictor of a
+user's perception of a website. In particular, users from countries characterized by
+low uncertainty avoidance and high institutional trust, such as Canada and the USA,
+have the most favorable perceptions of website design. Culture is also shown to not
+only affect trust, but also loyalty and satisfaction \cite{cyr2008}. One of the
+limitations of \citeA{cyr2013}, however, is that the $1156$ participants were all shown
+the same website, and it is possible that it was designed specifically to cater to the
+wealthier consumers of the USA and Canada, which would arguably create a strong bias in
+the responses of participants from other countries, such as China or India.
+
+In fact, several studies find that consumers' perception of the visual design of
+websites is affected by their culture and country of origin: for example,
+\citeA{hu2004,simon2001,smith2004}. While these papers may be somewhat dated by now,
+cultural differences in web design are still present \cite{capece2021}. Despite the
+rise of global Internet giants, whose user interfaces are generally not adapted to
+local culture, and thus mold users' expectations and understanding of web design,
+techniques for developing cross-cultural websites exist \cite{smith2004}, they are,
+however, beyond the scope of this paper. It is worth noting, though, that this practice
+is not common: for example, \citeA{capece2021} finds ``a general lack of any adaptation
+of the content to clients of other countries'' in a sample of 75 Chinese websites.
+
+For all the aforementioned reasons, participants in the study are asked what country
+they are from to control for possible moderating effects on their perception of trust
+and visual design.
+
+\subsubsection{Online shopping abandonment}
+Online shopping abandonment, and in particular online shopping cart abandonment, is a
+significant factor affecting conversion rates for online businesses. Customers often
+place items in the cart without ever completing the purchase, and these cases can
+arguably be considered lost revenue opportunities.
+
+There are several reasons that explain this behavior. First, online shoppers do not
+always add an item to their cart for immediate purchase: sometimes they do it for
+entertainment; and other times the cart is used as an organizational tool to keep track
+of wanted products or to track price changes \cite{kukar2010}. Second, emotional
+ambivalence, caused by consumers' conflicting thoughts, results in higher rates of
+abandonment \cite{huang2018, wang2022}. Lastly, choice conflicts, i.e., the presence of
+multiple options with significant advantages and disadvantages \cite{tversky1992},
+result in higher rates of abandonment \cite{muster2016}.
+
+However, more simply, the usability of online stores has a direct influence on cart
+abandonment \cite{hasan2009}, and if customers struggle with the checkout process it is
+no surprise that some stop trying. Despite the close ties between usability and web
+accessibility, as discussed in Section \ref{sec:web_accessibility}, there is a lack of
+research into whether web accessibility has an effect on cart abandonment, thus in this
+paper we test the following hypothesis:
+
+\begin{hyp}\label{hyp:cart_abandonment}
+  A lack of web accessibility results in higher rates of online shopping abandonment
+\end{hyp}
+
+\paragraph{Experience}\label{sec:experience}
+Several studies highlight how even major websites are flawed in one way or another,
+especially when it comes to meeting web accessibility standards: for example,
+\citeA{sohaib2017,aziz2010,diamantidis2012}. Experienced users tend not to get
+frustrated, because they are used to coping with these flaws \cite{ethier2008} and,
+according to the Web Acceptance Model (WAM), ``in users with high experience of the
+Internet or a website, the influence of perceived ease of use on the attitude towards
+the website is substantially smaller than in users with low experience''. Intuitively,
+the moderating effect of experience of a specific website is more evident than the
+effect of Internet experience in general \cite{castaneda2007}.
+
+Since for this study we have designed a website from scratch, we cannot expect users to
+have any experience with it, thus, we can only rely on their reported level of Internet
+experience. We expect experience to act as a moderator on performance and online
+shopping abandonment, formally:
+
+\begin{hyp}\label{hyp:experience_performance}
+  Experienced users perform better than inexperienced users
+\end{hyp}
+
+\begin{hyp}\label{hyp:experience_abandonment}
+  Experienced users exhibit a lower rate of online shopping abandonment because
+  of usability or web accessibility flaws
+\end{hyp}
+
+\section{Method}
+\subsection{Experimental design}\label{sec:experimental_design}
+This study employs a one-factorial between-subjects design, and participants are
+randomly assigned to their group. There is no screening of participants, but the
+post-experiment survey asks for their age, and their level of computer experience, as
+these are shown to affect efficacy in computer-related tasks
+\cite{sherry2000,rozell1999}. Specifically, we expect that older participants will
+perform worse than younger participants. Moreover, participants are asked to identify
+their country of origin to control for the possible effects of culture on their
+perception, as discussed in Section \ref{sec:countries}.
+
+In the experiment, a website that mimics an online retailer of shoes is manipulated at
+two levels of accessibility: 1) conformant to WCAG 2.1 at Level AA; and 2) not
+conformant to WCAG 2.1 at any level, namely Level NA. This naming convention is adopted
+from \citeA{schmutz2016}.
+
+The website's appearance is loosely based on Nike's (\url{https://nike.com}) online
+store, screenshots taken at the time of writing are available in Appendix
+\ref{appendix:nike.com}. However, the size of the website is greatly reduced, resulting
+in only two types of pages: 1) a detail page for each product, as can be seen in Figure
+\ref{fig:product_accessible}, and 2) a listing of all products, as can be seen in
+Figure \ref{fig:home_accessible} in Appendix \ref{appendix:screenshots_experiment}. The
+website is fully responsive and can be accessed on mobile devices with no reduction of
+functionality, however, since people generally perform tasks better on desktop
+computers \cite{adepu2016}, we store the content of the \texttt{User-Agent} header to
+determine which device the experiment was completed on to account for possible
+differences in performance.
+
+Participants are asked to perform three tasks, reported verbatim in Table
+\ref{table:tasks}. At all times, a help button is available should a participant forget
+the tasks to complete, moreover participants are given the option to quit the
+experiment and move directly to the survey if they cannot manage to complete the task.
+Additional technical details on how the experiment was constructed can be found in
+Appendix \ref{appendix:experiment}.
+
+\begin{table}
+  \begin{tabularx}{\linewidth}{cX}
+    \toprule
+    Task & \multicolumn{1}{c}{Description}                                                     \\
+    \midrule
+    1    & Add to the cart a pair of Metcon 7 shoes. Color: white. Size: 41.5                  \\
+    2    & Add to the cart a pair of Pegasus Trail 3 GORE-TEX shoes. Color: yellow. Size: 39.5 \\
+    3    & Click on the checkout button                                                        \\
+    \bottomrule
+  \end{tabularx}
+  \caption{Tasks to be completed on the website}
+  \label{table:tasks}
+\end{table}
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/product_accessible.png}
+  \caption{
+    Screenshot of a product page from the website used for testing, conformant to
+    WCAG 2.1 at Level AA
+  }
+  \label{fig:product_accessible}
+  \vspace{1cm}
+  \includegraphics[width=\linewidth]{figures/product_inaccessible.png}
+  \caption{
+    Screenshot of a product page from the website used for testing, not conformant to
+    WCAG 2.1 at any level, namely Level NA
+  }
+  \label{fig:product_inaccessible}
+\end{figure}
+
+\subsubsection{Website manipulations}\label{sec:manipulations}
+In order to obtain manipulations corresponding to Level AA and Level NA, we refer to
+the guidelines defined in WCAG 2.1 \cite{wcag21}. What follows is a summary of the main
+differences between the two manipulations.
+
+\paragraph{Differences for non-disabled users}\label{sec:differences_non_disabled}
+For non-disabled users, the most visible difference, and the one that may mostly affect
+their experience when navigating the website, is the difference in contrast ratio
+between Level AA and Level NA. Additionally, at Level NA, links are not underlined and
+the cursor is always rendered with the default arrow, instead of the more appropriate
+semantic option.
+
+These differences can be seen between Figure \ref{fig:product_accessible} and Figure
+\ref{fig:product_inaccessible}, and between Figure \ref{fig:home_accessible} and Figure
+\ref{fig:home_inaccessible} in Appendix \ref{appendix:screenshots_experiment}.
+
+\paragraph{Differences for disabled users}
+For disabled users the differences are more evident, but, unlike the differences
+detailed in Section \ref{sec:differences_non_disabled}, they cannot be shown with a
+screenshot. On the website conformant at Level AA, all content can be navigated with a
+keyboard interface, while at Level NA only some content is operable with a keyboard
+interface and outlines on focus are disabled. Furthermore, elements that start
+automatically, such as notifications, are not time based at Level AA, while they are
+time based with no option to pause them at Level NA. Lastly, at Level AA all inputs are
+properly labeled and named, while this is not the case at Level NA.
+
+\subsubsection{Measures}
+During the course of the experiment, we record different measures of performance.
+First, we measure time spent reading the instructions because, intuitively,
+participants that skim through the instructions are more likely to forget their task or
+to not understand it completely, thus forcing them to ask for help midway through the
+experiment. Second, we measure the time it takes to finish the task and whether or not
+it was successfully completed. Last, we record how many times participants asked for
+help, as this can be interpreted as a sign that they struggle with the task.
+
+We expect the more accessible version of the website to be easier to use for both
+disabled and non disabled users, thus we formulate the following hypothesis:
+
+\begin{hyp}\label{hyp:accessibility_performance}
+  Participants assigned to a more accessible version of the website perform the task
+  faster than participants assigned to a relatively less accessible version of the same website
+\end{hyp}
+
+\subsubsection{Survey}
+Aside from performance measures, at the end of the experiment, participants are asked
+to fill in a survey that focuses on the completed task, and participant demographics.
+Table \ref{table:questions} contains the list of questions numbered in the same order
+participants answer them. The questions related to a user's perception of website
+design are adopted from \citeA{cyr2013}, while the rest are formulated specifically for
+this study, with inspiration from the language used in \citeA{cyr2013, elhaddad2018,
+  liebana2013}. Appendix \ref{appendix:survey} contains the complete list of questions
+and multiple choice answers.
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{rp{13cm}}
+    \toprule
+    \multicolumn{2}{c}{Question}                                                                         \\
+    \midrule
+    1  & I find this website easy to use \cite{cyr2013}                                                  \\
+    2  & This website is similar to the online stores I normally visit                                   \\
+    3  & The screen design (i.e. colors, images, layout etc.) is attractive \cite{cyr2013}               \\
+    4  & If I buy a product from this website, I believe it would be a secure transaction \cite{cyr2013} \\
+    5  & How old are you?                                                                                \\
+    6  & Where are you from?                                                                             \\
+    7  & Do you suffer from any condition that makes it hard to navigate websites?                       \\
+    8  & Do you have any accessibility options enabled on your device?                                   \\
+    9  & Do you make use of any assistive technology?                                                    \\
+    10 & How much time do you spend online each day?                                                     \\
+    11 & Have you ever closed a site because it was hard to use?                                         \\
+    \bottomrule
+  \end{tabular}
+  \caption{Complete list of questions from post-experiment survey}
+  \label{table:questions}
+\end{table}
+
+\subsection{Results}
+In this section, we analyze the results of the experiment designed for this study.
+Table \ref{table:anova_results} reports the full results of an ANOVA test that includes
+all relevant variables collected during the experiment.
+
+The experiment was hosted publicly on the Internet for \Sexpr{experiment_days_n} days,
+between \Sexpr{start_date_s} and \Sexpr{end_date_s}. A total of
+\Sexpr{total_participants_n} people took part in the experiment, and a total of
+\Sexpr{completed_survey_n} participants completed the post-experiment survey.
+
+<<echo=FALSE, warning=FALSE, results="asis">>=
+print(
+  xtable(
+    aov_sum,
+    type = "latex",
+    label = "table:anova_results",
+    nice.names = TRUE,
+    caption = "ANOVA: effect of independent variables on task completion time",
+  ),
+  booktabs = TRUE,
+  sanitize.rownames.function = function(x) gsub("`", "", x)
+)
+@
+
+\subsubsection{Measures}
+<<include=FALSE>>=
+r_completion_reading_time <- round_p(cor(df$task_completion_time[!is.na(df$task_reading_time)], df$task_reading_time[!is.na(df$task_reading_time)]))
+@
+
+\paragraph{Time spent reading the task}
+The data show that participants spent on average \Sexpr{reading_time_avg} seconds
+reading the instructions, and, as can be seen in Figure \ref{fig:reading_time}, there
+seems to be a negative correlation, albeit weak, between the reading time and the
+number of time participants asked for help. In the chart we can also see that
+\Sexpr{never_asked_for_help_n} (\Sexpr{never_asked_for_help_pct}\%) participants never
+asked for help. As can be seen in Figure \ref{fig:reading_time_task_completion},
+plotting task completion time against time spent reading the instructions, there is a
+very small correlation ($\rho = \Sexpr{r_completion_reading_time}$) between these two
+variables, suggesting that participants that are faster at reading are not necessarily
+faster at completing the task. Since this effect is weak, we will not include this
+variable in our final model.
+
+\begin{figure}
+  <<echo=FALSE, message=FALSE, warning=FALSE, fig.height=4>>=
+  ggplot(df[df$task_reading_time < 200,], aes(x = task_reading_time, y = askedForHelp)) +
+    geom_point(aes(color=group)) +
+    geom_smooth(method='lm') +
+    scale_colour_discrete("Group") +
+    labs(y = "Times participant asked for help", x = "Time spent reading instructions in seconds")
+  @
+  \caption{Time spent reading the task instructions against the number of times participants asked for help}
+  \label{fig:reading_time}
+\end{figure}
+
+\begin{figure}
+  <<echo=FALSE, message=FALSE, warning=FALSE, fig.height=4>>=
+  ggplot(df[df$task_reading_time < 200,], aes(x = task_reading_time, y = task_completion_time)) +
+    geom_point(aes(color=group)) +
+    geom_smooth(method='lm') +
+    scale_colour_discrete("Group") +
+    labs(y = "Task completion time in seconds", x = "Time spent reading instructions in seconds")
+  @
+  \caption{Time spent reading the task instructions plotted against task completion time}
+  \label{fig:reading_time_task_completion}
+\end{figure}
+
+\paragraph{Task completion time}
+As can be seen in Figure \ref{fig:task_completion_time_violin} and Figure
+\ref{fig:barchart_asked_for_help}, on average, participants assigned to the accessible
+version of the website, from now on Group A, completed the task in
+\Sexpr{group_a_completion_time_desktop} seconds on desktop and in
+\Sexpr{group_a_completion_time_mobile} seconds on mobile devices, and they asked for
+help \Sexpr{group_a_asked_for_help} times. Participants assigned to the inaccessible
+version of the website, from now on Group I, completed the task in
+\Sexpr{group_i_completion_time_desktop} seconds on PC and in
+\Sexpr{group_i_completion_time_mobile} seconds on mobile devices, and they asked for
+help \Sexpr{group_i_asked_for_help} times. These numbers do not include the data points
+from the \Sexpr{abandoned_n} participants that did not successfully complete the task;
+the results from this group of participants are further discussed in Section
+\ref{sec:results_abandoned}.
+
+\newtoggle{task_completion_time_aov}
+<<echo=FALSE, warning=FALSE, results="asis">>=
+if (aov_group_p <= 0.05) {
+  cat("\\toggletrue{task_completion_time_aov}")
+} else {
+  cat("\\togglefalse{task_completion_time_aov}")
+}
+@
+
+\newtoggle{asked_for_help_glm}
+<<echo=FALSE, warning=FALSE, results="asis">>=
+df$askedForHelp <- as.numeric(df$askedForHelp)
+asked_for_help.glm <- glm(askedForHelp ~ group, data = df, family = poisson(link = "log"))
+asked_for_help.sum <- summary(asked_for_help.glm)
+asked_for_help.glm.p <- glm_p(asked_for_help.sum, "groupGroup I")
+
+if (asked_for_help.glm.p <= 0.05) {
+  cat("\\toggletrue{asked_for_help_glm}")
+} else {
+  cat("\\togglefalse{asked_for_help_glm}")
+}
+
+print(
+  xtable(
+    asked_for_help.sum,
+    type = "latex",
+    label = "table:poisson_asked_for_help",
+    caption = "Poisson regression: effect of increased web accessibility on number of times participants asked for help",
+    nice.names = TRUE
+  ),
+  booktabs = TRUE,
+  sanitize.rownames.function = function(x) gsub("groupGroup I", "Group I", x)
+)
+@
+
+The ANOVA test reported in Table \ref{table:anova_results}
+\iftoggle{task_completion_time_aov}{confirms that the difference in completion time is
+  statistically significant}{fails to reject the null hypothesis that the difference in
+  completion time is statistically significant} ($p = \Sexpr{aov_group_p}$). Since the
+number of times participants asked for help is a discrete variable, a Poisson
+regression is more appropriate than ANOVA, \iftoggle{asked_for_help_glm}{and it
+  confirms that the difference in how many times participants asked for help is
+  \iftoggle{task_completion_time_aov}{also}{} significant}{however the test shows that
+  the difference between the two groups is \iftoggle{task_completion_time_aov}{}{also}
+  not statistically significant} ($p = \Sexpr{asked_for_help.glm.p}$), as can be seen in
+Table \ref{table:poisson_asked_for_help}. We thus fail to validate Hypothesis
+\ref{hyp:accessibility_performance}.
+
+\begin{figure}
+  <<echo=FALSE, message=FALSE, warning=FALSE, fig.height=4>>=
+  ggplot(df[task_completed,], aes(y=task_completion_time, x=group)) +
+    geom_violin() +
+    geom_boxplot(width=0.1) +
+    facet_wrap(~device) +
+    labs(x = "Group", y = "Task completion time in seconds")
+  @
+  \caption{Distribution of task completion time in seconds across groups and device type}
+  \label{fig:task_completion_time_violin}
+\end{figure}
+
+\begin{figure}
+  <<echo=FALSE, message=FALSE, warning=FALSE>>=
+  ggplot(df, aes(askedForHelp)) +
+    geom_histogram(binwidth = 1) +
+    facet_wrap(~group, ncol = 1) +
+    scale_x_continuous(breaks = seq(0, 100, 1)) +
+    labs(y = "Count", x = "How many times participants asked for help")
+  @
+  \caption{Breakdown of how many times participants asked for help in each group}
+  \label{fig:barchart_asked_for_help}
+\end{figure}
+
+\subsubsection{Cart abandonment}\label{sec:results_abandoned}
+The experiment designed for this study does not only keep track of the results of those
+who completed the task described in the previous sections, it also stores partial
+results from participants who quit early. In Section \ref{sec:experience}, we
+formulated Hypothesis \ref{hyp:cart_abandonment}, arguing that web accessibility should
+act as a moderator on online cart abandonment. This experiment cannot be considered
+exhaustive when it comes to online shopping abandonment, however, in an attempt to
+validate this hypothesis, we record how many participants abandon the e-commerce
+website they are shown, without completing the task. We consider this an approximation
+of the online customer journey: they land, with purpose, on a page they are not
+familiar with, they take a look around, and eventually they leave. This approximation
+is most likely not reflective of the customer journey of the clients of well known
+online retailers, but it should provide insights for online businesses that are not as
+well known.
+
+<<include=FALSE>>=
+data <- matrix(c(group_a_abandoned_n, group_a_not_abandoned_n, group_i_abandoned_n, group_i_not_abandoned_n), nrow = 2)
+test <- fisher.test(data)
+test_p_value <- round_p(test$p.value)
+@
+
+<<echo=FALSE, warning=FALSE, results="asis">>=
+print(
+  xtable(
+    aov_abandoned_sum,
+    type = "latex",
+    label = "table:anova_abandoned_results",
+    nice.names = TRUE,
+    caption = "ANOVA: effect of independent variables on task completion time for participants who abandoned the task",
+  ),
+  booktabs = TRUE,
+  sanitize.rownames.function = function(x) gsub("`", "", x)
+)
+@
+
+The data show that \Sexpr{abandoned_n} participants read through the instructions,
+started the experiment, and never finished the task. Out of these \Sexpr{abandoned_n}
+people, \Sexpr{group_a_abandoned_n} (\Sexpr{group_a_abandoned_pct}\%) were shown the
+accessible website, and \Sexpr{group_i_abandoned_n} (\Sexpr{group_i_abandoned_pct}\%)
+were shown the inaccessible website. These results are summarized in Table
+\ref{table:abandonment}. A Fisher's exact test does not provide enough evidence that
+the difference between these groups is significant ($p = \Sexpr{test_p_value}$), we
+thus consider Hypothesis \ref{hyp:cart_abandonment} not validated and cannot conclude
+that a lack of web accessibility results in higher rates of online shopping
+abandonment. On average, participants who abandoned the experiment did so after
+\Sexpr{abandon_time_avg_a} and \Sexpr{abandon_time_avg_i} seconds, respectively for
+Group A and Group I. An ANOVA test reveals that the difference between groups is not
+statistically significant ($p = \Sexpr{aov_abandoned_group_p}$). The full results of
+the test can be seen in Table \ref{table:anova_abandoned_results}.
+
+\begin{table}
+  \centering
+  \begin{tabular}{lrrr}
+    \toprule
+                    & \multicolumn{1}{c}{Accessible}                        & \multicolumn{1}{c}{Inaccessible}                      & \multicolumn{1}{c}{Total}             \\
+    \midrule
+    Abandoned       & \Sexpr{group_a_abandoned_n}                           & \Sexpr{group_i_abandoned_n}                           & \Sexpr{abandoned_n}                   \\
+    Never abandoned & \Sexpr{group_a_not_abandoned_n}                       & \Sexpr{group_i_not_abandoned_n}                       & \Sexpr{not_abandoned_n}               \\
+    \midrule
+    Total           & \Sexpr{group_a_abandoned_n + group_a_not_abandoned_n} & \Sexpr{group_i_abandoned_n + group_i_not_abandoned_n} & \Sexpr{abandoned_n + not_abandoned_n} \\
+    \bottomrule
+  \end{tabular}
+  \caption{Proportion of participants who abandoned the task}
+  \label{table:abandonment}
+\end{table}
+
+<<include=FALSE>>=
+more_6_hours <- df$experience_grouped == "6 hours or more" & !is.na(df$experience_grouped)
+less_6_hours <- df$experience_grouped != "6 hours or more" & !is.na(df$experience_grouped)
+more_6_hours_n <- length(df$experience_grouped[more_6_hours])
+less_6_hours_n <- length(df$experience_grouped[less_6_hours])
+more_6_hours_abandoned_n <- count_true(df$abandonedWebsite[df$abandonedWebsite & more_6_hours])
+more_6_hours_abandoned_pct <- pct(more_6_hours_abandoned_n/more_6_hours_n)
+less_6_hours_abandoned_n <- count_true(df$abandonedWebsite[df$abandonedWebsite & less_6_hours])
+less_6_hours_abandoned_pct <- pct(less_6_hours_abandoned_n/less_6_hours_n)
+more_6_hours_not_abandoned_n <- more_6_hours_n - more_6_hours_abandoned_n
+less_6_hours_not_abandoned_n <- less_6_hours_n - less_6_hours_abandoned_n
+
+data <- matrix(c(more_6_hours_abandoned_n, more_6_hours_not_abandoned_n, less_6_hours_abandoned_n, less_6_hours_not_abandoned_n), nrow = 2)
+test <- fisher.test(data)
+test_p_value <- round_p(test$p.value)
+@
+
+In Section \ref{sec:experience}, we also formulate Hypothesis
+\ref{hyp:experience_abandonment}, arguing that experienced users exhibit a lower rate
+of online cart abandonment resulting from usability issues. Question
+\ref{q:abandonment} asks participants whether or not they ever abandoned a website
+because it was hard to use. Of the \Sexpr{more_6_hours_n} participants who spend at
+least six hours online every day, \Sexpr{more_6_hours_abandoned_n}
+(\Sexpr{more_6_hours_abandoned_pct}\%) claim to have abandoned a website that was hard
+to use, while \Sexpr{less_6_hours_abandoned_n} (\Sexpr{less_6_hours_abandoned_pct}\%)
+of the \Sexpr{less_6_hours_n} participants who spend less than six hours online every
+day, claim to have abandoned a website that was hard to use. The results are summarized
+in Table \ref{table:experience_abandoned}. A Fisher's exact test does not provide
+enough evidence that the difference between these groups is significant ($p =
+  \Sexpr{test_p_value}$), we thus cannot validate Hypothesis
+\ref{hyp:experience_abandonment}.
+
+\begin{table}
+  \centering
+  \begin{tabular}{lrrr}
+    \toprule
+                    & \multicolumn{1}{c}{6 hours or more}  & \multicolumn{1}{c}{5 hours or less}  & \multicolumn{1}{c}{Total}                                           \\
+    \midrule
+    Abandoned       & \Sexpr{more_6_hours_abandoned_n}     & \Sexpr{less_6_hours_abandoned_n}     & \Sexpr{more_6_hours_abandoned_n + less_6_hours_abandoned_n}         \\
+    Never abandoned & \Sexpr{more_6_hours_not_abandoned_n} & \Sexpr{less_6_hours_not_abandoned_n} & \Sexpr{more_6_hours_not_abandoned_n + less_6_hours_not_abandoned_n} \\
+    \midrule
+    Total           & \Sexpr{more_6_hours_n}               & \Sexpr{less_6_hours_n}               & \Sexpr{more_6_hours_n + less_6_hours_n}                             \\
+    \bottomrule
+  \end{tabular}
+  \caption{Answers to Question \ref{q:abandonment}, broken down by time spent online}
+  \label{table:experience_abandoned}
+\end{table}
+
+\subsubsection{Materials}
+Participants completed the experiment and the survey on their device, Figure
+\ref{fig:devices_browsers} shows a breakdown of participants by device category, and by
+Internet browser used.
+
+It is worth noting that this information was obtained by parsing the
+\texttt{User-Agent} header with the \texttt{uaparserjs} R package. This is a convenient
+way of collecting such data, but it has some limitations, because it is notoriously
+difficult to parse \texttt{User-Agent} strings consistently and because devices can be
+configured to send inaccurate or custom \texttt{User-Agent} strings.
+
+\begin{figure}
+  <<echo=FALSE, message=FALSE, warning=FALSE, fig.height=4>>=
+    df$browser <- factor(df$browser, levels = c("Firefox", "Safari", "Chromium"))
+    ggplot(df) +
+      geom_bar(aes(x = device, fill = browser), position = "stack") +
+      labs(y = "Count", x = "Device", fill = "Browser")
+  @
+  \caption{Breakdown of participants' devices and browsers}
+  \label{fig:devices_browsers}
+\end{figure}
+
+Not all devices have the same computing performance and participants are not expected
+to own devices of a specific brand or class. Additionally, participants are not
+expected to take part in the experiment on a high speed Internet connection. In order
+to control for possible slowdowns and worse performances that can be explained by a
+participant's device or Internet connection, Core Web Vitals were collected for each
+session.
+
+``Web Vitals is an initiative by Google to provide unified guidance for quality signals
+that are essential to delivering a great user experience on the web'', these signals
+include Largest Contentful Paint (LCP), First Contentful Paint (FCP) and Time to First
+Byte (TTFB), which measure loading performance; First Input Delay (FID), which measures
+interactivity; and Cumulative Layout Shift (CLS), which measures visual stability
+\cite{webvitalsWalton2020}.
+
+It is worth noting that only Chromium based browsers support capturing all these
+metrics, while Firefox and Safari only support FCP, FID, and TTFB \cite{webvitalsRepo}.
+As can be seen in Figure \ref{fig:devices_browsers}, this means that full metrics could
+only be recorded for \Sexpr{chromium_pct}\% of all participants.
+
+\begin{figure}
+  <<echo=FALSE, message=FALSE, warning=FALSE, fig.height=4>>=
+  webvitals_metrics <- c("FCP", "LCP", "CLS", "TTFB", "FID")
+  webvitals_data <- filter(web_vitals_device_df, metric %in% webvitals_metrics)
+  ggplot(webvitals_data, aes(x=device, y=value)) +
+    geom_violin() +
+    geom_boxplot(width=0.1, outlier.shape = NA) +
+    facet_wrap(~metric) +
+    scale_y_continuous(breaks = seq(0, 200, 25), limits = c(0, 200)) +
+    labs(y = "Milliseconds", x = "Device")
+  @
+  \caption{Distribution of Web Vitals measured on participants' devices}
+  \label{fig:web_vitals}
+\end{figure}
+
+Additionally, Next.js, the framework used to build the experiment and discussed in more
+details in Appendix \ref{appendix:experiment}, provides another set of metrics that can
+help to explain slowdowns or worse performance, namely: Next.js-hydration, i.e., the
+time it takes for the page to start and finish hydrating;
+Next.js-route-change-to-render, i.e., the time it takes for a page to start rendering
+after a route change; and Next.js-render, i.e., the time it takes for a page to finish
+render after a route change \cite{nextjsmetrics}.
+
+Figure \ref{fig:web_vitals} shows the distribution of Web Vitals measured on the
+devices of participants, with all outliers hidden for clarity. As can be seen from the
+graph, there is a small difference between the metrics recorded on desktop and mobile
+devices. ANOVA tests, reported in full in Appendix \ref{appendix:web_vitals}, confirm
+that some of these differences are statistically significant. Although mobile devices
+are often less powerful than desktop devices, the images served to them are smaller so
+they may ultimately load faster than on desktop devices, depending on the Internet
+connection speed, this explains why the measured FCP is higher on desktop.
+
+Moreover, Figure \ref{fig:nextjs_metrics} shows the distribution of Next.js metrics
+measured on the devices of participants, with all outliers hidden for clarity. As can
+be seen from the graph, on average, mobile devices are slower to render and hydrate
+pages and this has a direct effect on how much time it takes to browse the website and
+complete each task. ANOVA tests confirm that the mean of all three metrics is
+significantly different on mobile compared to desktop devices, the statistical tables
+are available in Appendix \ref{appendix:nextjs_metrics}.
+
+<<nextjs_metrics, echo=FALSE, warning=FALSE, results="asis">>=
+nextjs_metrics <- c("Next.js-route-change-to-render", "Next.js-hydration", "Next.js-render")
+nextjs_data <- filter(web_vitals_device_df, metric %in% nextjs_metrics)
+@
+
+\begin{figure}
+  <<nextjs_metrics_fig, echo=FALSE, message=FALSE, warning=FALSE, fig.height=4>>=
+  ggplot(nextjs_data, aes(x=device, y=value)) +
+    geom_boxplot(outlier.shape = NA) +
+    facet_wrap(~metric) +
+    scale_y_continuous(breaks = seq(0, 200, 25), limits = c(0, 200)) +
+    labs(y = "Milliseconds", x = "Device")
+  @
+  \caption{Distribution of Next.js metrics measured on participants' devices}
+  \label{fig:nextjs_metrics}
+\end{figure}
+
+In the name of simplicity, in our final model we reduce these different measures to a
+single binary variable, ``mobile'' or ``desktop'', also because, considering the fact
+that not all metrics could be measured for all participants, adding them to the model
+would reduce the sample size. We suggest investigating the impact of Web Vitals on task
+performance in a lab setting, to control for the device of participants. This
+limitation of the study is further discussed in Section \ref{sec:limitations}. However,
+the ANOVA test we have conducted reveals that this factor is not statistically
+significant ($p = \Sexpr{aov_device_p}$).
+
+\subsubsection{Demographics}\label{sec:demographics}
+Participants were asked to self identify their age and their country of origin,
+participants also had the option not to answer these questions if they deemed them too
+personal. Of the \Sexpr{completed_survey_n} participants that completed the survey,
+\Sexpr{only_age_n} chose to only disclose their age, \Sexpr{only_country_n} chose to
+only disclose their country of origin, \Sexpr{both_age_and_country_n} chose to disclose
+both, and \Sexpr{no_age_no_country_n} chose to disclose neither.
+
+\paragraph{Age}
+\begin{figure}
+  <<echo=FALSE, message=FALSE, warning=FALSE, fig.height=4>>=
+  ggplot(df, aes(age)) +
+    geom_histogram(binwidth = 2) +
+    geom_density(aes(y = ..density.. * (nrow(df)))) +
+    scale_x_continuous(breaks = seq(0, 100, 5)) +
+    facet_wrap(~group, ncol = 1) +
+    labs(y = "Count", x = "Age")
+  @
+  \caption{Distribution of age across the two groups of participants}
+  \label{fig:age_distribution}
+\end{figure}
+
+<<ks_age, include=FALSE>>=
+age_group_a <- df$age[group_a]
+age_group_a.mean <- round(mean(age_group_a, na.rm = TRUE), digit=1)
+age_group_i <- df$age[group_i]
+age_group_i.mean <- round(mean(age_group_i, na.rm = TRUE), digit=1)
+ks_age <- ks.test(age_group_a, age_group_i)
+ks_age.d <- round_p(ks_age$statistic)
+ks_age.p <- round_p(ks_age$p.value)
+@
+
+The average age of participants in Group A was \Sexpr{age_group_a.mean}, while in Group
+I it was \Sexpr{age_group_i.mean}. Figure \ref{fig:age_distribution} shows the
+distribution of age in each group, and a two-sample Kolmogorov-Smirnov test confirms
+the two samples come from the same distribution ($D=\Sexpr{ks_age.d}$,
+$p=\Sexpr{ks_age.p}$).
+
+\newtoggle{ks_age_device}
+
+<<ks_age_device, echo=FALSE, warning=FALSE, results="asis">>=
+age_group_mobile <- df$age[device_m]
+age_group_mobile.mean <- round(mean(age_group_mobile, na.rm = TRUE), digit=1)
+age_group_desktop <- df$age[device_d]
+age_group_desktop.mean <- round(mean(age_group_desktop, na.rm = TRUE), digit=1)
+ks_age_device <- ks.test(age_group_mobile, age_group_desktop)
+ks_age_device.d <- round_p(ks_age_device$statistic)
+ks_age_device.p <- round_p(ks_age_device$p.value)
+if (ks_age_device.p <= 0.05) {
+  cat("\\toggletrue{ks_age_device}")
+} else {
+  cat("\\togglefalse{ks_age_device}")
+}
+@
+
+\iftoggle{ks_age_device}{
+  \begin{figure}
+    <<age_distribution_device, echo=FALSE, message=FALSE, warning=FALSE, fig.height=4>>=
+    ggplot(df, aes(age)) +
+      geom_histogram(binwidth = 2) +
+      geom_density(aes(y = ..density.. * (nrow(df)))) +
+      scale_x_continuous(breaks = seq(0, 100, 5)) +
+      facet_wrap(~device, ncol = 1) +
+      labs(y = "Count", x = "Age")
+    @
+    \caption{Distribution of age broken down by device used to complete the experiment}
+    \label{fig:age_distribution_device}
+  \end{figure}
+
+  Interestingly, there is a significant difference in the distribution of the age of
+  participants that completed the experiment on a mobile device and the distribution of
+  the age of participants that completed the experiment on a desktop computer, as can be
+  seen in Figure \ref{fig:age_distribution_device}. A two-sample Kolmogorov-Smirnov test
+  rejects the null hypothesis that the two samples come from the same distribution
+  ($D=\Sexpr{ks_age_device.d}$, $p=\Sexpr{ks_age_device.p}$). For this reason, in our
+  model we calculate the interaction effect between age range and device used, however it
+  is not statistically significant ($p = \Sexpr{aov_age_device_p}$).}{ There is no
+  significant difference in the distribution of the age of participants that completed
+  the experiment on a mobile device and the distribution of the age of participants that
+  completed the experiment on a desktop computer, and a two-sample Kolmogorov-Smirnov
+  test confirms it ($D=\Sexpr{ks_age_device.d}$, $p=\Sexpr{ks_age_device.p}$).}
+
+\begin{figure}
+  <<echo=FALSE, message=FALSE, warning=FALSE, fig.height=4>>=
+  ggplot(df, aes(x=age_range, y=task_completion_time)) +
+    geom_violin() +
+    geom_boxplot(width=0.1) +
+    labs(y = "Task completion time in seconds", x = "Age range")
+  @
+  \caption{Distribution of task completion time for each age group}
+  \label{fig:age_task_completion_time}
+\end{figure}
+
+\newtoggle{age_task_completion_time}
+\newtoggle{age_task_completion_time_aov}
+
+<<echo=FALSE, warning=FALSE, results="asis">>=
+df_50_60 <- df[df$age >= 50,]
+task_completion_time_50_60.aov <- aov(task_completion_time ~ `Age range`, data = df_50_60)
+task_completion_time_50_60.sum <- summary(task_completion_time_50_60.aov)
+task_completion_time_50_60.aov.p <- anova_p(task_completion_time_50_60.sum)
+if (task_completion_time_50_60.aov.p <= 0.05) {
+  cat("\\toggletrue{age_task_completion_time_aov}")
+} else {
+  cat("\\togglefalse{age_task_completion_time_aov}")
+}
+
+time_age_50 <- median(df$task_completion_time[age_50], na.rm = TRUE)
+time_age_60 <- median(df$task_completion_time[age_60], na.rm = TRUE)
+if (time_age_50 > time_age_60) {
+  cat("\\toggletrue{age_task_completion_time}")
+} else {
+  cat("\\togglefalse{age_task_completion_time}")
+}
+@
+
+As can be seen in Figure \ref{fig:age_task_completion_time}, the time participants take
+to complete the assigned task is proportional to their age, this result is
+statistically significant ($p = \Sexpr{aov_age_range_p}$). As anticipated in Section
+\ref{sec:experimental_design}, this is in line with existing research.
+\iftoggle{age_task_completion_time}{It is surprising and unexpected, based on the
+  existing literature, that the peak is in the range 50-59 ($n = \Sexpr{age_50_n}$),
+  while in the range 60+ ($n = \Sexpr{age_60_n}$) we can observe a lower average
+  completion time. \iftoggle{age_task_completion_time_aov}{An ANOVA test shows the
+    observed difference is statistically significant}{However, an ANOVA test shows the
+    observed difference is not statistically significant} ($p =
+  \Sexpr{task_completion_time_50_60.aov.p}$), as can be seen in Table
+  \ref{table:task_completion_time_50_60}.}{}
+
+As illustrated in Figure \ref{fig:age_distribution_device}, older participants were
+more likely to complete the experiment on a mobile device, and, as explained in Section
+\ref{sec:experimental_design}, we expect this to have a negative effect on task
+completion time. Thus, it is no surprise that older participants were indeed slower
+than younger participants, regardless of whether they were assigned to Group A or Group
+I.
+
+\paragraph{Disability status}\label{sec:disability_status}
+Participants were asked to self-identify and to disclose whether they have any
+disability or condition that makes it hard for them to browse the Internet. Out of
+\Sexpr{completed_survey_n} participants who answered the survey,
+\Sexpr{participants_disability_n} (\Sexpr{participants_disability_pct}\%) said they
+suffer from such a condition. According to the statistics we reported in Section
+\ref{sec:introduction}, 22\% of Internet users in the UK suffer from self-assessed
+disabilities \cite{ukinternetusers2020}. Assuming this number is reflective of the
+global population, we believe that the sample of participants that completed the
+experiment and the survey designed for this study is thus not reflective of the
+population of Internet users at large. We consider this a limitation of the current
+study, and we elaborate on it in Section \ref{sec:limitations}.
+
+Aside from conditions that affect them, participants were asked whether they have any
+accessibility options, such as increased contrast, enabled on their device. Out of
+\Sexpr{completed_survey_n} participants who answered the survey,
+\Sexpr{participants_accessibility_n} (\Sexpr{participants_accessibility_pct}\%)
+disclosed that they have at least one such option enabled on their device.
+
+Lastly, participants were asked whether they use any assistive technology, such as a
+screen reader. Out of \Sexpr{completed_survey_n} participants who answered the survey,
+\Sexpr{participants_assistive_n} (\Sexpr{participants_assistive_pct}\%) disclosed that
+they use such technology.
+
+Because the sample size of participants that suffer from some form of disability is
+relatively small in this study, in the rest of our analysis we group participants that
+answered positively to any of the aforementioned questions together. This results in a
+more meaningful sample size of \Sexpr{participants_any_accessibility_n}
+(\Sexpr{participants_any_accessibility_pct}\%), which is closer to the number quoted in
+Section \ref{sec:introduction}. From now on, we will refer to this group of
+participants as Group D, while we will refer to participants with no disability and no
+accessibility options turned on as Group ND.
+
+\newtoggle{disability_task_completion_time_aov}
+<<echo=FALSE, warning=FALSE, results="asis">>=
+if (aov_any_accessibility_p <= 0.05) {
+  cat("\\toggletrue{disability_task_completion_time_aov}")
+} else {
+  cat("\\togglefalse{disability_task_completion_time_aov}")
+}
+
+task_completion_time_group_d <- round_time(median(df$task_completion_time[df$any_accessibility == "Group D"], na.rm = TRUE))
+task_completion_time_group_nd <- round_time(median(df$task_completion_time[df$any_accessibility == "Group ND"], na.rm = TRUE))
+@
+
+As can be seen in Figure \ref{fig:task_completion_time_disability}, there is a
+difference in the median time taken to complete the task between Group D and Group ND,
+respectively \Sexpr{task_completion_time_group_d} and
+\Sexpr{task_completion_time_group_nd} seconds.
+\iftoggle{disability_task_completion_time_aov}{The ANOVA test we have conducted reveals
+  that the difference is statistically significant}{However, the ANOVA test we have
+  conducted reveals that the difference is not statistically significant} ($p =
+\Sexpr{aov_any_accessibility_p}$).
+
+\begin{figure}
+  <<echo=FALSE, message=FALSE, warning=FALSE, fig.height=4>>=
+  ggplot(df, aes(y=task_completion_time, x=any_accessibility)) +
+    geom_violin() +
+    geom_boxplot(width=0.1) +
+    labs(y = "Task completion time in seconds", x = "Disability status")
+  @
+  \caption{Distribution of task completion time broken down by disability status}
+  \label{fig:task_completion_time_disability}
+\end{figure}
+
+\paragraph{Real world feeling}
+\begin{figure}
+  <<echo=FALSE, message=FALSE, warning=FALSE, fig.height=2>>=
+    df_likert_dropna <- drop_na(data.frame(
+      realistic=as.factor(df$realistic_likert),
+      group=df$group
+    ))
+    df_likert <- df_likert_dropna
+    df_likert$group <- NULL
+    names(df_likert) = c("This website is similar to the online stores I normally visit")
+    plot(likert(df_likert, grouping = df_likert_dropna$group))
+
+    survey_realistic_a <- round_survey(mean(df$realistic_likert[group_a], na.rm = TRUE))
+    survey_realistic_i <- round_survey(mean(df$realistic_likert[group_i], na.rm = TRUE))
+    survey_realistic.chisq <- chisq.test(df$group, df$realistic_likert, correct = FALSE)
+    survey_realistic.chisq.p <- round_p(survey_realistic.chisq$p.value)
+  @
+  \caption{Survey answers to Question \ref{q:realistic} converted to a five point Likert scale}
+  \label{fig:survey_realistic}
+\end{figure}
+
+Question \ref{q:realistic} asks participants if they consider the website they visited
+in the course of this experiment realistic. The intent behind this question is to
+increase the internal validity of the study by making sure that the website we
+designed, while simpler than a real world e-commerce website, is not too distant from
+the real world experience of participants.
+
+Most importantly, this question is necessary to determine whether the two levels of
+manipulations described in Section \ref{sec:manipulations} result in two comparable
+experiences. As can be seen in Figure \ref{fig:survey_realistic}, there is no
+significant difference between the answers of the two groups of participants. If we
+convert the answers to a numerical scale, the average answer for Group A and Group I is
+\Sexpr{survey_realistic_a} and \Sexpr{survey_realistic_i} respectively. A Pearson's
+chi-squared test confirms that the difference is not statistically significant ($p =
+  \Sexpr{survey_realistic.chisq.p}$).
+
+We can conclude that the website designed for this experiment has a real world feeling
+and that participants did not find it unusual.
+
+\paragraph{Task difficulty}\label{sec:difficulty}
+\newtoggle{survey_difficulty_equal}
+\newtoggle{survey_difficulty_significant}
+\newtoggle{difficulty_test_device_significant}
+<<echo=FALSE, warning=FALSE, results="asis">>=
+difficulty_labels <- c("Very hard", "Hard", "Neither easy nor hard", "Easy", "Very easy")
+df$difficulty <- dplyr::recode(
+  df$taskDifficulty,
+  `-2`="Very hard",
+  `-1`="Hard",
+  `0`="Neither easy nor hard",
+  `1`="Easy",
+  `2`="Very easy",
+)
+
+difficulty_mean_group_a <- round_survey(mean(df$difficulty_likert[group_a], na.rm = TRUE))
+difficulty_mean_group_i <- round_survey(mean(df$difficulty_likert[group_i], na.rm = TRUE))
+difficulty_mean_mobile <- round_survey(mean(df$difficulty_likert[device_m], na.rm = TRUE))
+difficulty_mean_desktop <- round_survey(mean(df$difficulty_likert[device_d], na.rm = TRUE))
+difficulty_test.chisq <- chisq.test(df$group, df$difficulty_likert, correct = FALSE)
+difficulty_test.chisq.p <- round_p(difficulty_test.chisq$p.value)
+if (difficulty_test.chisq.p <= 0.05) {
+  cat("\\toggletrue{survey_difficulty_significant}")
+} else {
+  cat("\\togglefalse{survey_difficulty_significant}")
+}
+difficulty_test_device.chisq <- chisq.test(df$device, df$difficulty_likert, correct = FALSE)
+difficulty_test_device.chisq.p <- round_p(difficulty_test_device.chisq$p.value)
+if (difficulty_test_device.chisq.p <= 0.05) {
+  cat("\\toggletrue{difficulty_test_device_significant}")
+} else {
+  cat("\\togglefalse{difficulty_test_device_significant}")
+}
+
+group_a_task_difficulty <- names(which.max(table(df$difficulty[group_a])))
+group_i_task_difficulty <- names(which.max(table(df$difficulty[group_i])))
+mobile_task_difficulty <- names(which.max(table(df$difficulty[device_m])))
+desktop_task_difficulty <- names(which.max(table(df$difficulty[device_d])))
+
+if (group_a_task_difficulty == group_i_task_difficulty) {
+  cat("\\toggletrue{survey_difficulty_equal}")
+} else {
+  cat("\\togglefalse{survey_difficulty_equal}")
+}
+@
+
+\begin{figure}
+  <<echo=FALSE, message=FALSE, warning=FALSE, fig.height=2>>=
+    df_likert_dropna <- drop_na(data.frame(
+      difficulty=as.factor(df$taskDifficulty + 3),
+      group=df$group
+    ))
+    df_likert <- df_likert_dropna
+    df_likert$group <- NULL
+    names(df_likert) = c("I find this website easy to use")
+    plot(likert(df_likert, grouping = df_likert_dropna$group))
+  @
+  \caption{Survey answers to Question \ref{q:difficulty} converted to a five point Likert scale}
+  \label{fig:survey_answers}
+\end{figure}
+
+\begin{figure}
+  <<echo=FALSE, message=FALSE, warning=FALSE, fig.height=2>>=
+    df_likert_dropna <- drop_na(data.frame(
+      difficulty=as.factor(df$difficulty_likert),
+      device=df$device
+    ))
+    df_likert <- df_likert_dropna
+    df_likert$device <- NULL
+    names(df_likert) = c("I find this website easy to use")
+    plot(likert(df_likert, grouping = df_likert_dropna$device))
+  @
+  \caption{Survey answers to Question \ref{q:difficulty} converted to a five point Likert scale, grouped by device used}
+  \label{fig:survey_answers_device}
+\end{figure}
+
+\begin{figure}
+  <<echo=FALSE, message=FALSE, warning=FALSE, fig.height=2>>=
+    df_likert_dropna <- drop_na(data.frame(
+      difficulty=as.factor(df$difficulty_likert),
+      any_accessibility=df$any_accessibility
+    ))
+    df_likert <- df_likert_dropna
+    df_likert$any_accessibility <- NULL
+    names(df_likert) = c("I find this website easy to use")
+    grouping <- df_likert_dropna$any_accessibility
+    grouping[df_likert_dropna$any_accessibility] <- "Group D"
+    grouping[!df_likert_dropna$any_accessibility] <- "Group ND"
+    plot(likert(df_likert, grouping = grouping))
+  @
+  \caption{Survey answers to Question \ref{q:difficulty} converted to a five point Likert scale, grouped by disability status}
+  \label{fig:survey_answers_disability}
+\end{figure}
+
+After completing the task, participants were asked to rate its difficulty. Most
+participants from Group A rated the difficulty of the task as
+``\Sexpr{group_a_task_difficulty}'' \iftoggle{survey_difficulty_equal}{and most
+  participants from Group I also}{while most participants from Group I} rated the task as
+``\Sexpr{group_i_task_difficulty}'', converting the answers to a five point Likert
+scale allows us to calculate the average answer, which for Group A is
+\Sexpr{difficulty_mean_group_a} and for Group I is \Sexpr{difficulty_mean_group_i}.
+\iftoggle{survey_difficulty_equal}{A Pearson's chi-squared test
+  confirms}{\iftoggle{survey_difficulty_significant}{confirms}{A Pearson's chi-squared
+    test, however, rejects the hypothesis}} that the difference between the two groups is
+\iftoggle{survey_difficulty_equal}{not}{} statistically significant ($p =
+  \Sexpr{difficulty_test.chisq.p}$).
+
+As anticipated in Section \ref{sec:experimental_design}, we expect participants to be
+slower on average when completing the task on a mobile device, as can be seen in Figure
+\ref{fig:task_completion_time_violin} the results are in line with our expectations. In
+Figure \ref{fig:survey_answers_device}, we can visualize the answers to the
+post-experiment survey grouped by device used to complete the experiment. As can be
+seen from the graph, participants that completed the experiment on a mobile device
+found it slightly harder, after converting the answers to a numerical scale, the
+average answer was \Sexpr{difficulty_mean_mobile}, while the average for participants
+that used a desktop computer was \Sexpr{difficulty_mean_desktop}.
+\iftoggle{difficulty_test_device_significant}{A}{However, a} Pearson's chi-squared test
+reveals that the difference between the two groups is
+\iftoggle{difficulty_test_device_significant}{}{not} significant ($p =
+  \Sexpr{difficulty_test_device.chisq.p}$).
+
+\begin{figure}
+  <<echo=FALSE, message=FALSE, warning=FALSE, fig.height=2>>=
+    df_likert_difficulty_dropna <- drop_na(data.frame(
+      difficulty=as.factor(df$difficulty_likert),
+      task_abandoned=df$taskAbandoned
+    ))
+    df_likert_difficulty <- df_likert_difficulty_dropna
+    df_likert_difficulty$task_abandoned <- NULL
+    names(df_likert_difficulty) = c("I find this website easy to use")
+    grouping <- df_likert_difficulty_dropna$task_abandoned
+    grouping[df_likert_difficulty_dropna$task_abandoned] <- "Abandoned task"
+    grouping[!df_likert_difficulty_dropna$task_abandoned] <- "Completed task"
+    plot(likert(df_likert_difficulty, grouping = grouping))
+
+    difficulty_test_abandoned.chisq <- chisq.test(df$taskAbandoned, df$difficulty_likert, correct = FALSE)
+    difficulty_test_abandoned.chisq.p <- round_p(difficulty_test_abandoned.chisq$p.value)
+  @
+  \caption{Survey answers to Question \ref{q:difficulty} converted to a five point Likert scale, grouped by task abandonment}
+  \label{fig:survey_answers_abandoned}
+\end{figure}
+
+Lastly, and this is not unexpected, grouping the answers by whether or not the
+participants abandoned the task before answering the survey, we can see in Figure
+\ref{fig:survey_answers_abandoned} that the participants who abandoned the task rated
+the website as hard to use. A Pearson's chi-squared test confirms that the difference
+between these groups is statistically significant ($p =
+  \Sexpr{difficulty_test_abandoned.chisq.p}$).
+
+\paragraph{Visual design}
+\begin{figure}
+  <<echo=FALSE, message=FALSE, warning=FALSE, fig.height=2>>=
+    df_likert_dropna <- drop_na(data.frame(
+      enjoyability=as.factor(df$enjoyability_likert),
+      group=df$group
+    ))
+    df_likert <- df_likert_dropna
+    df_likert$group <- NULL
+    names(df_likert) = c("The screen design (i.e. colors, images, layout etc.) is attractive")
+    plot(likert(df_likert, grouping = df_likert_dropna$group))
+
+    survey_visual_a <- round_survey(mean(df$enjoyability_likert[group_a], na.rm = TRUE))
+    survey_visual_i <- round_survey(mean(df$enjoyability_likert[group_i], na.rm = TRUE))
+    survey_visual.chisq <- chisq.test(df$group, df$enjoyability, correct = FALSE)
+    survey_visual.chisq.p <- round_p(survey_visual.chisq$p.value)
+  @
+  \caption{Survey answers to Question \ref{q:visual} converted to a five point Likert scale}
+  \label{fig:survey_visual}
+\end{figure}
+
+In Section \ref{sec:web_accessibility}, we formulated Hypothesis
+\ref{hyp:visually_inferior} expecting that an accessible website does not have to be
+visually inferior compared to an inaccessible website. In order to test this
+hypothesis, participants were asked whether they considered the design of the website
+attractive.
+
+As can be seen in Figure \ref{fig:survey_visual}, participants from Group A perceived
+the website as slightly more attractive than participants from Group I, after
+converting to a numerical scale the average answer was \Sexpr{survey_visual_a} and
+\Sexpr{survey_visual_i} respectively. A Pearson's chi-squared test confirms that the
+difference between these groups is not statistically significant ($p =
+  \Sexpr{survey_visual.chisq.p}$). Thus, we consider Hypothesis
+\ref{hyp:visually_inferior} validated.
+
+\paragraph{Trust}
+
+\begin{figure}
+  <<echo=FALSE, message=FALSE, warning=FALSE, fig.height=2>>=
+    df_likert_dropna <- drop_na(data.frame(
+      safeness=as.factor(df$safeness_likert),
+      group=df$group
+    ))
+    df_likert <- df_likert_dropna
+    df_likert$group <- NULL
+    names(df_likert) = c("If I buy a product from this website, I believe it would be a secure transaction")
+    plot(likert(df_likert, grouping = df_likert_dropna$group))
+
+    survey_safeness_a <- round_survey(mean(df$safeness_likert[group_a], na.rm = TRUE))
+    survey_safeness_i <- round_survey(mean(df$safeness_likert[group_i], na.rm = TRUE))
+    survey_safeness.chisq <- chisq.test(df$group, df$safeness, correct = FALSE)
+    survey_safeness.chisq.p <- round_p(survey_safeness.chisq$p.value)
+  @
+  \caption{Survey answers to Question \ref{q:safeness} converted to a five point Likert scale}
+  \label{fig:survey_safeness}
+\end{figure}
+
+In Section \ref{sec:trust}, we formulated Hypothesis \ref{hyp:trust} expecting that an
+accessible website will be more trustworthy than an inaccessible website. There is a
+minor difference between the answers from Group A and the answers from Group I to
+Question \ref{q:safeness}, and after converting to a numerical scale the average answer
+was \Sexpr{survey_safeness_a} and \Sexpr{survey_safeness_i} respectively. As can be
+seen from Figure \ref{fig:survey_safeness}, participants in Group A considered the
+website they visited more safe than their Group I counterpart.
+
+However, a Pearson's chi-squared test fails to reject the null hypothesis that the
+difference is statistically significant ($p = \Sexpr{survey_safeness.chisq.p}$), thus
+this study fails to validate Hypothesis \ref{hyp:trust}.
+
+\paragraph{Experience}
+First, in Section \ref{sec:experience}, we formulated Hypothesis
+\ref{hyp:experience_performance}, arguing that experience should act as a moderator on
+performance.
+
+In Question \ref{q:experience}, participants were asked how much time they spend online
+every day. As can be seen in Figure \ref{fig:experience}, most participants spend at
+least four hours a day online, with no major differences between Group A and Group I.
+
+As can be seen in Figure \ref{fig:experience_task_time}, participants who spend
+relatively more time online completed the task faster than participants who spend
+relatively less time online. The ANOVA test we have conducted reveals that the
+difference between participants, who spend several hours online every day, and
+participants, who do not, is statistically significant ($p =
+  \Sexpr{aov_time_spent_online_p}$). We thus consider Hypothesis
+\ref{hyp:experience_performance} validated.
+
+There is however a big difference between age groups, we can see in Figure
+\ref{fig:experience_age} that most participants aged 50 years old or older reportedly
+spend at most three hours a day online. As highlighted in Section \ref{sec:difficulty},
+these participants were also generally slower at completing the required task. For this
+reason, in our model we have included the interaction effect between time spent online
+and age range, however it is not statistically significant ($p =
+  \Sexpr{aov_age_time_spent_online_p}$).
+
+\begin{figure}
+  <<echo=FALSE, message=FALSE, warning=FALSE, fig.height=2>>=
+    df_likert_dropna <- drop_na(data.frame(
+      experience=factor(df$experience_likert, c("1","2","3","4","5"), experience_scale),
+      group=df$group
+    ))
+    df_likert <- df_likert_dropna
+    df_likert$group <- NULL
+    names(df_likert) = c("How much time do you spend online each day?")
+    plot(likert(df_likert, grouping = df_likert_dropna$group))
+  @
+  \caption{Survey answers to Question \ref{q:experience}}
+  \label{fig:experience}
+\end{figure}
+
+\begin{figure}
+  <<echo=FALSE, message=FALSE, warning=FALSE, fig.height=4, fig.width=7.6>>=
+    df_likert_dropna <- drop_na(data.frame(
+      experience=factor(df$experience_likert, c("1","2","3","4","5"), experience_scale),
+      group=df$age_range
+    ))
+    df_likert <- df_likert_dropna
+    df_likert$group <- NULL
+    names(df_likert) = c("How much time do you spend online each day?")
+    grouping <- df_likert_dropna$group
+    group_order <- rev(levels(grouping))
+    plot(likert(df_likert, grouping = grouping), group.order=group_order, include.histogram = TRUE, wrap=25)
+  @
+  \caption{Survey answers to Question \ref{q:experience} grouped by participants' age}
+  \label{fig:experience_age}
+\end{figure}
+
+\begin{figure}
+  <<echo=FALSE, message=FALSE, warning=FALSE, fig.height=4>>=
+  ggplot(df, aes(y=task_completion_time, x=experience)) +
+    geom_violin() +
+    geom_boxplot(width=0.1) +
+    labs(y = "Task completion time in seconds", x = "Time spent online every day")
+  @
+  \caption{Task performance time for different amounts of time spent online}
+  \label{fig:experience_task_time}
+\end{figure}
+
+\begin{figure}
+  <<echo=FALSE, message=FALSE, warning=FALSE, fig.height=4>>=
+  ggplot(df, aes(y=task_completion_time, x=experience_grouped)) +
+    geom_violin() +
+    geom_boxplot(width=0.1) +
+    labs(y = "Task completion time in seconds", x = "Time spent online every day")
+  @
+  \caption{Task performance time for different amounts of time spent online, grouped}
+  \label{fig:experience_task_time_grouped}
+\end{figure}
+
+\paragraph{Country of origin}
+\begin{figure}
+  <<echo=FALSE, message=FALSE, warning=FALSE, fig.height=4>>=
+    big_country_df <- df %>% group_by(country) %>% dplyr::filter(n() > 5)
+    df_likert_dropna <- drop_na(data.frame(
+      difficulty=as.factor(big_country_df$enjoyability_likert),
+      country=big_country_df$country
+    ))
+    df_likert <- df_likert_dropna
+    df_likert$country <- NULL
+    names(df_likert) = c("The screen design (i.e. colors, images, layout etc.) is attractive")
+    plot(likert(df_likert, grouping = df_likert_dropna$country), include.histogram = TRUE, wrap=25)
+  @
+  \caption{Survey answers to Question \ref{q:visual} converted to a five point Likert scale, grouped by country}
+  \label{fig:survey_answers_visual_country}
+\end{figure}
+
+In Section \ref{sec:countries}, we analyzed existing research about the effects of
+countries' cultures on consumer perception of websites. In Figure
+\ref{fig:survey_answers_visual_country}, we group the answers to Question
+\ref{q:visual} by the country of origin of each respondent, filtering out countries for
+which we have fewer than five data points. As can be seen from the chart, there seem to
+be differences among countries, for example respondents from the Netherlands and France
+considered the website less attractive than participants from Poland. However, the
+sample size is too small to conduct this sort of analysis. We can only conclude that
+some differences between countries most likely exist, but this study was not set up
+with enough of a cultural lens to draw any conclusion.
+
+\section{Discussion}
+\subsection{Limitations and future research}\label{sec:limitations}
+As anticipated throughout this paper, the study has a few limitations. The most
+important limitation, in our eyes, is that the sample size of participants with a form
+of disability that significantly alters the way they experience the Internet is
+limited. Future research should increase the sample of participants from this category.
+
+Second, another important limitation is the fact that participants used all sorts of
+devices, browsers, and Internet connections to complete the experiment. Future research
+should either be conducted in a lab, so researchers can provide each participant with
+the same configuration of device, browser, and Internet speed; or conducted on a larger
+scale to reduce the influence of these differences.
+
+Last, the task we asked participants to complete is arguably too simple. A similar
+experiment conducted by \citeA{schmutz2016} takes over two minutes to complete, while
+the experiment in this study takes around one minute. Perhaps asking participants to
+complete a wider variety of tasks would have resulted in a bigger difference between
+the two groups. Future research should be more systematic in covering aspects of user
+interaction that benefit from increased web accessibility.
+
+\subsection{Theoretical contributions}\label{sec:theory_implications}
+In this paper, we have extended the research conducted on usability and consumer
+behavior to include web accessibility. This study, however, fails to empirically prove
+that task performance, trust, and cart abandonment are positively affected by an
+increased level of web accessibility, respectively Hypothesis
+\ref{hyp:accessibility_performance}, Hypothesis \ref{hyp:trust}, and Hypothesis
+\ref{hyp:experience_abandonment} and \ref{hyp:cart_abandonment}.
+
+However, this study does validate existing research. First, the validation of
+Hypothesis \ref{hyp:visually_inferior} confirms that web accessibility does not have to
+result in less pleasing websites, supporting the findings of \citeA{carter2001web}.
+
+Second, by validating Hypothesis \ref{hyp:experience_performance}, we have once again
+confirmed that proficiency in computer related tasks is higher in younger people and in
+people who have more experience with the medium. This supports the findings of, among
+others, \citeA{sherry2000,rozell1999}.
+
+\subsection{Managerial implications}\label{sec:manage_implications}
+Previous research shows that web accessibility is still not fully appreciated by
+professionals and businesses, which often consider it as a cost or an annoying
+regulation they have to comply with. In this study we intended to show empirically that
+improving the accessibility of a website has a positive effect on consumer perception.
+
+Some of the findings in this study are relevant for real world applications. First, the
+validation of Hypothesis \ref{hyp:visually_inferior} debunks some misconceptions about
+creating accessible websites: they do not have to be boring or uninspired.
+
+Second, more than 80\% of participants claim to have abandoned a website because it was
+hard to use: for online businesses that sell directly to consumers it is paramount that
+they constantly evaluate the usability of their website to prevent people from leaving
+simply because they do not understand how the website works, especially considering how
+strong the competition for online shopping is.
+
+\newpage
+\bibliographystyle{apacite}
+\bibliography{references}
+
+\newpage
+
+\appendix
+\section{Survey}\label{appendix:survey}
+This section contains all the questions that were asked in the post-experiment survey.
+
+\begin{enumerate}
+  \item I find this website easy to use?\label{q:difficulty}
+        \begin{enumerate}
+          \item Very easy
+          \item Easy
+          \item Neither easy nor hard
+          \item Hard
+          \item Very hard
+        \end{enumerate}
+  \item This website is similar to the online stores I normally visit\label{q:realistic}
+        \begin{enumerate}
+          \item Very similar
+          \item Similar
+          \item Neither similar nor different
+          \item Different
+          \item Very different
+        \end{enumerate}
+  \item The screen design (i.e. colors, images, layout etc.) is attractive\label{q:visual}
+        \begin{enumerate}
+          \item Very attractive
+          \item Attractive
+          \item Neither attractive nor unattractive
+          \item Unattractive
+          \item Very unattractive
+        \end{enumerate}
+  \item If I buy a product from this website, I believe it would be a secure
+        transaction\label{q:safeness}
+        \begin{enumerate}
+          \item Very secure
+          \item Secure
+          \item Neither secure nor insecure
+          \item Insecure
+          \item Very insecure
+        \end{enumerate}
+  \item How old are you?\label{q:age}
+  \item Where are you from?\label{q:country}
+  \item Do you suffer from any condition that makes it hard to navigate websites? For example,
+        color blindness, disabilities, changing abilities because of aging,
+        etc.\label{q:disability}
+        \begin{enumerate}
+          \item Yes
+          \item No
+        \end{enumerate}
+  \item Do you have any accessibility options turned on on your device? For example, larger
+        text, increased contrast, bold text, reduced motion, etc.\label{q:accessibility}
+        \begin{enumerate}
+          \item Yes
+          \item No
+        \end{enumerate}
+  \item Do you make use of any assistive technology? For example, a screen reader, dictation,
+        etc.\label{q:assistive}
+        \begin{enumerate}
+          \item Yes
+          \item No
+        \end{enumerate}
+  \item How much time do you spend online each day?\label{q:experience}
+        \begin{enumerate}
+          \item 0-1 hours a day
+          \item 2-3 hours a day
+          \item 4-5 hours a day
+          \item 6-7 hours a day
+          \item More than 7 hours a day
+        \end{enumerate}
+  \item Have you ever closed a site because it was hard to use? For example, confusing
+        navigation, confusing forms, etc. etc. \label{q:abandonment}
+        \begin{enumerate}
+          \item Yes
+          \item No
+        \end{enumerate}
+\end{enumerate}
+
+\section{Screenshots from the experiment}\label{appendix:screenshots_experiment}
+\begin{figure}[H]
+  \includegraphics[width=\linewidth]{figures/home_accessible.png}
+  \caption{
+    Screenshot of the home page of the website used for testing,
+    conformant to WCAG 2.1 at Level AA
+  }
+  \label{fig:home_accessible}
+  \vspace{1cm}
+  \includegraphics[width=\linewidth]{figures/home_inaccessible.png}
+  \caption{
+    Screenshot of the home page of the website used for testing, not conformant to WCAG
+    2.1 at any level, namely Level NA
+  }
+  \label{fig:home_inaccessible}
+\end{figure}
+\section{Screenshots from Nike.com}\label{appendix:nike.com}
+
+These screenshots were taken on 2022-05-06.
+
+\begin{figure}[H]
+  \includegraphics[width=\linewidth]{figures/listing_nike.com.png}
+  \caption{Screenshot of the listing page from Nike.com}
+\end{figure}
+
+\begin{figure}[H]
+  \includegraphics[width=\linewidth]{figures/product_nike.com.png}
+  \caption{Screenshot of a product page from Nike.com}
+\end{figure}
+
+\section{Statistical tables}
+
+\subsection{Demographics}
+<<age_task_completion_time_table, echo=FALSE, warning=FALSE, results="asis">>=
+print(
+  xtable(
+    task_completion_time_50_60.sum,
+    type = "latex",
+    label = "table:task_completion_time_50_60",
+    caption = "One-way ANOVA: task completion time in the 50-59 and 60+ age ranges",
+    nice.names = TRUE
+  ),
+  booktabs = TRUE,
+  table.placement="H",
+)
+@
+
+\subsection{Web vitals}\label{appendix:web_vitals}
+<<web_vitals_aov, echo=FALSE, warning=FALSE, results="asis">>=
+for (wv in webvitals_metrics) {
+  wv.aov <- aov(value ~ device, data = filter(webvitals_data, metric == wv))
+  wv.sum <- summary(wv.aov)
+  wv.aov.p <- anova_p(wv.sum)
+
+  print(
+    xtable(
+      wv.sum,
+      type = "latex",
+      caption = sprintf("One-way ANOVA: %s on mobile vs desktop devices", wv),
+      nice.names = TRUE
+    ),
+    booktabs = TRUE,
+    table.placement="H",
+  )
+}
+@
+
+\subsection{Next.js metrics}\label{appendix:nextjs_metrics}
+<<nextjs_metrics_aov, echo=FALSE, warning=FALSE, results="asis">>=
+for (nm in nextjs_metrics) {
+  nm.aov <- aov(value ~ device, data = filter(nextjs_data, metric == nm))
+  nm.sum <- summary(nm.aov)
+  nm.aov.p <- anova_p(nm.sum)
+
+  print(
+    xtable(
+      nm.sum,
+      type = "latex",
+      caption = sprintf("One-way ANOVA: %s on mobile vs desktop devices", nm),
+      nice.names = TRUE
+    ),
+    booktabs = TRUE,
+    table.placement="H",
+  )
+}
+@
+
+\section{Experiment details}\label{appendix:experiment}
+The source code for the experiment designed for this study is available at
+\url{https://github.com/TommasoAmici/accessibility-experiment}.
+
+The experiment is a custom made Next.js (\url{https://nextjs.org/}) application: it
+includes introductory pages that explain what the website does and what participants
+are expected to do, an online store where participants are expected to complete a task,
+and the post-experiment survey.
+
+Every component used to build the online store interface is available in two versions:
+one conformant to WCAG 2.1 at Level AA, and one that is not conformant at any level.
+
+The accessible variants were built with Headless UI (\url{https://headlessui.dev/}), a
+library of UI components with a focus on web accessibility. The inaccessible variants
+were made from scratch.
+
+\subsection{Data storage}
+The results of the experiment and the responses to the survey were anonymously stored
+in a SQLite database prior to analysis. I expected participants to possibly skip the
+final survey, so the results of the experiment are recorded separately. In order to
+join the results of the experiment and the survey responses, participants were assigned
+a numerical ID based on the hash of their IP address and the content of the
+\texttt{User-Agent} request header.
+
+\subsection{Random assignment}
+Participants were assigned to each group based on the numerical ID randomly assigned to
+them. If their ID was an even number, they were assigned to the accessible interface;
+if their ID was an odd number, they were assigned to the inaccessible interface.
+
+\section{Country of origin}\label{appendix:country}
+<<country_list, echo=FALSE, warning=FALSE, results="asis">>=
+library(countrycode)
+df$country_name <- countrycode(df$country, "iso3c", "country.name")
+country_list <- df %>% count(country_name, sort = TRUE)
+country_list$country_name <- as.character(country_list$country_name)
+country_list$country_name[is.na(country_list$country_name)] <- "Prefer not to answer"
+colnames(country_list) <- c("Country", "Count")
+
+print(
+  xtable(
+    country_list,
+    type = "latex",
+    label = "table:full_country_list",
+    caption = "Country of origin of participants",
+    nice.names = TRUE,
+  ),
+  booktabs = TRUE,
+  include.rownames = FALSE
+)
+@
+
+\end{document}
