@@ -73,7 +73,7 @@ const ShoePage = ({
 // This gets called on every request
 export const getServerSideProps: GetServerSideProps = async context => {
   let accessible = randomAssignment(
-    context.req.headers["x-real-ip"] as string,
+    context.req.headers["user-agent"] as string,
     context.req.headers["user-agent"],
   );
 

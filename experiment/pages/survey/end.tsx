@@ -139,7 +139,7 @@ const db = new Database("experiment.sqlite3");
 
 export const getServerSideProps: GetServerSideProps = async context => {
   const userID = userIDFromRequest(
-    context.req.headers["x-real-ip"] as string,
+    context.req.headers["user-agent"] as string,
     context.req.headers["user-agent"],
   );
 
